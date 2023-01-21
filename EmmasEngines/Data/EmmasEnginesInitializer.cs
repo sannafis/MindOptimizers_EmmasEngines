@@ -1,4 +1,10 @@
-﻿namespace EmmasEngines.Data
+﻿using EmmasEngines.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
+
+namespace EmmasEngines.Data
 {
     public class EmmasEnginesInitializer
     {
@@ -6,7 +12,355 @@
         {
             EmmasEnginesContext context = applicationBuilder.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<EmmasEnginesContext>();
 
-            //Initilize Data
+            try
+            {
+                context.Database.EnsureDeleted();
+                //Create the database if it does not exist
+                context.Database.Migrate();
+
+                //Initilize Data
+                // random number gen
+                Random random = new Random();
+
+                //Province 
+                if (!context.Provinces.Any())
+                {
+                    var provinces = new (string Code, string Name)[]{("AB", "Alberta"), ("BC", "British Columbia"), ("MB", "Manitoba"), ("NB", "New Brunswick"), ("NL", "Newfoundland & Labrador"), ("NT", "Northwest Territories"), ("NS", "Nova Scotia"), ("NU", "Nunavut"), ("ON", "Ontario"), ("PE", "Prince Edward Island"), ("QB", "Quebec"), ("SK", "Saskatchewan"), ("YT", "Yukon")};
+
+                    foreach (var p in provinces)
+                    {
+                        Province prov = new Province()
+                        {
+                            Name = p.Name,
+                            Code = p.Code
+                        };
+                        context.Provinces.Add(prov);
+                    }
+                    context.SaveChanges();
+                }
+
+                //City
+                if (!context.Cities.Any())
+                {
+                    string[] ontario = new string[] { "Toronto", "North York", "Scarbrough", "London", "Brampton", "Mississauga", "Ottawa", "Hamilton", "Etobicoke", "Barrie", "Belmont","Grimsby","Guelph","Kanata","Kitchener","Niagara Falls","Niagara-on-the-Lake", "Port Colborne","Sault Ste. Marie","Simcoe","St. Catharines","Thorold","Thunder Bay"};
+                    string[] britishColumbia = new string[] { "Vancouver", "Victoria", "Surrey", "Richmond", "Kelowna", "Delta", "Coquitlam", "Burnaby", "Prince George", "Chilliwack" };
+                    string[] alberta = new string[] { "Edmonton", "Red Deer", "Grand Prarie", "St. Albert", "Airdrie", "Medicine Hat", "Calgary","Fort McMurray", "Lethbridge" };
+                    string[] manitoba = new string[] { "Winnipeg", "Portage la Prarie", "Thompson", "Brandon", "Dauphin", "Steinbach", "Winkler", "St. Andrews", "Belair", "Oakburn" };
+                    string[] newBrunswick = new string[] { "Saint John", "Fredericton", "Riverview", "Bathurst", "Edmundston", "Moncton", "Miramichi", "Dieppe", "Quispamsis", "Rothesay" };
+                    string[] novaScotia = new string[] { "Halifax", "Sydney", "New Glasgow", "Truro", "Dartmouth", "Glace Bay", "Amherst" };
+                    string[] nunavut = new string[] { "Iqaluit", "Naujaat", "Gjoa Haven", "Taloyoak", "Arviat", "Cambridge Bay", "Kugluktuk", "Kugaaruk", "Baker Lake", "Arctic Bay" };
+                    string[] newfoundland = new string[] { "St. John's", "Corner Brook", "Paradise", "Gander", "Stephenville", "Labrador City" };
+                    string[] northwest = new string[] { "Yellowknife", "Fort Simpson", "Tulita", "Behchoko", "Ulukhaktok", "Norman Wells", "Aklavik" };
+                    string[] pei = new string[] { "Charlottetown", "Stratford", "Mermaid", "Summerside", "Marshfield" };
+                    string[] saskatchewan = new string[] { "Regina", "Moose Jaw", "Swift Current", "Saskatoon", "Prince Albert", "Yorkton", "Weyburn", "Lloydminster", "Estevan"};
+                    string[] yukon = new string[] { "Whitehorse", "Marsh Lake", "Dawson", "Carcross", "Faro", "Mayo", "Destruction Bay", "Teslin" };
+
+                    int[] provIDs = context.Provinces.Select(g => g.ID).ToArray();
+                    int genreIDCount = provIDs.Length;
+
+                    foreach (var i in ontario)
+                    {
+                        City city = new City(){ Name = i, ProvinceCode = "ON"};
+                        context.Cities.Add(city);
+                    }
+
+                    foreach (var i in britishColumbia)
+                    {
+                        City city = new City() { Name = i, ProvinceCode = "BC" };
+                        context.Cities.Add(city);
+                    }
+
+                    foreach (var i in alberta)
+                    {
+                        City city = new City() { Name = i, ProvinceCode = "AB" };
+                        context.Cities.Add(city);
+                    }
+
+                    foreach (var i in manitoba)
+                    {
+                        City city = new City() { Name = i, ProvinceCode = "MB" };
+                        context.Cities.Add(city);
+                    }
+
+                    foreach (var i in newBrunswick)
+                    {
+                        City city = new City() { Name = i, ProvinceCode = "NB" };
+                        context.Cities.Add(city);
+                    }
+
+                    foreach (var i in novaScotia)
+                    {
+                        City city = new City() { Name = i, ProvinceCode = "NS" };
+                        context.Cities.Add(city);
+                    }
+
+                    foreach (var i in nunavut)
+                    {
+                        City city = new City() { Name = i, ProvinceCode = "NU" };
+                        context.Cities.Add(city);
+                    }
+
+                    foreach (var i in newfoundland)
+                    {
+                        City city = new City() { Name = i, ProvinceCode = "NL" };
+                        context.Cities.Add(city);
+                    }
+
+                    foreach (var i in northwest)
+                    {
+                        City city = new City() { Name = i, ProvinceCode = "NT" };
+                        context.Cities.Add(city);
+                    }
+
+                    foreach (var i in pei)
+                    {
+                        City city = new City() { Name = i, ProvinceCode = "PE" };
+                        context.Cities.Add(city);
+                    }
+
+                    foreach (var i in saskatchewan)
+                    {
+                        City city = new City() { Name = i, ProvinceCode = "SK" };
+                        context.Cities.Add(city);
+                    }
+
+                    foreach (var i in yukon)
+                    {
+                        City city = new City() { Name = i, ProvinceCode = "YT" };
+                        context.Cities.Add(city);
+                    }
+                    context.SaveChanges();
+                }
+
+                //Inventory 
+                if (!context.Inventories.Any())
+                {
+                    context.Inventories.AddRange(
+                     new Inventory
+                     {
+                         UPC = $"060-5910-0",
+                         Name = "Mower Blade",
+                         Size = "(S) - 8\" Length x 4\" Width",
+                         Quantity = "3-Pack",
+                         Current = true
+                     }, new Inventory
+                     {
+                         UPC = $"063-5210-5",
+                         Name = "Saw Blade",
+                         Size = "(L) - 12\" Length x 5\" Width",
+                         Quantity = "3-Pack",
+                         Current = true
+                     }, new Inventory
+                     {
+                         UPC = $"060-7007-0",
+                         Name = "Atlas Lawnmower Engine Brake Cable",
+                         Size = "54\" (137 cm) cable",
+                         Quantity = "1",
+                         Current = true
+                     }, new Inventory
+                     {
+                         UPC = $"060-7410-3",
+                         Name = "MTD Replacement Blade Adapter",
+                         Size = "Fits 7/8\" crankshaft with 3/16\" key",
+                         Quantity = "1",
+                         Current = true
+                     }, new Inventory
+                     {
+                         UPC = $"060-6410-4",
+                         Name = "Champion 224cc OHV Horizontal Gas Engine",
+                         Size = "Shaft dimensions (D x L): 2.4 D x 3/4\" D",
+                         Quantity = "1",
+                         Current = true
+                     });
+                    context.SaveChanges();
+                }
+
+                int[] cityIDs = context.Cities.Select(x => x.ID).ToArray();
+
+                //Supplier 
+                if (!context.Suppliers.Any())
+                {
+                    context.Suppliers.AddRange(
+                     new Supplier
+                     {
+                         Name = "Kohl Inc.",
+                         Phone = "289-989-1909",
+                         Email = "kohler@domain.ca",
+                         Address = "123 Kohl St",
+                         Postal = "L3C 7A7",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Supplier
+                     {
+                         Name = $"Great Lake Suppliers",
+                         Phone = "519-111-1111",
+                         Email = "greatsupply@domain.ca",
+                         Address = "23 Huron Street",
+                         Postal = "N2B 2P5",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Supplier
+                     {
+                         Name = $"DEA Suppliers",
+                         Phone = "902-439-1277",
+                         Email = "deasupply@domain.ca",
+                         Address = "4 Windy Lane",
+                         Postal = "M4F 4J8",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Supplier
+                     {
+                         Name = $"Prime Supplier",
+                         Phone = "345-233-6665",
+                         Email = "prime@domain.ca",
+                         Address = "32 Optimus Road",
+                         Postal = "M5V 1G3",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Supplier
+                     {
+                         Name = $"Solid Lawns Inc.",
+                         Phone = "534-333-1231",
+                         Email = "solid@domain.ca",
+                         Address = "456 Snake Blvd",
+                         Postal = "M6S 7O7",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Supplier
+                     {
+                         Name = $"Ontario Engines",
+                         Phone = "453-234-4455",
+                         Email = "onengines@domain.ca",
+                         Address = "45 Rose St",
+                         Postal = "G6J 5H3",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Supplier
+                     {
+                         Name = $"King of Engines",
+                         Phone = "453-333-2345",
+                         Email = "engineking@domain.ca",
+                         Address = "1 Terry St",
+                         Postal = "K6V 4H4",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     });
+                    context.SaveChanges();
+                }
+
+                string[] invUPCs = context.Inventories.Select(x => x.UPC).ToArray();
+                int[] suppIDs = context.Suppliers.Select(x => x.ID).ToArray();
+                double priceMin = 20.00d;
+                double priceMax = 50.99d;
+                DateTime startDate = DateTime.Today;    
+
+                //Price 
+                if (!context.Prices.Any())
+                {
+                    foreach(string upc in invUPCs)
+                    {
+                        for (int i = random.Next(1, 4); i < random.Next(i, i + 3); i++) {
+                            Price p = new Price()
+                            {
+                                InventoryUPC = upc,
+                                PurchasedCost = random.NextDouble() * (priceMax - priceMin) + priceMin,
+                                PurchasedDate = startDate.AddDays(-random.Next(1, 365)),
+                                Stock = random.Next(2, 50),
+                                SupplierID = suppIDs[random.Next(suppIDs.Count())]
+                            };
+                        context.Prices.Add(p);
+                        }
+                    }
+                    context.SaveChanges();
+                }
+
+                //Customer 
+                if (!context.Customers.Any())
+                {
+                    context.Customers.AddRange(
+                     new Customer
+                     {
+                         FirstName = "Anonymous",
+                         LastName = "Customer",
+                         Phone = "000-000-0000",
+                         Address = "N/A",
+                         Postal = "O0O 0O0",
+                         CityID = 1
+                     }, new Customer
+                     {
+                         FirstName = "Bob",
+                         LastName = "Smith",
+                         Phone = "445-677-5669",
+                         Address = "111 Morning St.",
+                         Postal = "K3F 4V7",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Customer
+                     {
+                         FirstName = "Simon",
+                         LastName = "Belmont",
+                         Phone = "134-435-5678",
+                         Address = "7 Cross St.",
+                         Postal = "J8D 2F4",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Customer
+                     {
+                         FirstName = "Sarah",
+                         LastName = "Lam",
+                         Phone = "566-345-7785",
+                         Address = "23 Maple Road",
+                         Postal = "L9C 1F1",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Customer
+                     {
+                         FirstName = "Adrian",
+                         LastName = "Tepes",
+                         Phone = "666-777-3456",
+                         Address = "1 Valman Way",
+                         Postal = "R4G 1K9",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Customer
+                     {
+                         FirstName = "Hal",
+                         LastName = "Emmerich",
+                         Phone = "983-123-7722",
+                         Address = "34 Gear Ave.",
+                         Postal = "K3F 4V7",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Customer
+                     {
+                         FirstName = "Terry",
+                         LastName = "Bogard",
+                         Phone = "111-663-3457",
+                         Address = "98 Fury Road",
+                         Postal = "K1N 6O4",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Customer
+                     {
+                         FirstName = "Bob",
+                         LastName = "Smith",
+                         Phone = "445-677-5669",
+                         Address = "111 Morning St.",
+                         Postal = "K3F 4V7",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Customer
+                     {
+                         FirstName = "Tina",
+                         LastName = "Ochoa",
+                         Phone = "982-463-2356",
+                         Address = "2 Trent Ave.",
+                         Postal = "J3S 5V8",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     }, new Customer
+                     {
+                         FirstName = "Timothy",
+                         LastName = "Lee",
+                         Phone = "355-466-7755",
+                         Address = "12 Somewhere Road",
+                         Postal = "L7N 9B2",
+                         CityID = cityIDs[random.Next(cityIDs.Count())]
+                     });
+                    context.SaveChanges();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.GetBaseException().Message);
+            }
+
         }
     }
 }

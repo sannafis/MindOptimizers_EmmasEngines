@@ -2,10 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-EmmasEngines-3261696E-8C3F-4D9A-AD4A-456F9662CCFE</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="EmmasEnginesSecurity.db-journal" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.13" />

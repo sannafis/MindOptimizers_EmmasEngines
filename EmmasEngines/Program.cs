@@ -47,4 +47,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
+EmmasEnginesInitializer.Seed(app);
+
 app.Run();
