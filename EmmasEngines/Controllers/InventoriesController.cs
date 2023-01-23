@@ -20,9 +20,19 @@ namespace EmmasEngines.Controllers
         }
 
         // GET: Inventories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SearchString)
         {
-              return View(await _context.Inventories.ToListAsync());
+            var inventories = from i in _context.Inventories
+                              .AsNoTracking()
+                              select i;
+
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                //Filter by UPC and Name
+                inventories = inventories.Where(s => s.Name.ToUpper().Contains(SearchString.ToUpper())
+                                                   || s.UPC.ToUpper().Contains(SearchString.ToUpper()));
+            }
+            return View(await inventories.ToListAsync());
         }
 
         // GET: Inventories/Details/5
