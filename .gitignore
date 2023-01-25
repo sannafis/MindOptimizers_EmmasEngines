@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/EmmasEngines/EmmasEngines.db-shm
+/EmmasEngines/EmmasEngines.db-wal
