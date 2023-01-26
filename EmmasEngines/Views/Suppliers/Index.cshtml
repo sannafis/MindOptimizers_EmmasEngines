@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h4>SUPPLIERS</h4>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -12,6 +12,9 @@
 <table class="table">
     <thead>
         <tr>
+            <th>
+                Supplier ID
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
@@ -25,17 +28,24 @@
                 @Html.DisplayNameFor(model => model.Address)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Postal)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.City)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City.Province.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Postal)
+            </th>
+            
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -49,11 +59,15 @@
                 @Html.DisplayFor(modelItem => item.Address)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Postal)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.City.Name)
             </td>
+            <td>
+				@Html.DisplayFor(modelItem => item.City.Province.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Postal)
+            </td>
+            
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
@@ -62,4 +76,7 @@
         </tr>
 }
     </tbody>
+    <tfoot>
+    
+    </tfoot>
 </table>
