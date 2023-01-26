@@ -20,9 +20,20 @@ namespace EmmasEngines.Controllers
         }
 
         // GET: Suppliers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SearchString)
         {
-            var emmasEnginesContext = _context.Suppliers.Include(s => s.City);
+            
+            var emmasEnginesContext = _context.Suppliers
+                .Include(s => s.City)
+                .AsNoTracking();
+
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                emmasEnginesContext = emmasEnginesContext.Where(s => s.Name.ToLower().Contains(SearchString.ToLower())
+                || s.Phone.Contains(SearchString)
+                || s.Email.ToLower().Contains(SearchString.ToLower()));
+            }
+
             return View(await emmasEnginesContext.ToListAsync());
         }
 

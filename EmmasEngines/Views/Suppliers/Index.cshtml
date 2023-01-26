@@ -6,18 +6,28 @@
 
 <h4>SUPPLIERS</h4>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
+<form asp-action="Index" method="get">
+	<div class="form-horizontal row">
+		<div class="row">
+            <div class="form-group col">
+				<label class="control-label">Search Suppliers:</label>
+                @Html.TextBox("searchString", null, new { @class = "form-control", placeholder = "Enter Name Eg. John Deere, Phone Eg. ###-###-####, Email Eg. email@domainName.ca" })
+			</div>
+            <div class="form-group col-md-1 align-self-end">
+				    <input type="submit" name="actionButton" value="Search" class="btn btn-primary" />
+			    </div>
+                <div class="form-group col-md-1 align-self-end">
+                    <a asp-action="Create" class="btn btn-primary"> + </a>
+                </div>
+        </div>
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr>
             <th>
-<<<<<<< HEAD
-                Supplier ID
-=======
                 @Html.DisplayNameFor(model => model.ID)
->>>>>>> 2076b3ecbb6e805dafdcff6ea18dbcd63aa6badd
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
@@ -35,12 +45,9 @@
                 @Html.DisplayNameFor(model => model.City)
             </th>
             <th>
-<<<<<<< HEAD
-                @Html.DisplayNameFor(model => model.City.Province.Name)
+                @Html.DisplayNameFor(model => model.City.ProvinceCode)
             </th>
             <th>
-=======
->>>>>>> 2076b3ecbb6e805dafdcff6ea18dbcd63aa6badd
                 @Html.DisplayNameFor(model => model.Postal)
             </th>
             
@@ -67,15 +74,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.City.Name)
-<<<<<<< HEAD
-=======
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Postal)
->>>>>>> 2076b3ecbb6e805dafdcff6ea18dbcd63aa6badd
-            </td>
-            <td>
-				@Html.DisplayFor(modelItem => item.City.Province.Name)
+				@Html.DisplayFor(modelItem => item.City.ProvinceCode)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Postal)
