@@ -20,8 +20,13 @@ namespace EmmasEngines.Controllers
         }
 
         // GET: Inventories
-        public async Task<IActionResult> Index(string SearchString)
+        public async Task<IActionResult> Index(string SearchString, string actionButton, string sortDirection = "asc", string sortField = "Name")
         {
+            ViewData["Filtering"] = "";
+
+            //sort options for the table (match column headings)
+            string[] sortOptions = new[] { "UPC", "Name", "Size", "Quantity" };
+
             var inventories = from i in _context.Inventories
                               .AsNoTracking()
                               select i;
@@ -31,9 +36,57 @@ namespace EmmasEngines.Controllers
                 //Filter by UPC and Name
                 inventories = inventories.Where(s => s.Name.ToUpper().Contains(SearchString.ToUpper())
                                                    || s.UPC.ToUpper().Contains(SearchString.ToUpper()));
+                ViewData["Filtering"] = "show";
             }
+
+            if (!String.IsNullOrEmpty(actionButton))//check if form submitted
+            {
+                if (sortOptions.Contains(actionButton))
+                {
+                    if (actionButton == sortField)//reverse order  same column
+                    {
+                        sortDirection = (sortDirection == "asc" ? "desc" : "asc");
+                    }
+                    //sort by button clicked
+                    sortField = actionButton;
+                }
+            }
+            //Now sort by field and direction
+            if (sortField == "UPC")
+            {
+                if (sortDirection == "asc")
+                    inventories = inventories.OrderBy(s => s.UPC);
+                else
+                    inventories = inventories.OrderByDescending(s => s.UPC);
+            }
+            else if (sortField == "Name")
+            {
+                if (sortDirection == "asc")
+                    inventories = inventories.OrderBy(s => s.Name);
+                else
+                    inventories = inventories.OrderByDescending(s => s.Name);
+            }
+            else if (sortField == "Size")
+            {
+                if (sortDirection == "asc")
+                    inventories = inventories.OrderBy(s => s.Size);
+                else
+                    inventories = inventories.OrderByDescending(s => s.Size);
+            }
+            else if(sortField == "Quantity")
+            {
+                if (sortDirection == "asc")
+                    inventories = inventories.OrderBy(s => s.Quantity);
+                else
+                    inventories = inventories.OrderByDescending(s => s.Quantity);
+            }
+            //set sort for in ViewData
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
             return View(await inventories.ToListAsync());
         }
+       
 
         // GET: Inventories/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -167,5 +220,6 @@ namespace EmmasEngines.Controllers
         {
           return _context.Inventories.Any(e => e.ID == id);
         }
+        
     }
 }
