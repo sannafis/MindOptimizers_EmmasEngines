@@ -1,96 +1,105 @@
 ﻿@model IEnumerable<EmmasEngines.Models.Supplier>
 
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "Index";
 }
 
 <h4>SUPPLIERS</h4>
 
 
 <form asp-action="Index" method="get">
+	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+	<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
 	<div class="form-horizontal row">
 		<div class="row">
-            <div class="form-group col">
+			<div class="form-group col">
 				<label class="control-label">Search Suppliers:</label>
-                @Html.TextBox("searchString", null, new { @class = "form-control", placeholder = "Enter Name Eg. John Deere, Phone Eg. ###-###-####, Email Eg. email@domainName.ca" })
+				@Html.TextBox("searchString", null, new { @class = "form-control", placeholder = "Enter Name Eg. John Deere, Phone Eg. ###-###-####, Email Eg. email@domainName.ca" })
 			</div>
-            <div class="form-group col-md-1 align-self-end">
-				    <input type="submit" name="actionButton" value="Search" class="btn btn-primary" />
-			    </div>
-                <div class="form-group col-md-1 align-self-end">
-                    <a asp-action="Create" class="btn btn-primary"> + </a>
-                </div>
-        </div>
-    </div>
+			<div class="form-group col-md-1 align-self-end">
+				<input type="submit" name="actionButton" value="Search" class="btn btn-primary" />
+			</div>
+			<div class="form-group col-md-1 align-self-end">
+				<a asp-action="Create" class="btn btn-primary"> + </a>
+			</div>
+		</div>
+	</div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>
+					<input type="submit" name="actionButton" value="ID" class="btn btn-link" />
+				</th>
+				<th>
+					<input type="submit" name="actionButton" value="Name" class="btn btn-link" />
+				</th>
+				<th>
+					<input type="submit" disabled="disabled" value="Phone" class="btn btn-link" />
+					@*@Html.DisplayNameFor(model => model.Phone)*@
+				</th>
+				<th>
+					<input type="submit" disabled="disabled" value="Email" class="btn btn-link" />
+					@*@Html.DisplayNameFor(model => model.Email)*@
+				</th>
+				<th>
+					<input type="submit" disabled="disabled" value="Address" class="btn btn-link" />
+					@*@Html.DisplayNameFor(model => model.Address)*@
+				</th>
+				<th>
+					<input type="submit" disabled="disabled" value="City" class="btn btn-link" />
+					@*@Html.DisplayNameFor(model => model.City)*@
+				</th>
+				<th>
+					<input type="submit" disabled="disabled" value="Province" class="btn btn-link" />
+					@*@Html.DisplayNameFor(model => model.City.ProvinceCode)*@
+				</th>
+				<th>
+					<input type="submit" disabled="disabled" value="Postal" class="btn btn-link" />
+					@*@Html.DisplayNameFor(model => model.Postal)*@
+				</th>
+
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.ID)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Name)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Phone)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Email)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Address)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.City.Name)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.City.ProvinceCode)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Postal)
+					</td>
+
+					<td>
+						<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+						<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+						<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+		<tfoot>
+		</tfoot>
+	</table>
 </form>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City.ProvinceCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Postal)
-            </th>
-            
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City.Name)
-            </td>
-            <td>
-				@Html.DisplayFor(modelItem => item.City.ProvinceCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Postal)
-            </td>
-            
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-    <tfoot>
-    
-    </tfoot>
-</table>

@@ -20,8 +20,10 @@ namespace EmmasEngines.Controllers
         }
 
         // GET: Suppliers
-        public async Task<IActionResult> Index(string SearchString)
+        public async Task<IActionResult> Index(string SearchString, string actionButton, string sortDirection = "asc", string sortField = "Name")
         {
+            //List of sort options
+            string[] sortOptions = new[] { "ID", "Name" }; 
             
             var emmasEnginesContext = _context.Suppliers
                 .Include(s => s.City)
@@ -33,6 +35,50 @@ namespace EmmasEngines.Controllers
                 || s.Phone.Contains(SearchString)
                 || s.Email.ToLower().Contains(SearchString.ToLower()));
             }
+
+            //Sorting
+            if(!String.IsNullOrEmpty(actionButton)) //Form submitted
+            {
+                if(sortOptions.Contains(actionButton)) //Change of sort is requested
+                {
+                    if(actionButton == sortField) //Reverse order on same field
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton; //Sort by the button clicked
+                }
+            }
+
+            //Which field and direction to sort by
+            if (sortField == "Name")
+            {
+                if (sortDirection == "asc")
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderBy(Suppliers => Suppliers.Name);
+                }
+                else
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderByDescending(Suppliers => Suppliers.Name);
+                }
+            }
+            else
+            {
+                if(sortDirection == "asc")
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderBy(Supplier => Supplier.ID);
+                }
+                else
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderByDescending(Supplier => Supplier.ID);
+                }
+            }
+            //Set Sort for next time
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
 
             return View(await emmasEnginesContext.ToListAsync());
         }
