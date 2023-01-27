@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmmasEngines.Data;
 using EmmasEngines.Models;
+using EmmasEngines.Utilities;
 
 namespace EmmasEngines.Controllers
 {
@@ -20,7 +21,7 @@ namespace EmmasEngines.Controllers
         }
 
         // GET: Suppliers
-        public async Task<IActionResult> Index(string SearchString, string actionButton, string sortDirection = "asc", string sortField = "Name")
+        public async Task<IActionResult> Index(string SearchString, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc",  string sortField = "Name")
         {
             //List of sort options
             string[] sortOptions = new[] { "ID", "Name" }; 
@@ -39,6 +40,7 @@ namespace EmmasEngines.Controllers
             //Sorting
             if(!String.IsNullOrEmpty(actionButton)) //Form submitted
             {
+                page = 1; // Reset to page 1
                 if(sortOptions.Contains(actionButton)) //Change of sort is requested
                 {
                     if(actionButton == sortField) //Reverse order on same field
@@ -80,7 +82,13 @@ namespace EmmasEngines.Controllers
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
 
-            return View(await emmasEnginesContext.ToListAsync());
+
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "Supplier");
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+
+            var pagedData = await PaginatedList<Supplier>.CreateAsync(emmasEnginesContext.AsNoTracking(), page ?? 1, pageSize);
+            //return View(await emmasEnginesContext.ToListAsync());
+            return View(pagedData);
         }
 
         // GET: Suppliers/Details/5
