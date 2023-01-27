@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmmasEngines.Data;
 using EmmasEngines.Models;
+using EmmasEngines.Utilities;
 
 namespace EmmasEngines.Controllers
 {
@@ -18,9 +19,9 @@ namespace EmmasEngines.Controllers
         {
             _context = context;
         }
-
+        
         // GET: Inventories
-        public async Task<IActionResult> Index(string SearchString, string actionButton, string sortDirection = "asc", string sortField = "Name")
+        public async Task<IActionResult> Index(string SearchString, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc", string sortField = "Name")
         {
             ViewData["Filtering"] = "";
 
@@ -41,6 +42,7 @@ namespace EmmasEngines.Controllers
 
             if (!String.IsNullOrEmpty(actionButton))//check if form submitted
             {
+                page = 1;//reset page to 1
                 if (sortOptions.Contains(actionButton))
                 {
                     if (actionButton == sortField)//reverse order  same column
@@ -84,7 +86,12 @@ namespace EmmasEngines.Controllers
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
 
-            return View(await inventories.ToListAsync());
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "Inventory");
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            
+            var pagedData = await PaginatedList<Inventory>.CreateAsync(inventories.AsNoTracking(), page ?? 1, pageSize);
+
+            return View(pagedData);
         }
        
 
