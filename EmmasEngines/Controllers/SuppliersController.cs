@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmmasEngines.Data;
 using EmmasEngines.Models;
+using EmmasEngines.Utilities;
 
 namespace EmmasEngines.Controllers
 {
@@ -20,8 +21,10 @@ namespace EmmasEngines.Controllers
         }
 
         // GET: Suppliers
-        public async Task<IActionResult> Index(string SearchString)
+        public async Task<IActionResult> Index(string SearchString, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc",  string sortField = "Name")
         {
+            //List of sort options
+            string[] sortOptions = new[] { "ID", "Name" }; 
             
             var emmasEnginesContext = _context.Suppliers
                 .Include(s => s.City)
@@ -34,7 +37,58 @@ namespace EmmasEngines.Controllers
                 || s.Email.ToLower().Contains(SearchString.ToLower()));
             }
 
-            return View(await emmasEnginesContext.ToListAsync());
+            //Sorting
+            if(!String.IsNullOrEmpty(actionButton)) //Form submitted
+            {
+                page = 1; // Reset to page 1
+                if(sortOptions.Contains(actionButton)) //Change of sort is requested
+                {
+                    if(actionButton == sortField) //Reverse order on same field
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton; //Sort by the button clicked
+                }
+            }
+
+            //Which field and direction to sort by
+            if (sortField == "Name")
+            {
+                if (sortDirection == "asc")
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderBy(Suppliers => Suppliers.Name);
+                }
+                else
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderByDescending(Suppliers => Suppliers.Name);
+                }
+            }
+            else
+            {
+                if(sortDirection == "asc")
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderBy(Supplier => Supplier.ID);
+                }
+                else
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderByDescending(Supplier => Supplier.ID);
+                }
+            }
+            //Set Sort for next time
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "Supplier");
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+
+            var pagedData = await PaginatedList<Supplier>.CreateAsync(emmasEnginesContext.AsNoTracking(), page ?? 1, pageSize);
+            //return View(await emmasEnginesContext.ToListAsync());
+            return View(pagedData);
         }
 
         // GET: Suppliers/Details/5
