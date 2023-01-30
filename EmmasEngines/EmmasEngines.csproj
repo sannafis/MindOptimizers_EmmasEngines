@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\InventoriesController\**" />
+    <Content Remove="Views\InventoriesController\**" />
+    <EmbeddedResource Remove="Views\InventoriesController\**" />
+    <None Remove="Views\InventoriesController\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="EmmasEngines.db" />
     <None Remove="EmmasEnginesSecurity.db-journal" />
   </ItemGroup>
 
@@ -20,6 +28,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.11" />
   </ItemGroup>
 

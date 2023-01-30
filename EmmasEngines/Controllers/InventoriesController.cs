@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmmasEngines.Data;
 using EmmasEngines.Models;
+using EmmasEngines.Utilities;
+using NuGet.Protocol;
 
 namespace EmmasEngines.Controllers
 {
@@ -19,21 +21,107 @@ namespace EmmasEngines.Controllers
             _context = context;
         }
 
-        // GET: Inventories
-        public async Task<IActionResult> Index(string SearchString)
+        //Add includes to prices
+            //error on: "sequences contains no elements" for "AdjustedPrices"
+        [HttpPost]
+        public JsonResult SearchInventory(string SearchString ="")
         {
+            Console.WriteLine("SearchString: " + SearchString);
+            ViewData["Filtering"] = "";
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                var inventories = from i in _context.Inventories
+                                  .Where(s => s.Name.ToUpper().Contains(SearchString.ToUpper())
+                                  || s.UPC.ToUpper().Contains(SearchString.ToUpper()))
+                                  select i;
+              
+                ViewData["Filtering"] = "show";
+
+                return Json(inventories.ToList().FirstOrDefault());
+            }
+            else
+            {
+                return Json(null);
+            }
+        }
+
+
+        // GET: Inventories
+        public async Task<IActionResult> Index(string SearchString,string query, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc", string sortField = "Name")
+        {
+            ViewData["Filtering"] = "";
+
+            //sort options for the table (match column headings)
+            string[] sortOptions = new[] { "UPC", "Name", "Size", "Quantity" };
+
             var inventories = from i in _context.Inventories
+                              .Include(i => i.Prices)
                               .AsNoTracking()
                               select i;
+
 
             if (!String.IsNullOrEmpty(SearchString))
             {
                 //Filter by UPC and Name
                 inventories = inventories.Where(s => s.Name.ToUpper().Contains(SearchString.ToUpper())
                                                    || s.UPC.ToUpper().Contains(SearchString.ToUpper()));
+                ViewData["Filtering"] = "show";
             }
-            return View(await inventories.ToListAsync());
+
+            if (!String.IsNullOrEmpty(actionButton))//check if form submitted
+            {
+                page = 1;//reset page to 1
+                if (sortOptions.Contains(actionButton))
+                {
+                    if (actionButton == sortField)//reverse order  same column
+                    {
+                        sortDirection = (sortDirection == "asc" ? "desc" : "asc");
+                    }
+                    //sort by button clicked
+                    sortField = actionButton;
+                }
+            }
+            //Now sort by field and direction
+            if (sortField == "UPC")
+            {
+                if (sortDirection == "asc")
+                    inventories = inventories.OrderBy(s => s.UPC);
+                else
+                    inventories = inventories.OrderByDescending(s => s.UPC);
+            }
+            else if (sortField == "Name")
+            {
+                if (sortDirection == "asc")
+                    inventories = inventories.OrderBy(s => s.Name);
+                else
+                    inventories = inventories.OrderByDescending(s => s.Name);
+            }
+            else if (sortField == "Size")
+            {
+                if (sortDirection == "asc")
+                    inventories = inventories.OrderBy(s => s.Size);
+                else
+                    inventories = inventories.OrderByDescending(s => s.Size);
+            }
+            else if(sortField == "Quantity")
+            {
+                if (sortDirection == "asc")
+                    inventories = inventories.OrderBy(s => s.Quantity);
+                else
+                    inventories = inventories.OrderByDescending(s => s.Quantity);
+            }
+            //set sort for in ViewData
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "Inventory");
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            
+            var pagedData = await PaginatedList<Inventory>.CreateAsync(inventories.AsNoTracking(), page ?? 1, pageSize);
+
+            return View(pagedData);
         }
+       
 
         // GET: Inventories/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -44,6 +132,7 @@ namespace EmmasEngines.Controllers
             }
 
             var inventory = await _context.Inventories
+                .Include(i => i.Prices)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (inventory == null)
             {
@@ -167,5 +256,6 @@ namespace EmmasEngines.Controllers
         {
           return _context.Inventories.Any(e => e.ID == id);
         }
+        
     }
 }
