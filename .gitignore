@@ -363,3 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 /EmmasEngines/EmmasEngines.db-shm
 /EmmasEngines/EmmasEngines.db-wal
+/EmmasEngines/Data/EmmasEnginesMigrations/20230130180622_Initial.cs
+/EmmasEngines/Data/EmmasEnginesMigrations/20230130180622_Initial.Designer.cs
+/EmmasEngines/Views/Inventories/_SearchInventory.cshtml
+/EmmasEngines/EmmasEnginesSecurity.db

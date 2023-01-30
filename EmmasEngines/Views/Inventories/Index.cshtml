@@ -2,9 +2,12 @@
 
 @{
     ViewData["Title"] = "Index";
+    
 }
 
 <h1>INVENTORY</h1>
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+    
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -32,7 +35,8 @@
             </div>
      </div>
 
-    <table class="table">
+
+    <table class="table" id="inventoryTable">
         <thead>
             <tr>
                 <th>
@@ -82,3 +86,5 @@
     </table>
 	<partial name="_PagingNavBar" />
 </form>
+
+

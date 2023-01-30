@@ -11,7 +11,7 @@ namespace EmmasEngines.Models
         public int ID { get; set; }
 
         [Required(ErrorMessage = "UPC is required.")]
-        [RegularExpression("^\\d{3}-\\d{4}-\\d{1}-\\d$", ErrorMessage = "Please match the required format: ###-####-#")]
+        [RegularExpression("^[0-9]{3}-[0-9]{4}-[0-9]{1}", ErrorMessage = "Please match the required format: ###-####-#")]
         [StringLength(11)]
         public string UPC { get; set; }
 
@@ -31,7 +31,14 @@ namespace EmmasEngines.Models
         public double AdjustedPrice {
             get
             {
-                return Math.Round(Prices.Select(x => x.PurchasedCost).Average());
+                if (Prices.Any())
+                {
+                    return Math.Round(Prices.Select(x => x.PurchasedCost).Average(), 2);
+                }
+                else
+                {
+                    return 0;
+                }
             }
         }
 
@@ -39,8 +46,15 @@ namespace EmmasEngines.Models
         public double MarkupPrice {
             get
             {
-                double average = Prices.Select(x => x.PurchasedCost).Average();
-                return Math.Round(((average * .23) + average));
+                if (Prices.Any())
+                {
+                    double average = Math.Round(Prices.Select(x => x.PurchasedCost).Average(), 2);
+                    return Math.Round(((average * .23) + average));
+                }
+                else
+                {
+                    return 0;
+                }
             }
         }
 

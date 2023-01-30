@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EmmasEngines.Data;
 using EmmasEngines.Models;
 using EmmasEngines.Utilities;
+using NuGet.Protocol;
 
 namespace EmmasEngines.Controllers
 {
@@ -19,9 +20,34 @@ namespace EmmasEngines.Controllers
         {
             _context = context;
         }
-        
+
+        //Add includes to prices
+            //error on: "sequences contains no elements" for "AdjustedPrices"
+        [HttpPost]
+        public JsonResult SearchInventory(string SearchString ="")
+        {
+            Console.WriteLine("SearchString: " + SearchString);
+            ViewData["Filtering"] = "";
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                var inventories = from i in _context.Inventories
+                                  .Where(s => s.Name.ToUpper().Contains(SearchString.ToUpper())
+                                  || s.UPC.ToUpper().Contains(SearchString.ToUpper()))
+                                  select i;
+              
+                ViewData["Filtering"] = "show";
+
+                return Json(inventories.ToList().FirstOrDefault());
+            }
+            else
+            {
+                return Json(null);
+            }
+        }
+
+
         // GET: Inventories
-        public async Task<IActionResult> Index(string SearchString, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc", string sortField = "Name")
+        public async Task<IActionResult> Index(string SearchString,string query, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc", string sortField = "Name")
         {
             ViewData["Filtering"] = "";
 
@@ -29,8 +55,10 @@ namespace EmmasEngines.Controllers
             string[] sortOptions = new[] { "UPC", "Name", "Size", "Quantity" };
 
             var inventories = from i in _context.Inventories
+                              .Include(i => i.Prices)
                               .AsNoTracking()
                               select i;
+
 
             if (!String.IsNullOrEmpty(SearchString))
             {
@@ -104,6 +132,7 @@ namespace EmmasEngines.Controllers
             }
 
             var inventory = await _context.Inventories
+                .Include(i => i.Prices)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (inventory == null)
             {
