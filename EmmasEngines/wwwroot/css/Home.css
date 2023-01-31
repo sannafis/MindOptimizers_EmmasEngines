@@ -1,0 +1,233 @@
+﻿/* Global */
+:root {
+    /*Color*/
+    --color-white: #ffffff;
+    --color-dark-white: #bdbdbd;
+    /*--color-background:  #F2F2F2;*/
+    --color-grey: #D9D9D9;
+    --color-orange: #CAA007;
+    --color-dark-grey: #454655;
+    --color-purple-grey: #3d4856;
+    --color-dark-white: #bdbdbd;
+    --color-black: #000000;
+    --color-bluepurp: #6a6f95;
+    --color-bluepurple: #6D64D8;
+    --color-purple: #8F5ECA;
+    --color-plum: #A758BB;
+    --color-pinkpurple: #BB55AB;
+    --color-light-yellow: #FFF8EC;
+    --color-yellow-grey: #b4aa99;
+    --color-gradient-blue: linear-gradient(120deg, rgba(255,255,255,1) 0%, rgba(234,239,247,1) 50%, rgba(169,170,188,1) 100%);
+    --color-gradient-orange: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(202,160,7,1) 79%);
+    /* Font size */
+    --font-large: 32px;
+    --font-medium: 18px;
+    --font-regular: 14px;
+    --font-small: 12px;
+    --font-micro: 10px;
+    /* Font weight */
+    --weight-bold: 700;
+    --weight-semi-bold: 600;
+    --weight-regular: 400;
+    /* Size */
+    --size--border--radius: 4px;
+    /* Animation */
+    --animation-duration: 300ms;
+    /* Nav icon */
+    --nav-icon-width: 50px;
+    --nav-border-width: 15px;
+}
+
+
+.home_body {
+    display: flex;
+    width: auto;
+    justify-content: space-between;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--color-background);
+    
+}
+
+@keyframes hideSplashScreen {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+#splash-screen {
+    background-color: var(--color-black);
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 132px;
+    animation: hideSplashScreen 0.4s ease-in-out forwards;
+    animation-delay: 2s;
+    z-index: 100;
+}
+
+ul {
+    padding: 0 auto;
+    position: relative;
+    list-style-type: none;
+}
+
+.sidenav {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+    .sidenav a {
+        padding: 6px 6px 6px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+    }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+        .sidenav a {
+            font-size: 18px;
+        }
+}
+
+
+.home_header {
+    width: 15%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-black);
+    color: var(--color-white);
+    padding: 10px;
+}
+
+.sidenav_logout {
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+    .sidenav_logout a {
+        padding: 16px;
+        border-radius: var(--size--border--radius);
+    }
+
+.rights {
+    color: var(--color-white);
+    font-size: var(--font-micro);
+    opacity: 0.8;
+}
+
+.sidenav img {
+    width: 80px;
+    height: 80px;
+}
+
+.home_menu {
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+
+
+.department {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 22%;
+    height: 90%;
+    margin: 20PX 3px;
+    background-color: var(--color-background);
+}
+
+.dept_name {
+    background-color: var(--color-black);
+    color: var(--color-white);
+    margin: 0;
+    margin-bottom: 4px;
+    font-size: 24px;
+    height: 10%;
+    padding-top: 3px;
+    opacity: 0.4;
+}
+
+.department img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.department_description {
+    position: absolute;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all var(--animation-duration) ease-in;
+}
+
+.department:hover .department_description {
+    opacity: 0.8;
+    transform: translateY(0px);
+}
+
+.department:hover .dept_name {
+    display: none;
+}
+
+.department_description h1 {
+    color: var(--color-white);
+}
+
+    .department_description h1:after {
+        content: "";
+        display: block;
+        position: relative;
+        left: 50%;
+        width: 25px;
+        height: 2px;
+        margin-left: -12px;
+        margin-top: 8px;
+        background-color: var(--color-dark-white);
+    }
+
+

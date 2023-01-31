@@ -1,0 +1,160 @@
+.invoice {
+    background-color: var(--color-dark-white);
+}
+.page {
+    background: var(--color-white);
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+}
+.page[size="A4"] {
+    width: 21cm;
+    height: 29.7cm;
+    overflow: hidden;
+}
+.bb {
+    border-bottom: 3px solid var(--color-dark-white);
+}
+
+/* Top Section */
+.top-content {
+    padding-bottom: 15px;
+}
+.logo {
+    display: flex;
+    align-items: center;
+}
+.logo img {
+    width: 60px;
+    height: 60px;
+}
+.img-fluid {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 20px;
+}
+.logo h1 {
+    font-size:32px;
+}
+.top-left {
+    display: flex;
+    flex-direction: column;
+}
+.top-left p{
+    margin: 0;
+}
+.top-left .graphic-path {
+    height: 40px;
+    position: relative;
+}
+.top-left .graphic-path::before {
+    content: "";
+    height: 20px;
+    background-color: #3D4856;
+    position: absolute;
+    left: 15px;
+    right: 0;
+    top: -15px;
+    z-index: 2;
+}
+.top-left .graphic-path::after {
+    content: "";
+    height: 22px;
+    width: 17px;
+    background: var(--color-black);
+    position: absolute;
+    top: -13px;
+    left: 6px;
+    transform: rotate(45deg)
+    
+
+}
+.top-left .graphic-path p {
+    color: var(--color-black);
+    font-weight: 600;
+    height: 40px;
+    left: 0;
+    right: -100px;
+    background-color: var(--color-orange);
+    font: 38px;
+    z-index: 3;
+    position: absolute;
+    padding-left: 10px;;
+}
+/*User Store Section */
+.empName {
+    font-family: Mistral;
+}
+.store-user {
+    padding-bottom: 25px;
+}
+.store-user p {
+    margin: 0;
+    font-weight: 600;
+}
+.store-user .address {
+    font-weight: 400;
+}
+.store-user h2 {
+    font-size: 24px;
+    color: #3D4856;
+}
+.extra-info p span {
+    font-weight: 400;
+}
+/* item list section */
+thead {
+    color: var(--color-white);
+    background: #3D4856;
+}
+.table th{
+    text-align: center;
+    vertical-align: middle;
+}
+tr th:first-child,
+tr td:first-child {
+    text-align: left;
+}
+
+/* Balance Info Section */
+.balance-info .table td,
+.balance-info .table th {
+    padding: 0;
+    border: 0;
+}
+.balance-info tr td:first-child {
+    font-weight: 600;
+}
+tfoot {
+    border-top: 2px solid var(--color-dark-white);
+}
+tfoot td{
+    font-weight: 600;
+}
+.img-sign{
+    width: 200px;
+    height: 100px;
+    color: black;
+}
+/* Footer Section */
+footer {
+    text-align: center;
+    
+}
+footer hr {
+    border-top: 3px solid var(--color-dark-white);
+}
+footer p {
+    padding: 6px;    
+}
+
+.chkPayment{
+    visibility: collapse;
+    position: absolute;
+}
+
+#lblPaymentType {
+    font-size: 15px;
+}

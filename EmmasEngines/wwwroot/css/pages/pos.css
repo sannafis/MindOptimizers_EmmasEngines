@@ -1,0 +1,405 @@
+.pos_info {
+    width: 70%;
+    margin: 25px 10px 25px 45px;
+}
+#pos {
+    width: 100%;
+    height:15%;
+    display: flex;
+}
+.pos_title {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.pos_header {
+    height: 50%;
+    display: flex;
+    margin-bottom: 10px;
+}
+.pos_search{
+    width: 100%;
+    height: 50%;
+}
+.search_container{
+    display: flex;
+    align-items: center;
+    width: 60%;
+    height: 40%;
+    border: 4px solid var(--color-grey);
+    background-color: var(--color-grey);
+    margin-top: 30px;
+    margin-right: 15px;
+}
+.phone-search {
+    width: 100%;
+}
+.search_table .search_item_table .search_by_phone{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
+}
+.search_item_table tbody {
+    width: 30%;
+}
+.search_item_td {
+    width: 100%;
+}
+.customer {
+    border: none;
+    height: 100%;
+    width: 100%;
+    padding: 0px 5px;
+}
+.fa-magnifying-glass {
+    margin-left: 5px;
+    color: var(--color-black);
+    font-size: larger;
+}
+.add_customer {
+    margin-top: 30px;
+}
+.add_customer .fa-user-plus {
+    font-size: 35px;
+    color: var(--color-black);
+}
+#itemSearch {
+    width: 100%;
+    height: 8%;
+}
+.search_item_container {
+    width: 100%;
+    height: 95%;
+    background-color: var(--color-grey);
+}
+.search_item_table {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+.search_item_table i {
+    margin-right: 10px;
+}
+.search_item {
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+#posMain {
+    width: 100%;
+    height: 100%;
+}
+.pos_pay {
+    width: 30%;
+    margin: 25px 25px 25px 0px;
+    display: flex;
+    flex-direction: column;
+}
+.show_items {
+    width: 100%;
+    height: 55%;
+    background-color: var(--color-grey);
+    margin-bottom: 7px;
+}
+.pay_amount {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 25%;
+    background-color: var(--color-grey);
+    margin-bottom: 7px;
+}
+.sub_total, .tax {
+    display: flex;
+    justify-content: space-between;
+}
+.sub_total h2:first-child, .tax h2:first-child {
+    width: 60%;
+}
+.sub_total h2:last-child, .tax h2:last-child {
+    width: 40%;
+}
+.pay_amount h2{
+    margin-left: 15px;
+    font-size: medium;
+}
+.checkout {
+    width: 100%;
+    height: 30%;
+    background-color: var(--color-grey);
+}
+.pay_total {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 15px;
+}
+.pay_total h2 {
+    font-size: larger;
+    font-weight: 600;
+}
+.pay_total h2:first-child {
+    width: 60%; 
+}
+.pay_total h2:last-child {
+    width: 40%; 
+}
+.checkout_method {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px;
+    margin-top: 8px;
+}
+.checkout_method button {
+    display: flex;
+    justify-content: center;
+    background-color: var(--color-orange);
+    width: 23%;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: var(--size--border--radius);
+    color: var(--color-black);
+}
+.payment-img{
+    width: 25px;
+    height: 25px;
+}
+.lblPayment::before {
+    content:'';
+    position:absolute;
+    left: 0;
+    right:0;
+    bottom: 0;
+    height: 3px;
+    background-color:#3D4856;
+    transition: transform var(--animation-duration) ease-in-out;
+    transform: scaleX(0);
+}
+.lblPayment:hover:before{
+    transform: scaleX(1);
+    
+}
+.lblPayment:hover{
+    color: var(--color-white);
+}  
+#btnCheckout:hover {
+    background-color: #C0564B;
+    color: var(--color-white);
+}
+#btnClear:hover {
+    background-color: #006B61;
+    color: var(--color-white);
+}
+.checkout_method i {
+    color: white;
+}
+.checkout>button {
+    display: flex;
+    justify-content: center;
+    background-color: var(--color-white);
+    border-radius: var(--size--border--radius);
+    color: var(--color-black);
+    width: 90%;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-left: 15px;
+    margin-right: 15px;
+    font-size: large;
+}
+.pos-help {
+    position: fixed;
+    top: 45px;
+    right: 50px;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+    color: var(--color-balck);
+    border-radius: 50%;
+}
+.pos-help_tooltip {
+    position: fixed;
+    top: 12px;
+    right: 50px;
+    pointer-events: none;
+    border-radius: var(--size--border--radius);
+    background: var(--color-white);
+    color: var(--color-black);
+    line-height: 30px;
+    text-align: center;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    display: none;
+    opacity: 1;
+}
+.pos-help:hover .pos-help_tooltip{
+    transition: all 1s ease;
+    opacity: 1;
+    display: block;
+    width: 25rem;
+}
+
+/*Gabe tings*/
+
+.lblPayment {
+    background-color: #CAA007;
+    font-weight: bold;
+    font-size: 14px;
+    width: 100%;
+    padding-top: 4px;
+    text-align: center;
+    border-radius: 4px;
+    height: 30px;
+    display: inline-block;
+}
+
+.payment-containter{
+    display: inline-block;
+    position: relative;
+    width: 23%;
+    height: 30px;
+}
+
+.outer-payment-container {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 10px 0 10px;
+}
+
+input[type="checkbox"]:checked ~ label { 
+    background-color: #006B61;
+    color: var(--color-white);
+}
+
+.lblPayment:hover {
+    cursor: pointer;
+}
+
+.checkout-margin {
+    width: 93%!important;
+    margin: 10px auto;
+}
+
+#divCart{
+    margin-top: 0px!important;
+}
+
+#lblPaymentType {
+    font-size: 18px!important;
+    margin-left: 15px;
+    margin-bottom: 15px;
+}
+
+#txtAmount {
+    font-size: 16px;
+    font-weight: bold;
+    width: 40%;
+    background-color: rgba(0, 0, 0, 0);
+    border-top: none!important;
+    border-right: none!important;
+    border-left: none!important;
+}
+
+.payment-sub {
+    display: inline-block;
+    margin-top: 15px;
+    margin-left: 15px;
+    margin-right: 10px;
+    font-size: 17px;
+}
+
+.pay_total {
+    margin-left: 0px!important;
+}
+
+.paid, .change {
+    font-size: 14px;
+}
+
+.btn-clear {
+    font-size: 15px!important;
+    height: 25px;
+    padding-top: 3.5px!important;
+}
+
+/* Code from w3schools.com/howto/howto_css_shake_image.asp* added in by gabe*/
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.badInput {
+animation: shake .5s;
+}
+  
+.badBorder {
+    border: 2px solid red;
+}
+
+.payment-containter {
+    border-radius: 4px;
+}
+
+.btnAddToCart, .btnCustView {
+    background: #3D4856;
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    height: 25px;
+    width: 25x;
+    border-radius: 4px;
+}
+
+.btnRemove, .btnEdit {
+    background: #3D4856;
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    height: 25px;
+    border-radius: 4px;
+}
+
+.btnMinusQnt, .btnAddQnt {
+    background: #3D4856;
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    height: 25px;
+    display: inline-block;
+}
+
+.btnAddQnt{
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.btnMinusQnt {
+    padding: 3px 4px 3px 4.3px!important;
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.nmbQuantity {
+    height: 25px;
+    margin: 0;
+    border: 0px;
+}
+
+.btnAddToCart:hover, .btnCustView:hover, .btnRemove:hover {
+    background: var(--color-orange);
+    color: black;
+}
+
