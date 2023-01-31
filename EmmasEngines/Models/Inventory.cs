@@ -73,10 +73,8 @@ namespace EmmasEngines.Models
                 return Prices.Select(x => x.Stock).Sum();
             }
         }
-
+        
         [Display(Name = "All Prices")]
         public ICollection<Price> Prices { get; set; } = new HashSet<Price>();
-
-
     }
 }

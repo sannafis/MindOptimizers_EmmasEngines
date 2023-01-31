@@ -27,6 +27,13 @@ namespace EmmasEngines.Data
             .HasIndex(p => p.UPC)
             .IsUnique();
 
+            //1:many between inventory and prices
+            modelBuilder.Entity<Inventory>()
+                .HasMany(p => p.Prices)
+                .WithOne(i => i.Inventory)
+                .HasForeignKey(i => i.InventoryUPC)
+                .HasPrincipalKey(p => p.UPC);
+
             //Add a unique index to the Province Code
             modelBuilder.Entity<Province>()
             .HasIndex(p => p.Code)

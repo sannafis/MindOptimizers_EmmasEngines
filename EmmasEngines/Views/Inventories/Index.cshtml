@@ -52,6 +52,12 @@
                     <input type="submit" name="actionButton" value="Quantity" class="btn btn-link" />
                 </th>
                 <th>
+                    <input type="submit" name="actionButton" value="Cost (AVG)" class="btn btn-link" />
+                </th>
+                <th>
+                    <input type="submit" name="actionButton" value="Price (Retail)" class="btn btn-link" />
+                </th>
+                <th>
                     <input type="submit" disabled="disabled" value="Current" class="btn btn-link" />
                 </th>
                 <th></th>
@@ -71,6 +77,12 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AdjustedPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MarkupPrice)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Current)
