@@ -1,0 +1,100 @@
+
+.login_body {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5%;
+    /*background-color: var(--color-black);*/
+    
+}
+.background {
+    width: 650px;
+    height: 450px;
+    border-radius: 40px 0px 0px 40px;
+    background-image: url(../imgs/tech.png);
+    background-size: cover;
+    background-position: center;
+    float: left;
+}
+.login-section{
+    width:600px;
+    height: 450px;
+    float: left;
+    background-image: var(--color-gradient-blue);
+    border-radius: 0px 40px 40px 0px;
+}
+/*.login-section {
+    width: 60%;
+    margin: 1rem;
+    padding: 2rem;
+    background: #fff;
+    box-shadow: 0 0 40px rgba(0,0,0,0.2); 
+    border-radius: var(--size--border--radius);
+}*/
+.login-header {
+    margin: 20px 0px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 600;
+}
+.login-header__title {
+    margin-bottom: 20px;
+    font-size: 25px;
+}
+.login-header__text {
+    width: 60%;
+    opacity: 0.7;
+}
+
+#error-message {
+    margin-bottom: 5px;
+    color:red;
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0px 30px;
+}
+#login-form input {
+    padding: 15px 0px;
+    width: 60%;
+    border: none;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+#login-form input:not([type="submit"]) {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    transition: border-color 0.3 ease-in-out;
+}
+#login-form input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+}
+#login-form input:focus {
+    border-color: var(--color-dark-grey);
+    border: none;
+}
+#login-form input[type="submit"]{
+    background: #3d4856;
+    color: var(--color-white);
+    opacity: 0.8;
+    cursor: pointer;
+    padding: 20px 0px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+#login-form input[type="submit"]:hover {
+    background-color: var(--color-orange);
+    transition: all 1s ease;  
+}
+#login-form a {
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    font-size: 13px;
+}
