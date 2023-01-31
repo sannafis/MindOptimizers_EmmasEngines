@@ -1,0 +1,9 @@
+@import "variables.css";
+@import "pages/inventory.css";
+@import "pages/home.css";
+@import "pages/login.css";
+@import "pages/order_request.css";
+@import "pages/new.css";
+@import "pages/pos.css";
+@import "pages/invoice.css";
+@import "pages/report.css";

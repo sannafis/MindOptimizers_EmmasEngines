@@ -2,7 +2,49 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="home_menu">
+    <a asp-area="" asp-controller="Home" asp-action="Index" class="department">
+        <div>
+            <h1 class="dept_name">SALES</h1>
+            <img src="~/imgs/sales.png" alt="Cashier handing a small white bag to the customer with a debit machine on the counter.">
+        </div>
+        <div class="department_description">
+            <h1>SALES</h1>
+            <span>Our aim is your satisfaction</span>
+        </div>
+    </a>
+    <a asp-area="" asp-controller="Inventories" asp-action="Index" class="department">
+        <div>
+            <h1 class="dept_name">INVENTORY</h1>
+            <img src="~/imgs/inventory.png" alt="Woman looking at a tablet surrounded by boxes.">
+        </div>
+        <div class="department_description">
+            <h1>INVENTORY</h1>
+            <span>A day Starts with you</span>
+        </div>
+    </a>
+    <a asp-area="" asp-controller="Home" asp-action="Index" class="department">
+        <div>
+            <h1 class="dept_name">ORDER</h1>
+
+            <img src="~/imgs/tech.png" alt="A man fixing the side of lawn mower with a wrench.">
+        </div>
+        <div class="department_description">
+            <h1>PARTS & ORDER</h1>
+            <span>The best engine parts, guaranteed</span>
+        </div>
+    </a>
+    <a asp-area="" asp-controller="Home" asp-action="Index" class="department">
+        <div>
+            <h1 class="dept_name">ADMIN</h1>
+            <img src="~/imgs/admin.png" alt="A tablet being held by a pair of hands with graphical information displayed, presumably in a meeting.">
+        </div>
+        <div class="department_description">
+            <h1>ADMIN</h1>
+            <span>Company awaiting your suggestions</span>
+        </div>
+    </a>
+</div>
+<div id="splash-screen">
+    <img src="~/imgs/Logo_with_company_name.png" alt="Emma's small engines golden cog wheel company logo.">
 </div>
