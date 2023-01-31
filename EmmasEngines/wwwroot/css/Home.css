@@ -126,7 +126,6 @@ ul {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--color-black);
     color: var(--color-white);
     padding: 10px;
 }
