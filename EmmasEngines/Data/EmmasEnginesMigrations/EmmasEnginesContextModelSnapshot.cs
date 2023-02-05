@@ -131,9 +131,6 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("InventoryID")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("InventoryUPC")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -152,7 +149,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("InventoryID");
+                    b.HasIndex("InventoryUPC");
 
                     b.HasIndex("SupplierID");
 
@@ -263,8 +260,10 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 {
                     b.HasOne("EmmasEngines.Models.Inventory", "Inventory")
                         .WithMany("Prices")
-                        .HasForeignKey("InventoryID")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("InventoryUPC")
+                        .HasPrincipalKey("UPC")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("EmmasEngines.Models.Supplier", "Supplier")
                         .WithMany("Prices")

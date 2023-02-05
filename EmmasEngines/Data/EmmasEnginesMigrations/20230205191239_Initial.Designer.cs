@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmmasEngines.Data.EmmasEnginesMigrations
 {
     [DbContext(typeof(EmmasEnginesContext))]
-    [Migration("20230131014515_Initial")]
+    [Migration("20230205191239_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -133,9 +133,6 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("InventoryID")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("InventoryUPC")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -154,7 +151,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("InventoryID");
+                    b.HasIndex("InventoryUPC");
 
                     b.HasIndex("SupplierID");
 
@@ -265,8 +262,10 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 {
                     b.HasOne("EmmasEngines.Models.Inventory", "Inventory")
                         .WithMany("Prices")
-                        .HasForeignKey("InventoryID")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("InventoryUPC")
+                        .HasPrincipalKey("UPC")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("EmmasEngines.Models.Supplier", "Supplier")
                         .WithMany("Prices")

@@ -24,7 +24,7 @@ namespace EmmasEngines.Controllers
         public async Task<IActionResult> Index(string SearchString, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc",  string sortField = "Name")
         {
             //List of sort options
-            string[] sortOptions = new[] { "ID", "Name" }; 
+            string[] sortOptions = new[] { "ID", "FName" }; 
             
             var emmasEnginesContext = _context.Suppliers
                 .Include(s => s.City)

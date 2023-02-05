@@ -24,6 +24,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Inventories", x => x.ID);
+                    table.UniqueConstraint("AK_Inventories_UPC", x => x.UPC);
                 });
 
             migrationBuilder.CreateTable(
@@ -128,7 +129,6 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     InventoryUPC = table.Column<string>(type: "TEXT", nullable: false),
-                    InventoryID = table.Column<int>(type: "INTEGER", nullable: true),
                     PurchasedCost = table.Column<double>(type: "REAL", nullable: false),
                     PurchasedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Stock = table.Column<int>(type: "INTEGER", nullable: false),
@@ -138,10 +138,10 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 {
                     table.PrimaryKey("PK_Prices", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Prices_Inventories_InventoryID",
-                        column: x => x.InventoryID,
+                        name: "FK_Prices_Inventories_InventoryUPC",
+                        column: x => x.InventoryUPC,
                         principalTable: "Inventories",
-                        principalColumn: "ID",
+                        principalColumn: "UPC",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Prices_Suppliers_SupplierID",
@@ -173,9 +173,9 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Prices_InventoryID",
+                name: "IX_Prices_InventoryUPC",
                 table: "Prices",
-                column: "InventoryID");
+                column: "InventoryUPC");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prices_SupplierID",
