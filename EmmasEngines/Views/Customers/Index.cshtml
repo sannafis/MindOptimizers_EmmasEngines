@@ -1,0 +1,99 @@
+﻿@model IEnumerable<EmmasEngines.Models.Customer>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h4>CUSTOMERS</h4>
+
+<form asp-action="Index" method="get">
+	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+	<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
+	<div class="form-horizontal row">
+		<div class="row">
+			<div class="form-group col">
+				<label class="control-label">Search Customers:</label>
+                @Html.TextBox("searchString", null, new { @class = "form-control",  placeholder="Enter Customer Name Eg. John Doe" })
+			</div>
+			<div class="form-group col-md-1 align-self-end">
+				<input type="submit" name="actionButton" value="Search" class="btn btn-primary" />
+			</div>
+			<div class="form-group col-md-1 align-self-end">
+				<a asp-action="Create" class="btn btn-primary"> + </a>
+			</div>
+		</div>
+	</div>
+
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+			<th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City.ProvinceCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Postal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City.ProvinceCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Postal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</form>
