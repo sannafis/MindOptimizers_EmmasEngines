@@ -38,7 +38,6 @@ table {
     border-color: grey;
     display: table;
     text-indent: initial;
-    width: 100%;
 }
 
 .table {
@@ -522,12 +521,12 @@ Gabriel's CSS END ****************/
     opacity: 1;
 }
 main {
-    width: 100%;
+    width: 95%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    margin: 25px 60px;
+    margin: 5px 6px 50px 50px;
     padding-left: var(--nav-border-width);
     overflow-y: auto;
     padding-right: 15px;
@@ -535,10 +534,10 @@ main {
 #inventorySideRight {
     display: none;
 }
-#inventorySearch{
-    width: 100%;
+#inventorySearch {
+    width: 96%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 #searchHeader{
     display: flex;
@@ -548,7 +547,7 @@ main {
     font-size: large;
     font-weight: var(--weight-semi-bold);
 }
-#searchText {
+#SearchString {
     display: flex;
     justify-content: flex-start;
     align-items: center
@@ -566,14 +565,14 @@ main {
     height: 30px;
     margin-top: 15px;
 }
-#searchText {
+#SearchString {
     display: flex;
     justify-content: flex-start;
     color: var(--color-black);
     border: 2px solid var(--color-dark-grey);
     width: 55%;
     height: 30px;
-    margin: 15px 0 ;
+    margin: 15px 0;
     border-radius: 3px;
 }
 .divider2_desc_btn {
@@ -600,7 +599,7 @@ main {
     width: 100%;
 }
 .description {
-    width: 100%;
+    width: 95%;
     justify-content: space-between;
     background-color: var(--color-white);
     align-items: flex-start;

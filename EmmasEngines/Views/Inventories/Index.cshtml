@@ -4,68 +4,95 @@
     ViewData["Title"] = "Index";
     
 }
-
-<h1>INVENTORY</h1>
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+<main>
+    <section id="pageName">
+        <h1>INVENTORY</h1>
+    </section>
 <script src="/lib/jquery/dist/jquery.min.js"></script>
     
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <form asp-action="Index" method="get">
 	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]"/>
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
      <div class="form-horizontal">
-            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-                Filter/Search
-            </button>
-            <div class="collapse @(ViewData["Filtering"])" id="collapseFilter">
-                <div class="card card-body bg-light">
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <label class="control-label">Search Inventory (By Name/UPC): </label>
-                            @Html.TextBox("SearchString", null, new { @class = "form-control" })
-                        </div>
-                        <div class="form-group col-md-4 align-self-end">
-                            <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
-                            <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
-                        </div>
+            <section id="inventorySearch" style="">
+                <h2><label id="searchHeader" class="control-label">Search Inventory: </label></h2>
+                <input class="form-control" id="SearchString" name="SearchString" type="text" Enter UPC Eg. ###-####-# or Inventory Name Eg. Mower>
+                <div class="btn">
+                     <div class="btn_crud">
+                        <button type="submit" name="actionButton" value="Filter" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for edit items">
+                            <i class="fa fa-filter" aria-hidden="true"></i>
+                        </button>
+                        <span class="btn_tooltip">Filter</span>
                     </div>
+                    <div class="btn_crud">
+                        <button type="submit" name="actionButton" value="Filter" tabindex="190" class="btn_crud_edit" asp-action="Index"     aria-label="button for edit items">
+                            <i class="fa fa-eraser" aria-hidden="true"></i>
+                        </button>
+                        <span class="btn_tooltip">Clear</span>
+                    </div>
+@*                    <div class="btn_crud">
+                        <button  tabindex="190" class="btn_crud_edit" onclick="" id="btnEdit" aria-label="button for edit items">
+                            <i class="fa-sharp fa-solid fa-pen"></i>
+                        </button>
+                        <span class="btn_tooltip">Edit Items</span>
+                    </div>*@
+                    <div class="btn_crud">
+                        <button class="btn_crud_add" tabindex="180" asp-action="Create" id="btn_add_popup" aria-label="button for add items">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                        <span class="btn_tooltip">Add Items</span>
+                    </div>
+@*                    <div class="btn_crud">
+                        <button class="btn_crud_add" tabindex="180" onclick="" id="btn-add-request" aria-label="button for add order">
+                            <i class="fa-solid fa-cart-plus"></i>
+                        </button>
+                        <span class="btn_tooltip">Add To Order</span>
+                    </div>
+                    <div class="btn_crud">
+                        <button class="btn_request" onclick="" tabindex="200" aria-label="button for order request">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <span class="btn_tooltip">Order Request</span>
+                    </div>*@
                 </div>
-            </div>
+            </section>
      </div>
 
+        <div id="inventoryMain">
+            <div class=" divider2_desc_btn">
+                <div class="description">
 
-    <table class="table" id="inventoryTable">
+                    <table class="table table-striped" id="inventoryTable">
         <thead>
-            <tr>
+                            <tr class="bg-info">
                 <th>
-                    <input type="submit" name="actionButton" value="UPC" class="btn btn-link"/>
+                    <input type="submit" name="actionButton" value="UPC" class=""/>
                 </th>
                 <th>
-                    <input type="submit" name="actionButton" value="Name" class="btn btn-link" />
+                    <input type="submit" name="actionButton" value="Name" class="tableHeaders" />
                 </th>
                 <th>
-                    <input type="submit" name="actionButton" value="Size" class="btn btn-link" />
+                                    <input type="submit" name="actionButton" value="Size" class="no-click" />
                 </th>
                 <th>
-                    <input type="submit" name="actionButton" value="Quantity" class="btn btn-link" />
+                                    <input type="submit" name="actionButton" value="Quantity" class="no-click" />
                 </th>
                 <th>
-                    <input type="submit" name="actionButton" value="Cost (AVG)" class="btn btn-link" />
+                                    <input type="submit" name="actionButton" value="Cost (AVG)" class="tableHeaders" />
                 </th>
                 <th>
-                    <input type="submit" name="actionButton" value="Price (Retail)" class="btn btn-link" />
+                                    <input type="submit" name="actionButton" value="Price (Retail)" class="tableHeaders" />
                 </th>
                 <th>
-                    <input type="submit" disabled="disabled" value="Current" class="btn btn-link" />
+                                    <input type="submit" disabled="disabled" value="Current" class="tableHeaders" />
                 </th>
                 <th></th>
             </tr>
         </thead>
-        <tbody>
+                        <tbody id="myTable">
     @foreach (var item in Model) {
-            <tr>
+                                <tr class="table-hover">
                 <td>
                     @Html.DisplayFor(modelItem => item.UPC)
                 </td>
@@ -96,7 +123,13 @@
     }
         </tbody>
     </table>
+                </div>
+            </div>
+        </div>
+    
 	<partial name="_PagingNavBar" />
 </form>
+</main>
+<script src="https://kit.fontawesome.com/f8c88d6b79.js" crossorigin="anonymous"></script>
 
 
