@@ -24,9 +24,10 @@ namespace EmmasEngines.Controllers
         public async Task<IActionResult> Index(string SearchString, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc", string sortField = "Name")
         {
             //List of sort options
-            string[] sortOptions = new[] { "ID", "FName", "LName" };
-            
-            
+            string[] sortOptions = new[] { "ID", "FirstName", "LastName" };
+
+
+
             var emmasEnginesContext = _context.Customers
                 .Include(c => c.City)
                 .AsNoTracking();
@@ -39,8 +40,75 @@ namespace EmmasEngines.Controllers
                          s.City.Name.ToLower().Contains(SearchString.ToLower())
                 );
             }
-            
-            return View(await emmasEnginesContext.ToListAsync());
+
+            //Sorting
+            if (!String.IsNullOrEmpty(actionButton)) //Form submitted
+            {
+                page = 1; // Reset to page 1
+                if (sortOptions.Contains(actionButton)) //Change of sort is requested
+                {
+                    if (actionButton == sortField) //Reverse order on same field
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton; //Sort by the button clicked
+                }
+            }
+
+            //Which field and direction to sort by
+            if (sortField == "LastName")
+            {
+                if(sortDirection == "asc")
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderBy(Customer => Customer.LastName);
+                }
+                else
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderByDescending(Customer => Customer.LastName);
+                }
+            }
+            else if (sortField == "FirstName")
+            {
+                if (sortDirection == "asc")
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderBy(Customer => Customer.FirstName);
+                }
+                else
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderByDescending(Customer => Customer.FirstName);
+                }
+            }
+            else
+            {
+                if (sortDirection == "asc")
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderBy(c => c.ID);
+                }
+                else
+                {
+                    emmasEnginesContext = emmasEnginesContext
+                        .OrderByDescending(Customer => Customer.ID);
+                }
+                
+            }
+            //Set Sort for next time
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "Customer");
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+
+            var pagedData = await PaginatedList<Customer>.CreateAsync(emmasEnginesContext.AsNoTracking(), page ?? 1, pageSize);
+            //return View(await emmasEnginesContext.ToListAsync());
+            return View(pagedData);
+
+            //return View(await emmasEnginesContext.ToListAsync());
         }
 
         // GET: Customers/Details/5

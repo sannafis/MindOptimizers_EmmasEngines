@@ -4,9 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h4>CUSTOMERS</h4>
+<h4>Customer</h4>
 
 <form asp-action="Index" method="get">
+
 	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
 	<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
 
@@ -25,36 +26,40 @@
 		</div>
 	</div>
 
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ID)
+               @* @Html.DisplayNameFor(model => model.ID)*@
+                <input type="submit" name="actionButton" value="ID" class="btn btn-link" />
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                @*@Html.DisplayNameFor(model => model.FirstName)*@
+                    <input type="submit" name="actionButton" value="FirstName" class="btn btn-link" />
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                @*@Html.DisplayNameFor(model => model.LastName)*@
+                    <input type="submit" name="actionButton" value="LastName" class="btn btn-link" />
             </th>
 			<th>
-                @Html.DisplayNameFor(model => model.Address)
+               @* @Html.DisplayNameFor(model => model.Address)*@
+                <input type="submit" disabled="disabled" value="Address" class="btn btn-link" />
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.City)
+                @*@Html.DisplayNameFor(model => model.City)*@
+                <input type="submit" disabled="disabled" value="City" class="btn btn-link" />
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.City.ProvinceCode)
+                @*@Html.DisplayNameFor(model => model.City.ProvinceCode)*@
+                <input type="submit" disabled="disabled" value="Province" class="btn btn-link" />
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Postal)
+                @*@Html.DisplayNameFor(model => model.Postal)*@
+                <input type="submit" disabled="disabled" value="Postal Code" class="btn btn-link" />
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Phone)
+                @*@Html.DisplayNameFor(model => model.Phone)*@
+                <input type="submit" disabled="disabled" value="Phone" class="btn btn-link" />
             </th>
 
             <th></th>
@@ -96,4 +101,5 @@
 }
     </tbody>
 </table>
+    <partial name="_PagingNavBar" />
 </form>
