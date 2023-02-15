@@ -16,7 +16,8 @@ namespace EmmasEngines.Models
         public Inventory Inventory { get; set; }
 
         [Display(Name = "Purchase Price")]
-        [Required(ErrorMessage = "Purchase cost is required")]
+        [Required(ErrorMessage = "Purchase price is required")]
+        [Range(0.0, Double.MaxValue, ErrorMessage = "Price must be greater than or equal to 0.00.")]
         public double PurchasedCost { get; set; }
 
         [Display(Name = "Purchase Date")]

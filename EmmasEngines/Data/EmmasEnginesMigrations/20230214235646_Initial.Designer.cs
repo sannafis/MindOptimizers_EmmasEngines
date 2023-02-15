@@ -3,6 +3,7 @@ using System;
 using EmmasEngines.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmmasEngines.Data.EmmasEnginesMigrations
 {
     [DbContext(typeof(EmmasEnginesContext))]
-    partial class EmmasEnginesContextModelSnapshot : ModelSnapshot
+    [Migration("20230214235646_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.13");

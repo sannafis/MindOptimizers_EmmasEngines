@@ -14,7 +14,7 @@ namespace EmmasEngines.Data
 
             try
             {
-                context.Database.EnsureDeleted();
+                //context.Database.EnsureDeleted();
                 //Create the database if it does not exist
                 context.Database.Migrate();
 
@@ -352,6 +352,227 @@ namespace EmmasEngines.Data
                          Postal = "L7N 9B2",
                          CityID = cityIDs[random.Next(cityIDs.Count())]
                      });
+                    context.SaveChanges();
+                }
+
+                //Employee 
+                if (!context.Employees.Any())
+                {
+                    context.Employees.AddRange(
+                     new Employee
+                     {
+                         FirstName = "Emma",
+                         LastName = "Henderson",
+                         Username = "EmmaH",
+                         Password = "123456789"
+                     }, new Employee
+                     {
+                         FirstName = "Sam",
+                         LastName = "Khan",
+                         Username = "samk",
+                         Password = "123456789"
+                     }, new Employee
+                     {
+                         FirstName = "Wendy",
+                         LastName = "Barlowe",
+                         Username = "WendyB",
+                         Password = "123456789"
+                     }, new Employee
+                     {
+                         FirstName = "William",
+                         LastName = "Tanner",
+                         Username = "WilliamT",
+                         Password = "123456789"
+                     }, new Employee
+                     {
+                         FirstName = "Emily",
+                         LastName = "Anderson",
+                         Username = "EmilyA",
+                         Password = "123456789"
+                     });
+                    context.SaveChanges();
+                }
+
+                //Position 
+                if (!context.Positions.Any())
+                {
+                    context.Positions.AddRange(
+                     new Position
+                     {
+                         Title = "Owner"
+                     }, new Position
+                     {
+                         Title = "Ordering"
+                     },new Position
+                     {
+                         Title = "Sales"
+                     },new Position
+                     {
+                         Title = "Admin"
+                     });
+                    context.SaveChanges();
+                }
+
+                //Employee Position 
+                if (!context.EmployeePositions.Any())
+                {
+                    context.EmployeePositions.AddRange(
+                     new EmployeePosition
+                     {
+                         EmployeeID = 1,
+                         PositionTitle = "Owner"
+                     }, new EmployeePosition
+                     {
+                         EmployeeID = 2,
+                         PositionTitle = "Ordering"
+                     }, new EmployeePosition
+                     {
+                         EmployeeID = 3,
+                         PositionTitle = "Sales"
+                     }, new EmployeePosition
+                     {
+                         EmployeeID = 4,
+                         PositionTitle = "Sales"
+                     }, new EmployeePosition
+                     {
+                         EmployeeID = 5,
+                         PositionTitle = "Admin"
+                     });
+                    context.SaveChanges();
+                }
+
+                int[] customerIDs = context.Customers.Select(x => x.ID).ToArray();
+                //Order Request 
+                if (!context.OrderRequests.Any())
+                {
+                    DateTime start = new DateTime(2022, 1, 1);
+                    int range = (new DateTime(2023, 1, 1) - start).Days;
+                    for (int i = 0; i < 15; i++) {
+                        DateTime sendDate = start.AddDays(random.Next(range));
+                         OrderRequest order = new OrderRequest()
+                         {
+                             Description = "Inventory Stock Order",
+                             SentDate = sendDate,
+                             ReceiveDate = (i%2 == 0? sendDate.AddDays(random.Next(10, 30)) : null), 
+                             ExternalOrderNum = (100 + i).ToString(),
+                             CustomerID = customerIDs[random.Next(customerIDs.Count())]
+                         };
+                        context.OrderRequests.Add(order);
+                    }
+                    context.SaveChanges();
+                }
+
+                string[] inventoryUPCs = context.Inventories.Select(x => x.UPC).ToArray();
+                int[] orderIDs = context.OrderRequests.Select(x => x.ID).ToArray();
+
+                //Order Request Inventories
+                if (!context.OrderRequestInventories.Any())
+                {
+
+                    int k = 0;//Start with the first inventory
+                    foreach (int i in orderIDs)
+                    {
+                        int howMany = random.Next(1, inventoryUPCs.Count());//add a few inventories to a order
+                        for (int j = 1; j <= howMany; j++)
+                        {
+                            k = (k >= inventoryUPCs.Count()) ? 0 : k;//Resets counter k to 0 if we have run out of inventory
+                            OrderRequestInventory o = new OrderRequestInventory()
+                            {
+                                OrderRequestID = i,
+                                InventoryUPC = inventoryUPCs[k]
+                            };
+                            context.OrderRequestInventories.Add(o);
+                            k++;
+                        }
+                    }
+                    context.SaveChanges();
+                }
+                int[] employeeIDs = context.Employees.Select(x => x.ID).ToArray();
+
+                //Invoice 
+                if (!context.Invoices.Any())
+                {
+                    for(int i=0; i<10; i++)
+                    {
+                        Invoice invoice = new Invoice()
+                        {
+                            Date = (DateTime.Today).AddDays(-random.Next(1, 360)),
+                            Appreciation = random.NextDouble() * (100.00 - 10.00) + 10.00,
+                            Description = "Sales Invoice",
+                            CustomerID = customerIDs[random.Next(customerIDs.Count())],
+                            EmployeeID = random.Next(3, 4)
+                        };
+                        context.Invoices.Add(invoice);
+                    }
+                    
+                    context.SaveChanges();
+                }                
+
+                //Payment 
+                if (!context.Payments.Any())
+                {
+                        context.Payments.AddRange(
+                            new Payment
+                            {
+                                Type = "Cash",
+                                Description = "Cash Payment"
+                            }, new Payment
+                            {
+                                Type = "Debit",
+                                Description = "Debit Payment"
+                            }, new Payment
+                            {
+                                Type = "Credit",
+                                Description = "Credit Payment"
+                            }, new Payment
+                            {
+                                Type = "Cheque",
+                                Description = "Cheque Payment"
+                            });
+
+                    context.SaveChanges();
+                }
+
+                int[] invoiceIDs = context.Invoices.Select(x => x.ID).ToArray();
+                int[] paymentIDs = context.Payments.Select(x => x.ID).ToArray();
+
+                //Invoice Payment 
+                if (!context.InvoicePayments.Any())
+                {
+                    foreach(int i in invoiceIDs)
+                    {
+                        context.InvoicePayments.AddRange(
+                            new InvoicePayment
+                            {
+                                InvoiceID = i,
+                                PaymentID = paymentIDs[random.Next(paymentIDs.Count())]
+                            });
+                    }
+                    context.SaveChanges();
+                }
+
+                //Invoice Line
+                if (!context.InvoiceLines.Any())
+                {
+
+                    int k = 0;//Start with the first inventory
+                    foreach (int i in invoiceIDs)
+                    {
+                        int howMany = random.Next(1, inventoryUPCs.Count());//add a few inventories to an invoice
+                        for (int j = 1; j <= howMany; j++)
+                        {
+                            k = (k >= inventoryUPCs.Count()) ? 0 : k;//Resets counter k to 0 if we have run out of inventory
+                            InvoiceLine invoiceLine = new InvoiceLine()
+                            {
+                                InvoiceID = i,
+                                InventoryUPC = inventoryUPCs[k],
+                                Quantity = random.Next(1, 3),
+                                SalePrice = random.NextDouble() * (35.00 - 20.00) + 20.00
+                            };
+                            context.InvoiceLines.Add(invoiceLine);
+                            k++;
+                        }
+                    }
                     context.SaveChanges();
                 }
 

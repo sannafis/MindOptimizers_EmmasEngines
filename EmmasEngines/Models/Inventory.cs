@@ -76,5 +76,9 @@ namespace EmmasEngines.Models
         
         [Display(Name = "All Prices")]
         public ICollection<Price> Prices { get; set; } = new HashSet<Price>();
+
+        public ICollection<OrderRequestInventory> OrderRequestInventories { get; set; } = new HashSet<OrderRequestInventory>();
+
+        public ICollection<InvoiceLine> InvoiceLines { get; set; } = new HashSet<InvoiceLine>();
     }
 }
