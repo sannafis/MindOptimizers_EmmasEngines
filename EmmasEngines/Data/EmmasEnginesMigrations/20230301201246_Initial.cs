@@ -323,7 +323,8 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 columns: table => new
                 {
                     OrderRequestID = table.Column<int>(type: "INTEGER", nullable: false),
-                    InventoryUPC = table.Column<string>(type: "TEXT", nullable: false)
+                    InventoryUPC = table.Column<string>(type: "TEXT", nullable: false),
+                    Quantity = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
