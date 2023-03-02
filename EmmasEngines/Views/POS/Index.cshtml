@@ -1,20 +1,42 @@
 ﻿@model IEnumerable<EmmasEngines.Models.Inventory>
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json;
+@using EmmasEngines.Utilities;
+@inject IHttpContextAccessor HttpContextAccessor;
 
 @{
 	ViewData["Title"] = "Index";
-
 }
 <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 <main>
 	<section id="pageName">
-		<h1>INVENTORY</h1>
+		<h1>POS</h1>
 	</section>
 	<script src="/lib/jquery/dist/jquery.min.js"></script>
 
+	<section id="customerSearch">
+		@*Set POS Cart to a Customer, by searching 'Last 4 Phone Digits' or 'Customer Name'*@
+		<input class="form-control" id="SearchString" name="SearchPhone" type="text" placeholder="Enter Last 4 Phone Digits Eg. ####">
+		<input class="form-control" id="SearchString" name="SearchCustName" type="text" placeholder="Search Customer... Eg. John">
+		
+		@*When pressed, Modal box of Customer Name, Phone, Address, Postal*@
+		<div class="btn">
+			<button type="submit" name="actionButton" value="customerDetails" tabindex="190" class="" onclick="" aria-label="button for edit items">
+				Details
+			</button>
+			<span class="btn_tooltip">Filter</span>
+		</div>
+		@*When pressed, Modal box to add customer. Set cart to this customer.*@
+		<div class="btn">
+			<button type="submit" name="actionButton" value="addCustomer" tabindex="190" class="" onclick="" aria-label="button for edit items">
+				Add Customer
+			</button>
+		</div>
+	</section>
+
 	<form asp-action="Index" method="get">
-		<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
-		<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
 		<div class="form-horizontal">
+			@*Search Inventory by name (+ buttons to submit, clear)*@
 			<section id="inventorySearch" style="">
 				<h2><label id="searchHeader" class="control-label">Search Inventory: </label></h2>
 				<input class="form-control" id="SearchString" name="SearchString" type="text" placeholder="Enter UPC Eg. ###-####-# or Inventory Name Eg. Mower">
@@ -30,31 +52,7 @@
 							<i class="fa fa-eraser" aria-hidden="true"></i>
 						</button>
 						<span class="btn_tooltip">Clear</span>
-					</div>
-					@*                    <div class="btn_crud">
-					<button  tabindex="190" class="btn_crud_edit" onclick="" id="btnEdit" aria-label="button for edit items">
-					<i class="fa-sharp fa-solid fa-pen"></i>
-					</button>
-					<span class="btn_tooltip">Edit Items</span>
-					</div>*@
-					<div class="btn_crud">
-						<button class="btn_crud_add" tabindex="180" asp-action="Create" id="btn_add_popup" aria-label="button for add items">
-							<i class="fa-solid fa-plus"></i>
-						</button>
-						<span class="btn_tooltip">Add Items</span>
-					</div>
-					@*                    <div class="btn_crud">
-					<button class="btn_crud_add" tabindex="180" onclick="" id="btn-add-request" aria-label="button for add order">
-					<i class="fa-solid fa-cart-plus"></i>
-					</button>
-					<span class="btn_tooltip">Add To Order</span>
-					</div>
-					<div class="btn_crud">
-					<button class="btn_request" onclick="" tabindex="200" aria-label="button for order request">
-					<i class="fa-solid fa-pen-to-square"></i>
-					</button>
-					<span class="btn_tooltip">Order Request</span>
-					</div>*@
+					</div>             
 				</div>
 			</section>
 		</div>
@@ -93,7 +91,7 @@
 								<th></th>
 							</tr>
 						</thead>
-						<tbody id="myTable">
+						<tbody id="inventoryData">
 							@foreach (var item in Model)
 							{
 								<tr class="table-hover">
@@ -122,9 +120,7 @@
 										@Html.DisplayFor(modelItem => item.TotalStock)
 									</td>
 									<td>
-										<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-										<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-										<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+										<a asp-action="Add" asp-route-id="@item.ID">(+) Add to Cart</a>
 									</td>
 								</tr>
 							}
@@ -132,6 +128,60 @@
 					</table>
 				</div>
 			</div>
+		</div>
+		<div class="cart">
+			@*Create a new table with headers for "Name", "Price", "Quantity".*@
+			@*Table starts empty. Items are added by POSController.AddToCart, returning a single JSON inventory object*@
+			@*The table is then populated with the JSON object*@
+			@*The table is then updated every time a new item is added to the cart*@
+			<table class="table table-striped" id="invoiceTable">
+				<thead>
+					<tr class="bg-info">
+						<th>
+							<input type="submit" disabled="disabled" value="Name" class="tableHeaders" />
+						</th>
+						<th>
+							<input type="submit" disabled="disabled" value="Price" class="tableHeaders" />
+						</th>
+						<th>
+							<input type="submit" disabled="disabled" value="Quantity" class="tableHeaders" />
+						</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody id="cartData">
+					@*add a new item (name, price, quantity) by a given UPC code*@
+					@*the item is added to the cart, and the cart is updated*@
+					@*the cart is then displayed in the table*@
+					@*Use the "Buy(string UPC) function / HttpContext.Session["cart"] to update the table *@
+					
+				@{
+						var cart = (List<Inventory>)HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<Inventory>>("cart");
+						if(cart != null){		
+							foreach (Inventory item in cart)
+							{
+								<tr class="table-hover">
+									<td>
+										@Html.DisplayFor(modelItem => item.Name)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.AdjustedPrice)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.Quantity)
+									</td>
+									<td>
+										<a asp-action="Remove" asp-route-id="@item.ID">(-) Remove from Cart</a> |
+									</td>
+								</tr>
+							}
+						}
+						
+				}
+					
+					
+				</tbody>
+			</table>
 		</div>
 
 		<partial name="_PagingNavBar" />
