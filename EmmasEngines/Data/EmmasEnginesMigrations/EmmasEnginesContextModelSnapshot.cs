@@ -291,6 +291,9 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Property<string>("InventoryUPC")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("OrderRequestID", "InventoryUPC");
 
                     b.HasIndex("InventoryUPC");

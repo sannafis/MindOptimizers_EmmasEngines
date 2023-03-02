@@ -32,6 +32,9 @@ namespace EmmasEngines.Models
 
         public Customer Customer { get; set; }
 
+        public ICollection<OrderRequestInventory> OrderRequestInventories { get; set; } = new HashSet<OrderRequestInventory>();
+
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (ReceiveDate > DateTime.Today)

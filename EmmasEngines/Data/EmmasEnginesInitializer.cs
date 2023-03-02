@@ -18,7 +18,7 @@ namespace EmmasEngines.Data
                 //Create the database if it does not exist
                 context.Database.Migrate();
 
-                //Initilize Data
+                //Initialize Data
                 // random number gen
                 Random random = new Random();
 
@@ -479,7 +479,8 @@ namespace EmmasEngines.Data
                             OrderRequestInventory o = new OrderRequestInventory()
                             {
                                 OrderRequestID = i,
-                                InventoryUPC = inventoryUPCs[k]
+                                InventoryUPC = inventoryUPCs[k],
+                                Quantity = random.Next(20, 51)
                             };
                             context.OrderRequestInventories.Add(o);
                             k++;
