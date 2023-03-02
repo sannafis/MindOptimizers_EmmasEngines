@@ -571,7 +571,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .IsRequired();
 
                     b.HasOne("EmmasEngines.Models.OrderRequest", "OrderRequest")
-                        .WithMany()
+                        .WithMany("OrderRequestInventories")
                         .HasForeignKey("OrderRequestID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -637,6 +637,11 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("InvoiceLines");
 
                     b.Navigation("InvoicePayments");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.OrderRequest", b =>
+                {
+                    b.Navigation("OrderRequestInventories");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Payment", b =>

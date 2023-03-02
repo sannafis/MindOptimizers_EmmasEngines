@@ -31,6 +31,8 @@ namespace EmmasEngines.Models
         public int CustomerID { get; set; }
 
         public Customer Customer { get; set; }
+        
+        public Inventory Inventory { get; set; }
 
         public ICollection<OrderRequestInventory> OrderRequestInventories { get; set; } = new HashSet<OrderRequestInventory>();
 

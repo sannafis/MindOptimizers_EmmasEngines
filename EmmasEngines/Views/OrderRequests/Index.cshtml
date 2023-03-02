@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<EmmasEngines.Models.OrderRequest>
 
 @{
-    ViewData["Title"] = "Order Requests";
+    ViewData["Title"] = "Index";
 }
 
-<h4>Order Requests</h4>
+<h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -12,9 +12,6 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ID)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
@@ -37,9 +34,6 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ID)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
@@ -52,7 +46,7 @@
                 @Html.DisplayFor(modelItem => item.ExternalOrderNum)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Customer.FullName)
+                @Html.DisplayFor(modelItem => item.Customer.Address)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
