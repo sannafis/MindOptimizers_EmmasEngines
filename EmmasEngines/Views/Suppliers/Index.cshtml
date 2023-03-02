@@ -70,9 +70,7 @@
 					<table class="table table-striped" id="inventoryTable">
 						<thead>
 							<tr class ="bg-info">
-								<th>
-									<input type="submit" name="actionButton" value="ID" class="tableHeaders" />
-								</th>
+				
 								<th>
 									<input type="submit" name="actionButton" value="Name" class="tableHeaders" />
 								</th>
@@ -108,9 +106,7 @@
 							@foreach (var item in Model)
 							{
 								<tr class="table-hover">
-									<td>
-										@Html.DisplayFor(modelItem => item.ID)
-									</td>
+			
 									<td>
 										@Html.DisplayFor(modelItem => item.Name)
 									</td>
