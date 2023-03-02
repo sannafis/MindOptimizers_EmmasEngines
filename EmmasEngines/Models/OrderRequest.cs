@@ -32,8 +32,6 @@ namespace EmmasEngines.Models
 
         public Customer Customer { get; set; }
 
-        public OrderRequestInventory OrderRequestInventory { get; set; }    
-
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (ReceiveDate > DateTime.Today)
