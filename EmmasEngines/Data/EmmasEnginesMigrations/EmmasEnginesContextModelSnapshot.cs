@@ -15,7 +15,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.13");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.14");
 
             modelBuilder.Entity("EmmasEngines.Models.City", b =>
                 {
@@ -290,6 +290,9 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.Property<string>("InventoryUPC")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("OrderRequestID", "InventoryUPC");
 

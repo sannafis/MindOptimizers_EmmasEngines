@@ -75,7 +75,7 @@ namespace EmmasEngines.Data
                 .WithOne(c => c.Province)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //Postion Key set to Title
+            //Position Key set to Title
             modelBuilder.Entity<Position>()
             .HasKey(p => p.Title);
 
@@ -97,7 +97,7 @@ namespace EmmasEngines.Data
             .HasIndex(p => p.Title)
             .IsUnique();
 
-            //Add a unique index to the Employee Username
+            //Add a unique index to the Employee User name
             modelBuilder.Entity<Employee>()
             .HasIndex(p => p.Username)
             .IsUnique();
