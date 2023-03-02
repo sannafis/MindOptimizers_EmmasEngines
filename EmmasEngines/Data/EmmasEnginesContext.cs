@@ -168,6 +168,13 @@ namespace EmmasEngines.Data
                 .WithOne(i => i.Inventory)
                 .HasForeignKey(i => i.InventoryUPC)
                 .HasPrincipalKey(p => p.UPC);
+                
+            //1:many between OrderRequestInventory and OrderRequest
+            modelBuilder.Entity<OrderRequest>()
+                .HasMany(p => p.OrderRequestInventories)
+                .WithOne(i => i.OrderRequest)
+                .HasForeignKey(i => i.OrderRequestID)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
