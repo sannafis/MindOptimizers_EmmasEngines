@@ -120,7 +120,7 @@
 										@Html.DisplayFor(modelItem => item.TotalStock)
 									</td>
 									<td>
-										<a asp-action="Add" asp-route-id="@item.ID">(+) Add to Cart</a>
+										<a href="@Url.Action("Buy", "POS", new {UPC = item.UPC})">(+) Add to Cart</a>
 									</td>
 								</tr>
 							}
@@ -157,7 +157,8 @@
 					
 				@{
 						var cart = (List<Inventory>)HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<Inventory>>("cart");
-						if(cart != null){		
+						if(cart != null)
+						{		
 							foreach (Inventory item in cart)
 							{
 								<tr class="table-hover">
@@ -171,17 +172,51 @@
 										@Html.DisplayFor(modelItem => item.Quantity)
 									</td>
 									<td>
-										<a asp-action="Remove" asp-route-id="@item.ID">(-) Remove from Cart</a> |
+										<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})">(-) Remove From Cart</a>
 									</td>
 								</tr>
 							}
 						}
-						
-				}
-					
-					
+					}
 				</tbody>
 			</table>
+			<div id="cartSummaryData">
+				@*Subtotal, Tax, Total, Paid, Change*@
+				@*Using Summary, returning json result of these properties, display in an unordered list*@
+				@*Use the "Summary" function to update the summary data *@
+				@*Use the "ClearCart" function to clear the cart and the summary data *@
+				@*Use the "Pay" function to display the payment data *@
+				@*Use the "Pay" function to clear the cart and the summary data *@
+				<ul class="list-group list-group-flush">
+					@{
+						double total = 0;
+						double tax = 0;
+						double subtotal = 0;
+						double paid = 0;
+						double change = 0;
+
+						if(cart != null)
+						{
+							foreach (Inventory item in cart)
+							{
+								subtotal += item.AdjustedPrice;
+								tax = subtotal * 0.13;
+								total = subtotal + tax;
+							}
+						}
+						<li>Subtotal: @subtotal.ToString("C")</li>
+						<li>Tax: @tax.ToString("C")</li>
+						<li>Total: @total.ToString("C")</li>
+						<li>Paid: @paid.ToString("C")</li>
+						<li>Change: @change.ToString("C")</li>	
+					}
+				</ul>
+
+				
+			</div>
+			<div id="cartPayment">
+
+			</div>
 		</div>
 
 		<partial name="_PagingNavBar" />

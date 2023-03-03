@@ -59,13 +59,53 @@ namespace EmmasEngines.Controllers
             }
             int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "POS");
             ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            
 
             var pagedData = await PaginatedList<Inventory>.CreateAsync(inventories.AsNoTracking(), page ?? 1, pageSize);
 
             return View(pagedData);
         }
-               
 
+        //Remove from cart
+        public IActionResult RemoveFromCart(string UPC)
+        {
+            var session = HttpContext.Session;
+
+            List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
+            int index = isExist(UPC);
+            cart.RemoveAt(index);
+            Utilities.SessionExtensions.SetObjectAsJson(session, "cart", cart);
+            return RedirectToAction("Index", "POS");
+        }
+
+        //Update cart
+        public IActionResult UpdateCart(string UPC, int quantity)
+        {
+            var session = HttpContext.Session;
+
+            List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
+            int index = isExist(UPC);
+            cart[index].Quantity = quantity.ToString();
+            Utilities.SessionExtensions.SetObjectAsJson(session, "cart", cart);
+            return RedirectToAction("Index", "POS");
+        }
+
+        //Check if item is in cart
+        private int isExist(string UPC)
+        {
+            List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(HttpContext.Session, "cart");
+            for (int i = 0; i < cart.Count; i++)
+            {
+                if (cart[i].UPC.Equals(UPC))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+
+        //Add to cart
         public ActionResult Buy(string UPC)
         {
             var inventories = from i in _context.Inventories
@@ -86,16 +126,13 @@ namespace EmmasEngines.Controllers
             }
             else
             {
+
                 List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
                 cart.Add(inventories.FirstOrDefault());
-                Utilities.SessionExtensions.SetObjectAsJson(session, "cart", inventories);
+                Utilities.SessionExtensions.SetObjectAsJson(session, "cart", cart);
                 return RedirectToAction("Index", "POS");
             }
         }
-        
-
-
-
 
     }
 }
