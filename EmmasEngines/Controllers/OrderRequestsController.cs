@@ -20,9 +20,15 @@ namespace EmmasEngines.Controllers
         }
 
         // GET: OrderRequests
+        // Add items related to field item from OrderRequestInventory
+        
+        
+        
         public async Task<IActionResult> Index()
         {
-            var emmasEnginesContext = _context.OrderRequests.Include(o => o.Customer);
+            var emmasEnginesContext = _context.OrderRequests
+                .Include(o => o.Customer)
+                .Include(o => o.OrderRequestInventories);
             return View(await emmasEnginesContext.ToListAsync());
         }
 

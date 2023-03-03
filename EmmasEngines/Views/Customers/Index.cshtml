@@ -69,10 +69,7 @@
 					<table class="table table-striped" id="inventoryTable">
 						<thead>
 							<tr class="bg-info">
-								<th>
-									@* @Html.DisplayNameFor(model => model.ID)*@
-									<input type="submit" name="actionButton" value="ID" class="tableHeaders" />
-								</th>
+
 								<th>
 									@*@Html.DisplayNameFor(model => model.FirstName)*@
 									<input type="submit" name="actionButton" value="FirstName" class="tableHeaders" />
@@ -109,9 +106,7 @@
 							@foreach (var item in Model)
 							{
 								<tr class="table-hover">
-									<td>
-										@Html.DisplayFor(modelItem => item.ID)
-									</td>
+								
 									<td>
 										@Html.DisplayFor(modelItem => item.FirstName)
 									</td>
