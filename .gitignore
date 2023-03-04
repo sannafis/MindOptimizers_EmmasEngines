@@ -369,3 +369,6 @@ FodyWeavers.xsd
 /EmmasEngines/EmmasEnginesSecurity.db
 /EmmasEngines/Data/EmmasEnginesMigrations/20230131160013_Initial.cs
 /EmmasEngines/Data/EmmasEnginesMigrations/20230131160013_Initial.Designer.cs
+/EmmasEngines/Data/ApplicationDbContext.cs
+/EmmasEngines/Data/EmmasEnginesMigrations/20230302182402_Initial.cs
+/EmmasEngines/Data/EmmasEnginesMigrations/20230302182402_Initial.Designer.cs

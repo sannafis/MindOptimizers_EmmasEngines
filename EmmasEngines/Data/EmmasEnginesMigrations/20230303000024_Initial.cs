@@ -226,7 +226,8 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     SentDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     ReceiveDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     ExternalOrderNum = table.Column<string>(type: "TEXT", maxLength: 5, nullable: false),
-                    CustomerID = table.Column<int>(type: "INTEGER", nullable: false)
+                    CustomerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    InventoryID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -237,6 +238,11 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         principalTable: "Customers",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderRequests_Inventories_InventoryID",
+                        column: x => x.InventoryID,
+                        principalTable: "Inventories",
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
@@ -340,7 +346,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         column: x => x.OrderRequestID,
                         principalTable: "OrderRequests",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -430,6 +436,11 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderRequests_InventoryID",
+                table: "OrderRequests",
+                column: "InventoryID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Payments_Type",
                 table: "Payments",
                 column: "Type",
@@ -504,9 +515,6 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 name: "OrderRequests");
 
             migrationBuilder.DropTable(
-                name: "Inventories");
-
-            migrationBuilder.DropTable(
                 name: "Suppliers");
 
             migrationBuilder.DropTable(
@@ -514,6 +522,9 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
             migrationBuilder.DropTable(
                 name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "Inventories");
 
             migrationBuilder.DropTable(
                 name: "Cities");

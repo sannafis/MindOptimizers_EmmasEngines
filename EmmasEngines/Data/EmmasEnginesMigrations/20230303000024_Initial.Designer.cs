@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmmasEngines.Data.EmmasEnginesMigrations
 {
     [DbContext(typeof(EmmasEnginesContext))]
-    [Migration("20230301201246_Initial")]
+    [Migration("20230303000024_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -269,6 +269,9 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .HasMaxLength(5)
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("InventoryID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime?>("ReceiveDate")
                         .HasColumnType("TEXT");
 
@@ -281,6 +284,8 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.HasIndex("ExternalOrderNum")
                         .IsUnique();
+
+                    b.HasIndex("InventoryID");
 
                     b.ToTable("OrderRequests");
                 });
@@ -560,7 +565,13 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EmmasEngines.Models.Inventory", "Inventory")
+                        .WithMany()
+                        .HasForeignKey("InventoryID");
+
                     b.Navigation("Customer");
+
+                    b.Navigation("Inventory");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.OrderRequestInventory", b =>
@@ -573,9 +584,9 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .IsRequired();
 
                     b.HasOne("EmmasEngines.Models.OrderRequest", "OrderRequest")
-                        .WithMany()
+                        .WithMany("OrderRequestInventories")
                         .HasForeignKey("OrderRequestID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Inventory");
@@ -639,6 +650,11 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("InvoiceLines");
 
                     b.Navigation("InvoicePayments");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.OrderRequest", b =>
+                {
+                    b.Navigation("OrderRequestInventories");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Payment", b =>
