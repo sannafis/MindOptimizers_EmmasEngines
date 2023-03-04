@@ -21,10 +21,15 @@
 		@*Customer Details*@
 		<form id="search-form" action="@Url.Action("SearchCustomer")" method="post">
 			<input type="text" name="SearchString" placeholder="Search by name or phone. Eg. 'John' or '1234'" />
-			<button type="submit" name="actionButton" value="FilterCustomer">Search</button>
+			<button type="submit" name="actionButton" value="FilterCustomer"><i class="fa fa-search" aria-hidden="true"></i> - Search</button>
 
 		</form>
 		<div id="customer-details">
+			@if (TempData.ContainsKey("CustomerDetails"))
+			{
+				//Html.RenderPartial("_CustomerDetails", TempData["CustomerDetails"]);
+				await Html.PartialAsync("_CustomerDetails", TempData["CustomerDetails"]);
+			}
 		</div>
 		@*When pressed, Modal box of Customer Name, Phone, Address, Postal*@
 		<div class="btn_crud">
@@ -42,7 +47,6 @@
 			<button type="submit" name="actionButton" value="FilterCustomer" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for edit items">
 				<i class="fa fa-filter" aria-hidden="true"></i>
 			</button>
-			<span class="btn_tooltip">Filter</span>
 		</div>
 	</section>
 
@@ -179,20 +183,20 @@
 						{		
 							foreach (Inventory item in cart)
 							{
-								<tr class="table-hover">
-									<td>
-										@Html.DisplayFor(modelItem => item.Name)
-									</td>
-									<td>
-										@Html.DisplayFor(modelItem => item.AdjustedPrice)
-									</td>
-									<td>
-										@Html.DisplayFor(modelItem => item.Quantity)
-									</td>
-									<td>
-										<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})">(-) Remove From Cart</a>
-									</td>
-								</tr>
+									<tr class="table-hover">
+										<td>
+											@Html.DisplayFor(modelItem => item.Name)
+										</td>
+										<td>
+											@Html.DisplayFor(modelItem => item.AdjustedPrice)
+										</td>
+										<td>
+											@Html.DisplayFor(modelItem => item.Quantity)
+										</td>
+										<td>
+											<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})">(-) Remove From Cart</a>
+										</td>
+									</tr>
 							}
 						}
 					}
@@ -222,11 +226,11 @@
 								total = subtotal + tax;
 							}
 						}
-						<li>Subtotal: @subtotal.ToString("C")</li>
-						<li>Tax: @tax.ToString("C")</li>
-						<li>Total: @total.ToString("C")</li>
-						<li>Paid: @paid.ToString("C")</li>
-						<li>Change: @change.ToString("C")</li>	
+							<li>Subtotal: @subtotal.ToString("C")</li>
+							<li>Tax: @tax.ToString("C")</li>
+							<li>Total: @total.ToString("C")</li>
+							<li>Paid: @paid.ToString("C")</li>
+							<li>Change: @change.ToString("C")</li>	
 					}
 				</ul>
 
@@ -247,28 +251,30 @@
 	console.log("Javascript loaded...")
 	$(function () {
 		$('form').submit(function (event) {
-			event.preventDefault();
 			var form = $(this);
 			var url = form.attr('action');
 			var data = form.serialize();
 			var filterButton = form.find('button[name="actionButton"]');
 
 			if (filterButton.length && filterButton.val() === "FilterCustomer") {
+				event.preventDefault();
 				$.ajax({
 					url: url,
 					type: 'POST',
 					data: data,
 					success: function (result) {
 						$('#customer-details').html(result);
+						sessionStorage.setItem('customerDetails', result);
 					}
 				});
-			} else {
-				// prevent default form submission behavior
-				event.preventDefault();
 			}
 		});
 	});
 
+	var customerDetails = sessionStorage.getItem('customerDetails');
+	if (customerDetails !== null) {
+		$('#customer-details').html(customerDetails);
+	}
 
 </script>
 
