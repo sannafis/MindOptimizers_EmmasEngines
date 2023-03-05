@@ -43,6 +43,30 @@ namespace EmmasEngines.Controllers
             }
         }
 
+        [HttpPost]
+        public PartialViewResult SearchCustomer(string SearchString = "")
+        {
+            Console.WriteLine("SearchString: " + SearchString);
+            ViewData["Filtering"] = "";
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                var customers = from c in _context.Customers
+                                .Where(s => s.FirstName.ToUpper().Contains(SearchString.ToUpper())
+                                || s.Phone.ToUpper().Contains(SearchString.ToUpper()))
+                                select c;
+
+                ViewData["Filtering"] = "show";
+
+                return PartialView("_CustomerDetails", customers.FirstOrDefault());
+            }
+            else
+            {
+                return PartialView("_CustomerDetails", null);
+            }
+        }
+
+
+
         public async Task<IActionResult> Index(string SearchString, int? pageSizeID, int? page, string actionButton)
         {
             ViewData["Filtering"] = "";
@@ -50,6 +74,9 @@ namespace EmmasEngines.Controllers
             var inventories = from i in _context.Inventories
                 .Include(p => p.Prices)
                               select i;
+            var customer = _context.Customers.FirstOrDefault();
+            ViewData["Customer"] = customer;
+            
 
             if (!String.IsNullOrEmpty(SearchString))
             {
@@ -57,6 +84,18 @@ namespace EmmasEngines.Controllers
                 || s.UPC.ToUpper().Contains(SearchString.ToUpper()));
                 ViewData["Filtering"] = "show";
             }
+            /*if (!String.IsNullOrEmpty(SearchString) && actionButton == "FilterCustomer")
+            {
+                var customers = from c in _context.Customers
+                                .Where(s => s.FullName.ToUpper().Contains(SearchString.ToUpper())
+                                || s.Phone.ToUpper().Contains(SearchString.ToUpper()))
+                                select c;
+
+                ViewData["Filtering"] = "show";
+                //var session = HttpContext.Session;
+                //Utilities.SessionExtensions.SetObjectAsJson(session, "customer", customers.FirstOrDefault());
+            }*/
+
             int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "POS");
             ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
             
