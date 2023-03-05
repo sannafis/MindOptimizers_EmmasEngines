@@ -35,6 +35,7 @@ namespace EmmasEngines.Controllers
                 emmasEnginesContext = emmasEnginesContext.Where(s => s.Name.ToLower().Contains(SearchString.ToLower())
                 || s.Phone.Contains(SearchString)
                 || s.Email.ToLower().Contains(SearchString.ToLower()));
+                ViewData["Search Suppliers"] = SearchString;
             }
 
             //Sorting
