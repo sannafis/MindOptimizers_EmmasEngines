@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 <main>
 	<section id="pageName">
-		<h1>CUSTOMER</h1>
+		<h1>CUSTOMERS</h1>
 	</section>
 	<script src="/lib/jquery/dist/jquery.min.js"></script>
 
@@ -18,8 +18,8 @@
 
 		<div class="form-horizontal">
 			<section id="inventorySearch" style="">
-				<h2><label id="searchHeader" class="control-label">Search Inventory: </label></h2>
-				<input class="form-control" id="SearchString" name="SearchString" type="text" placeholder="Enter UPC Eg. ###-####-# or Inventory Name Eg. Mower">
+				<h2><label id="searchHeader" class="control-label">Search Customers: </label></h2>
+				<input class="form-control" id="SearchString" name="SearchString" type="text" placeholder="Enter First name Eg. Alex or Address Eg. 118 evans avenue" value="@ViewData["Search Customers"]" />
 				<div class="btn">
 					<div class="btn_crud">
 						<button type="submit" name="actionButton" value="Filter" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for edit items">
@@ -72,11 +72,11 @@
 
 								<th>
 									@*@Html.DisplayNameFor(model => model.FirstName)*@
-									<input type="submit" name="actionButton" value="FirstName" class="tableHeaders" />
+									<input type="submit" name="actionButton" value="First Name" class="tableHeaders" />
 								</th>
 								<th>
 									@*@Html.DisplayNameFor(model => model.LastName)*@
-									<input type="submit" name="actionButton" value="LastName" class="tableHeaders" />
+									<input type="submit" name="actionButton" value="Last Name" class="tableHeaders" />
 								</th>
 								<th>
 									@* @Html.DisplayNameFor(model => model.Address)*@
