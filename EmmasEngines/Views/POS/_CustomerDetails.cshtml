@@ -1,0 +1,11 @@
+﻿@model Customer
+
+@if (Model != null)
+{
+    <div>
+        <label><b>Customer Details</b></label>
+        <p>Name: @Model.FullName</p>
+        <p>Phone: @Model.Phone</p>
+        <!-- Add other customer properties here -->
+    </div>
+}
