@@ -52,12 +52,13 @@ namespace EmmasEngines.Controllers
             ViewData["Filtering"] = "";
 
             //sort options for the table (match column headings)
-            string[] sortOptions = new[] { "UPC", "Name", "Size", "Quantity" };
+            string[] sortOptions = new[] { "UPC", "Name", "Size", "Quantity", "Cost (Avg)", "Price (Retail)" };
 
-            var inventories = from i in _context.Inventories
-                              .Include(i => i.Prices)
-                              .AsNoTracking()
-                              select i;
+            //inventory list async
+            var inventories = _context.Inventories
+                .Include(i => i.Prices)
+                .AsQueryable();
+
 
 
             if (!String.IsNullOrEmpty(SearchString))
@@ -111,6 +112,22 @@ namespace EmmasEngines.Controllers
                 else
                     inventories = inventories.OrderByDescending(s => s.Quantity);
             }
+            else if (sortField == "Price (Retail)")
+            {
+                if (sortDirection == "asc")
+                    inventories = inventories.OrderBy(s => Math.Round(((s.Prices.Select(p => p.PurchasedCost).Average() * 0.23) + s.Prices.Select(p => p.PurchasedCost).Average()), 2));
+                else
+                    inventories = inventories.OrderByDescending(s => Math.Round(((s.Prices.Select(p => p.PurchasedCost).Average() * 0.23) + s.Prices.Select(p => p.PurchasedCost).Average()), 2));
+            }
+            else if (sortField == "Cost (Avg)")
+            {
+                if (sortDirection == "asc")
+                    inventories = inventories.OrderBy(s => s.Prices.Select(p => p.PurchasedCost).Average());
+                else
+                    inventories = inventories.OrderByDescending(s => s.Prices.Select(p => p.PurchasedCost).Average());
+            }
+
+
             //set sort for in ViewData
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
@@ -118,7 +135,7 @@ namespace EmmasEngines.Controllers
             int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "Inventory");
             ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
             
-            var pagedData = await PaginatedList<Inventory>.CreateAsync(inventories.AsNoTracking(), page ?? 1, pageSize);
+            var pagedData = await PaginatedList<Inventory>.CreateAsync(inventories, page ?? 1, pageSize);
 
             return View(pagedData);
         }
