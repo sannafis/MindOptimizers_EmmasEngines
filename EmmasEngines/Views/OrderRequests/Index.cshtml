@@ -1,59 +1,122 @@
 ﻿@model IEnumerable<EmmasEngines.Models.OrderRequest>
 
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "Index";
+
 }
 
-<h1>Index</h1>
+<main>
+	<section id="pageName">
+		<h1>ORDER REQUEST</h1>
+	</section>
+	<script src="/lib/jquery/dist/jquery.min.js"></script>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SentDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReceiveDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExternalOrderNum)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Customer)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SentDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReceiveDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExternalOrderNum)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Customer.Address)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+	<form asp-action="Index" method="get">
+		<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+		<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+		<div class="form-horizontal">
+			<section id="inventorySearch" style="">
+				<h2><label id="searchHeader" class="control-label">Search Inventory: </label></h2>
+				<input class="form-control" id="SearchString" name="SearchString" type="text" placeholder="Enter UPC Eg. ###-####-# or Inventory Name Eg. Mower" value="@ViewData["Search Inventory"]" />
+				<div class="btn">
+					<div class="btn_crud">
+						<button type="submit" name="actionButton" value="Filter" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for edit items">
+							<i class="fa fa-filter" aria-hidden="true"></i>
+						</button>
+						<span class="btn_tooltip">Filter</span>
+					</div>
+					<div class="btn_crud">
+						<button type="submit" name="actionButton" value="Filter" tabindex="190" class="btn_crud_edit" asp-action="Index" aria-label="button for edit items">
+							<i class="fa fa-eraser" aria-hidden="true"></i>
+						</button>
+						<span class="btn_tooltip">Clear</span>
+					</div>
+					@*                   <div class="btn_crud">
+					<button  tabindex="190" class="btn_crud_edit" onclick="" id="btnEdit" aria-label="button for edit items">
+					<i class="fa-sharp fa-solid fa-pen"></i>
+					</button>
+					<span class="btn_tooltip">Edit Items</span>
+					</div>*@
+					<div class="btn_crud">
+						<button class="btn_crud_add" tabindex="180" asp-action="Create" id="btn_add_popup" aria-label="button for add items">
+							<i class="fa-solid fa-plus"></i>
+						</button>
+						<span class="btn_tooltip">Add Items</span>
+					</div>
+					@*                    <div class="btn_crud">
+					<button class="btn_crud_add" tabindex="180" onclick="" id="btn-add-request" aria-label="button for add order">
+					<i class="fa-solid fa-cart-plus"></i>
+					</button>
+					<span class="btn_tooltip">Add To Order</span>
+					</div>
+					<div class="btn_crud">
+					<button class="btn_request" onclick="" tabindex="200" aria-label="button for order request">
+					<i class="fa-solid fa-pen-to-square"></i>
+					</button>
+					<span class="btn_tooltip">Order Request</span>
+					</div>*@
+				</div>
+			</section>
+		</div>
+
+		<div id="inventoryMain">
+			<div class=" divider2_desc_btn">
+				<div class="description">
+					<table class="table table-striped" id="inventoryTable">
+						<thead>
+							<tr class="bg-info">
+								<th>
+									@Html.DisplayNameFor(model => model.Description)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.SentDate)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.ReceiveDate)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.ExternalOrderNum)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.Customer)
+								</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody id="myTable">
+							@foreach (var item in Model)
+							{
+								<tr class="table-hover">
+									<td>
+										@Html.DisplayFor(modelItem => item.Description)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.SentDate)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.ReceiveDate)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.ExternalOrderNum)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.Customer.Address)
+									</td>
+									<td>
+										<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+										<a asp-action="Details" asp-route-id="@item.ID">Details</a>
+										@*Removed delete button *@|
+										@*                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<partial name="_PagingNavBar" />
+	</form>
+</main>
+<script src="https://kit.fontawesome.com/f8c88d6b79.js" crossorigin="anonymous"></script>

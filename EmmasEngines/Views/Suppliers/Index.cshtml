@@ -19,7 +19,7 @@
 
 			<section id="inventorySearch" style="">
 				<h2><label id="searchHeader" class="control-label">Search Suppliers: </label></h2>
-				<input class="form-control" id="SearchString" name="SearchString" type="text" placeholder="Enter Name Eg. John Deere, Phone Eg. ###-###-####, Email Eg. email@domainName.ca">
+				<input class="form-control" id="SearchString" name="SearchString" type="text" placeholder="Enter Name Eg. John Deere, Phone Eg. ###-###-####, Email Eg. email@domainName.ca" value="@ViewData["Search Suppliers"]" />
 				<div class="btn">
 					<div class="btn_crud">
 						<button type="submit" name="actionButton" value="Filter" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for edit items">
@@ -132,7 +132,8 @@
 									<td>
 										<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
 										<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-										<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+@*Removed delete button *@
+@*										<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
 									</td>
 								</tr>
 							}

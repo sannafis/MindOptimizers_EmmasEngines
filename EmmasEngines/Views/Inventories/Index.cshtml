@@ -4,10 +4,10 @@
 	ViewData["Title"] = "Index";
 
 }
-<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+
 <main>
 	<section id="pageName">
-		<h1>INVENTORY</h1>
+		<h1>INVENTORYS</h1>
 	</section>
 	<script src="/lib/jquery/dist/jquery.min.js"></script>
 
@@ -17,7 +17,7 @@
 		<div class="form-horizontal">
 			<section id="inventorySearch" style="">
 				<h2><label id="searchHeader" class="control-label">Search Inventory: </label></h2>
-				<input class="form-control" id="SearchString" name="SearchString" type="text" placeholder="Enter UPC Eg. ###-####-# or Inventory Name Eg. Mower">
+				<input class="form-control" id="SearchString" name="SearchString" type="text" placeholder="Enter UPC Eg. ###-####-# or Inventory Name Eg. Mower" value="@ViewData["Search Inventory"]" />
 				<div class="btn">
 					<div class="btn_crud">
 						<button type="submit" name="actionButton" value="Filter" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for edit items">
@@ -62,7 +62,6 @@
 		<div id="inventoryMain">
 			<div class=" divider2_desc_btn">
 				<div class="description">
-
 					<table class="table table-striped" id="inventoryTable">
 						<thead>
 							<tr class="bg-info">
@@ -79,7 +78,7 @@
 									<input type="submit" name="actionButton" value="Quantity" class="no-click" />
 								</th>
 								<th>
-									<input type="submit" name="actionButton" value="Cost (AVG)" class="tableHeaders" />
+									<input type="submit" name="actionButton" value="Cost (Avg)" class="tableHeaders" />
 								</th>
 								<th>
 									<input type="submit" name="actionButton" value="Price (Retail)" class="tableHeaders" />
@@ -124,7 +123,8 @@
 									<td>
 										<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
 										<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-										<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+@*Removed delete button *@
+@*										<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
 									</td>
 								</tr>
 							}

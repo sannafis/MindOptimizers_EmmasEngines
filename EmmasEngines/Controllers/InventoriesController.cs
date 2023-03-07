@@ -66,6 +66,7 @@ namespace EmmasEngines.Controllers
                 inventories = inventories.Where(s => s.Name.ToUpper().Contains(SearchString.ToUpper())
                                                    || s.UPC.ToUpper().Contains(SearchString.ToUpper()));
                 ViewData["Filtering"] = "show";
+                ViewData["Search Inventory"] = SearchString;
             }
 
             if (!String.IsNullOrEmpty(actionButton))//check if form submitted
