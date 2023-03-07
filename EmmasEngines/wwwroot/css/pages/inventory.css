@@ -428,7 +428,7 @@ Gabriel's CSS END ****************/
 .log_content a:first-child {
     height: 90px;
 }
-.sidenav div a {
+/*.sidenav div a {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -437,7 +437,7 @@ Gabriel's CSS END ****************/
     border-radius: var(--size--border--radius);
     border: none;
     outline: none;
-}
+}*/
 
 .logout a{
     padding: 16px;
@@ -520,17 +520,7 @@ Gabriel's CSS END ****************/
     top: 50%;
     opacity: 1;
 }
-main {
-    width: 95%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin: 5px 6px 50px 50px;
-    padding-left: var(--nav-border-width);
-    overflow-y: auto;
-    padding-right: 15px;
-}
+
 #inventorySideRight {
     display: none;
 }
@@ -618,7 +608,7 @@ main {
     background-color: var(--color-white);
 }
 .btn {
-    width:33%;
+
     display: flex;
     justify-content: space-between;
     align-items: flex-end;

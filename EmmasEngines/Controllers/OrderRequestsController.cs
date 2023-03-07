@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmmasEngines.Data;
 using EmmasEngines.Models;
+using EmmasEngines.Utilities;
 
 namespace EmmasEngines.Controllers
 {
@@ -24,12 +25,80 @@ namespace EmmasEngines.Controllers
         
         
         
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SearchString, string query, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc", string sortField = "Name")
         {
-            var emmasEnginesContext = _context.OrderRequests
+
+            ViewData["Filtering"] = "";
+
+            //sort options for the table (match column headings)
+            string[] sortOptions = new[] { "Description", "SentDate", "ReceiveDate", "ExternalOrderNum"};
+
+            var emmasEnginesContext = from i in _context.OrderRequests
                 .Include(o => o.Customer)
-                .Include(o => o.OrderRequestInventories);
-            return View(await emmasEnginesContext.ToListAsync());
+                .Include(o => o.OrderRequestInventories)
+                .AsNoTracking()
+                select i;
+
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                //Filter by UPC and Name
+                emmasEnginesContext = emmasEnginesContext.Where(s => s.Description.ToUpper().Contains(SearchString.ToUpper()));
+                ViewData["Filtering"] = "show";
+                ViewData["Search Inventory"] = SearchString;
+            }
+
+            if (!String.IsNullOrEmpty(actionButton))//check if form submitted
+            {
+                page = 1;//reset page to 1
+                if (sortOptions.Contains(actionButton))
+                {
+                    if (actionButton == sortField)//reverse order  same column
+                    {
+                        sortDirection = (sortDirection == "asc" ? "desc" : "asc");
+                    }
+                    //sort by button clicked
+                    sortField = actionButton;
+                }
+            }
+            //Now sort by field and direction
+            if (sortField == "Description")
+            {
+                if (sortDirection == "asc")
+                    emmasEnginesContext = emmasEnginesContext.OrderBy(s => s.Description);
+                else
+                    emmasEnginesContext = emmasEnginesContext.OrderByDescending(s => s.Description);
+            }
+            else if (sortField == "SentDate")
+            {
+                if (sortDirection == "asc")
+                    emmasEnginesContext = emmasEnginesContext.OrderBy(s => s.SentDate);
+                else
+                    emmasEnginesContext = emmasEnginesContext.OrderByDescending(s => s.SentDate);
+            }
+            else if (sortField == "ReceiveDate")
+            {
+                if (sortDirection == "asc")
+                    emmasEnginesContext = emmasEnginesContext.OrderBy(s => s.ReceiveDate);
+                else
+                    emmasEnginesContext = emmasEnginesContext.OrderByDescending(s => s.ReceiveDate);
+            }
+            else if (sortField == "ExternalOrderNum")
+            {
+                if (sortDirection == "asc")
+                    emmasEnginesContext = emmasEnginesContext.OrderBy(s => s.ExternalOrderNum);
+                else
+                    emmasEnginesContext = emmasEnginesContext.OrderByDescending(s => s.ExternalOrderNum);
+            }
+            //set sort for in ViewData
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "Inventory");
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+
+            var pagedData = await PaginatedList<OrderRequest>.CreateAsync(emmasEnginesContext.AsNoTracking(), page ?? 1, pageSize);
+
+            return View(pagedData);
         }
 
         // GET: OrderRequests/Details/5
