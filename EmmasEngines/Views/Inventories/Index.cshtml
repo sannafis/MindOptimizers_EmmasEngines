@@ -4,7 +4,7 @@
 	ViewData["Title"] = "Index";
 
 }
-<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+
 <main>
 	<section id="pageName">
 		<h1>INVENTORY</h1>
@@ -62,7 +62,6 @@
 		<div id="inventoryMain">
 			<div class=" divider2_desc_btn">
 				<div class="description">
-
 					<table class="table table-striped" id="inventoryTable">
 						<thead>
 							<tr class="bg-info">
@@ -124,7 +123,8 @@
 									<td>
 										<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
 										<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-										<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+@*Removed delete button *@
+@*										<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
 									</td>
 								</tr>
 							}

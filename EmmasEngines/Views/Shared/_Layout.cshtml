@@ -6,23 +6,24 @@
     <title>@ViewData["Title"] - EmmasEngines</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/Home.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/variables.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/inventory.css" asp-append-version="true" />
     <link rel="preconnect" href="~/font-awesome-4.7.0/css/font-awesome.css" asp-append-version="true">
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class = "home_body">
     <header class="home_header">
 
         <nav class="sidenav">
             <div class="">
 
                 <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/imgs/eseLogo.png" alt="Emma's small engines golden cog wheel company logo."></a>
+            </div>
 
 
-
-
-                <div class="">
-                    <ul class="pageLinks">
+            <div class="">
+                    <ul id="pageLinks">
                         <li class="">
                             <a class="" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
@@ -45,7 +46,7 @@
                     @*
                     <partial name="_LoginPartial" />*@
                 </div>
-            </div>
+            
         </nav>
     </header>
 @*    <div class="container">*@
