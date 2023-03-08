@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="EmmasEngines.db" />
     <None Remove="EmmasEnginesSecurity.db-journal" />
   </ItemGroup>
 
