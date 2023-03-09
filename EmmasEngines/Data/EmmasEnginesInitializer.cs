@@ -252,7 +252,7 @@ namespace EmmasEngines.Data
                 {
                     foreach(string upc in invUPCs)
                     {
-                        for (int i = random.Next(1, 4); i < random.Next(i, i + 3); i++) {
+                        for (int i = 1; i < 3; i++) {
                             Price p = new Price()
                             {
                                 InventoryUPC = upc,

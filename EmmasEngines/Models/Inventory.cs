@@ -49,7 +49,7 @@ namespace EmmasEngines.Models
                 if (Prices.Any())
                 {
                     double average = Math.Round(Prices.Select(x => x.PurchasedCost).Average(), 2);
-                    return Math.Round(((average * .23) + average));
+                    return Math.Round(((average * .23) + average),2);
                 }
                 else
                 {
