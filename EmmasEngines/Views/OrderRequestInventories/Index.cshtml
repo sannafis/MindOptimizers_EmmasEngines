@@ -13,6 +13,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.OrderRequestID)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.OrderRequest)
             </th>
             <th>
@@ -27,6 +30,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <th>
+                @Html.DisplayFor(modelItem => item.OrderRequestID)
+            </th>
             <td>
                 @Html.DisplayFor(modelItem => item.OrderRequest.Description)
             </td>
