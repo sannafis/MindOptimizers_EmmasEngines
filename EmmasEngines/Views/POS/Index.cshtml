@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 <main>
 	<section id="pageName">
-		<h1>POS</h1>
+		<h1>Order #</h1>
 	</section>
 	<script src="/lib/jquery/dist/jquery.min.js"></script>
 
@@ -71,7 +71,7 @@
 							<i class="fa fa-eraser" aria-hidden="true"></i>
 						</button>
 						<span class="btn_tooltip">Clear</span>
-					</div>             
+					</div>
 				</div>
 			</section>
 		</div>
@@ -153,7 +153,7 @@
 					</table>
 				</div>
 			</div>
-			
+
 		</div>
 		<partial name="_PagingNavBar" />
 		<div class="cart">
@@ -166,13 +166,13 @@
 				<thead>
 					<tr class="bg-info">
 						<th>
-							<input type="submit" disabled="disabled" value="Name" class="tableHeaders" />
+							<label>Name</label>
 						</th>
 						<th>
-							<input type="submit" disabled="disabled" value="Price" class="tableHeaders" />
+							<label>Price</label>
 						</th>
 						<th>
-							<input type="submit" disabled="disabled" value="Quantity" class="tableHeaders" />
+							<label>Quantity</label>
 						</th>
 						<th>
 							<label>Remove from Cart</label>
@@ -184,27 +184,27 @@
 					@*the item is added to the cart, and the cart is updated*@
 					@*the cart is then displayed in the table*@
 					@*Use the "Buy(string UPC) function / HttpContext.Session["cart"] to update the table *@
-					
-				@{
+
+					@{
 						var cart = (List<Inventory>)HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<Inventory>>("cart");
-						if(cart != null)
-						{		
+						if (cart != null)
+						{
 							foreach (Inventory item in cart)
 							{
-																	<tr class="table-hover">
-																		<td>
-																			@Html.DisplayFor(modelItem => item.Name)
-																		</td>
-																		<td>
-																			@Html.DisplayFor(modelItem => item.AdjustedPrice)
-																		</td>
-																		<td>
-																			@Html.DisplayFor(modelItem => item.Quantity)
-																		</td>
-																		<td>
-																			<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
-																		</td>
-																	</tr>
+								<tr class="table-hover">
+									<td>
+										@Html.DisplayFor(modelItem => item.Name)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.AdjustedPrice)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.Quantity)
+									</td>
+									<td>
+										<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
+									</td>
+								</tr>
 							}
 						}
 					}
@@ -225,7 +225,7 @@
 						double paid = 0;
 						double change = 0;
 
-						if(cart != null)
+						if (cart != null)
 						{
 							foreach (Inventory item in cart)
 							{
@@ -234,11 +234,11 @@
 								total = subtotal + tax;
 							}
 						}
-															<li>Subtotal: @subtotal.ToString("C")</li>
-															<li>Tax: @tax.ToString("C")</li>
-															<li>Total: @total.ToString("C")</li>
-															<li>Paid: @paid.ToString("C")</li>
-															<li>Change: @change.ToString("C")</li>	
+						<li>Subtotal: @subtotal.ToString("C")</li>
+						<li>Tax: @tax.ToString("C")</li>
+						<li>Total: @total.ToString("C")</li>
+						<li>Paid: @paid.ToString("C")</li>
+						<li>Change: @change.ToString("C")</li>
 					}
 				</ul>
 			</div>
@@ -270,12 +270,12 @@
 						<input type="text" id="paymentAmount" name="paymentAmount" placeholder="Enter payment amount" required>
 					</div>
 					<button name="actionButton" value="Pay" type="submit" class="btn btn-primary" onclick="submitForm(event)">Pay</button>
-					<input name ="actionButton" type="submit" value="Clear" class="btn btn-primary" />
+					<input name="actionButton" type="submit" value="Clear" class="btn btn-primary" />
 				</form>
 			</div>
 		</div>
 
-		
+
 	</form>
 </main>
 
