@@ -11,7 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmmasEngines.Data.EmmasEnginesMigrations
 {
     [DbContext(typeof(EmmasEnginesContext))]
+<<<<<<<< HEAD:EmmasEngines/Data/EmmasEnginesMigrations/20230310183454_Initial.Designer.cs
     [Migration("20230310183454_Initial")]
+========
+    [Migration("20230309184353_Initial")]
+>>>>>>>> 1bb7c7f929ed5f10317345b7a12893bc0cb6715f:EmmasEngines/Data/EmmasEnginesMigrations/20230309184353_Initial.Designer.cs
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

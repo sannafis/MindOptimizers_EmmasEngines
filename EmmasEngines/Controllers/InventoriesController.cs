@@ -182,6 +182,49 @@ namespace EmmasEngines.Controllers
             return View(inventory);
         }
 
+        /*************************************************************************************************/
+        /*************************************************************************************************/
+        //AddOrEdit get and post controller to combine this two actions
+
+        // GET: Inventories/AddOrEdit
+        // GET: Inventories/AddOrEdit/5
+        public async Task <IActionResult> AddOrEdit(int id=0)
+        {
+            if (id==0)
+            {
+                return View();
+            }
+            else
+            {
+                var inventory = await _context.Inventories.FindAsync(id);
+                if (inventory == null)
+                {
+                    return NotFound();
+                }
+                return View(inventory);
+            }
+
+        }
+
+        // POST: Inventories/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddOrEdit([Bind("ID,UPC,Name,Size,Quantity,Current")] Inventory inventory)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(inventory);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(inventory);
+        }
+
+        /*************************************************************************************************/
+        /*************************************************************************************************/
+
         // GET: Inventories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

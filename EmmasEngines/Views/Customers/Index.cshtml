@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<EmmasEngines.Models.Customer>
 
 @{
-	ViewData["Title"] = "Index";
+	ViewData["Title"] = "Customers";
 }
 
 <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
@@ -80,23 +80,28 @@
 								</th>
 								<th>
 									@* @Html.DisplayNameFor(model => model.Address)*@
-									<input type="submit" disabled="disabled" value="Address" class="tableHeaders" />
+									@*<input type="submit" disabled="disabled" value="Address" class="tableHeaders" />*@
+									Address
 								</th>
 								<th>
 									@*@Html.DisplayNameFor(model => model.City)*@
-									<input type="submit" disabled="disabled" value="City" class="tableHeaders" />
+									@*<input type="submit" disabled="disabled" value="City" class="tableHeaders" />*@
+									City
 								</th>
 								<th>
 									@*@Html.DisplayNameFor(model => model.City.ProvinceCode)*@
-									<input type="submit" disabled="disabled" value="Province" class="tableHeaders" />
+									@*<input type="submit" disabled="disabled" value="Province" class="tableHeaders" />*@
+									Province
 								</th>
 								<th>
 									@*@Html.DisplayNameFor(model => model.Postal)*@
-									<input type="submit" disabled="disabled" value="Postal Code" class="tableHeaders" />
+									@*<input type="submit" disabled="disabled" value="Postal Code" class="tableHeaders" />*@
+									Postal
 								</th>
 								<th>
 									@*@Html.DisplayNameFor(model => model.Phone)*@
-									<input type="submit" disabled="disabled" value="Phone" class="tableHeaders" />
+									@*<input type="submit" disabled="disabled" value="Phone" class="tableHeaders" />*@
+									Phone
 								</th>
 
 								<th></th>
@@ -129,9 +134,17 @@
 										@Html.DisplayFor(modelItem => item.Phone)
 									</td>
 									<td>
-										<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-										<a asp-action="Details" asp-route-id="@item.ID">Details</a> 
-@*Removed delete button *@|
+										<div class="btn">
+											<div class="btn_crud">
+												<button class="btn_crud_edit" asp-action="Edit" asp-route-id="@item.ID">Edit</button>
+											</div>
+											<div class="btn_crud">
+												<button class="btn_crud_edit" asp-action="Details" asp-route-id="@item.ID">Details</button>
+											</div>
+										</div>
+										@*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+										<a asp-action="Details" asp-route-id="@item.ID">Details</a> *@
+@*Removed delete button *@
 @*										<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
 									</td>
 								</tr>

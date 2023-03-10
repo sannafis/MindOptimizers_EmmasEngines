@@ -22,7 +22,9 @@ namespace EmmasEngines.Controllers
         // GET: OrderRequestInventories
         public async Task<IActionResult> Index()
         {
-            var emmasEnginesContext = _context.OrderRequestInventories.Include(o => o.Inventory).Include(o => o.OrderRequest);
+            var emmasEnginesContext = _context.OrderRequestInventories
+                .Include(o => o.Inventory)
+                .Include(o => o.OrderRequest);
             return View(await emmasEnginesContext.ToListAsync());
         }
 
@@ -31,7 +33,8 @@ namespace EmmasEngines.Controllers
         {
             if (id == null || _context.OrderRequestInventories == null)
             {
-                return NotFound();
+                //show all records inside OrderRequestInventories
+				return NotFound();
             }
 
             var orderRequestInventory = await _context.OrderRequestInventories
