@@ -847,3 +847,16 @@ Gabriel's CSS END ****************/
 .btn_crud_add, .btn_crud_edit, .btn_crud_remove {
     width: 80px;
 }
+
+.main-content {
+    display:flex;
+
+}
+
+.left-side{
+    flex:3;
+}
+
+.cart {
+    flex:1;
+}
