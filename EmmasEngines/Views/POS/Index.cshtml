@@ -6,6 +6,7 @@
 
 @{
 	ViewData["Title"] = "Index";
+	Html.AntiForgeryToken();
 }
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <script src="https://kit.fontawesome.com/f8c88d6b79.js" crossorigin="anonymous"></script>
@@ -83,28 +84,31 @@
 						<thead>
 							<tr class="bg-info">
 								<th>
-									<input type="submit" name="actionButton" value="UPC" class="tableHeaders" />
+									@Html.DisplayNameFor(modelItem => modelItem.UPC)
 								</th>
 								<th>
-									<input type="submit" name="actionButton" value="Name" class="tableHeaders" />
+									@Html.DisplayNameFor(modelItem => modelItem.Name)
 								</th>
 								<th>
-									<input type="submit" name="actionButton" value="Size" class="no-click" />
+									@Html.DisplayNameFor(modelItem => modelItem.Size)
 								</th>
 								<th>
-									<input type="submit" name="actionButton" value="Quantity" class="no-click" />
+									@Html.DisplayNameFor(modelItem => modelItem.Quantity)
 								</th>
 								<th>
-									<input type="submit" name="actionButton" value="Cost (AVG)" class="tableHeaders" />
+									@Html.DisplayNameFor(modelItem => modelItem.AdjustedPrice)
 								</th>
 								<th>
-									<input type="submit" name="actionButton" value="Price (Retail)" class="tableHeaders" />
+									@Html.DisplayNameFor(modelItem => modelItem.MarkupPrice)
 								</th>
 								<th>
-									<input type="submit" disabled="disabled" value="Current" class="tableHeaders" />
+									@Html.DisplayNameFor(modelItem => modelItem.Current)
 								</th>
 								<th>
-									<input type="submit" disabled="disabled" value="Stock" class="tableHeaders" />
+									@Html.DisplayNameFor(modelItem => modelItem.TotalStock)
+								</th>
+								<th>
+									<label>Add to Cart</label>
 								</th>
 								<th></th>
 							</tr>
@@ -138,7 +142,10 @@
 										@Html.DisplayFor(modelItem => item.TotalStock)
 									</td>
 									<td>
-										<a href="@Url.Action("Buy", "POS", new {UPC = item.UPC})">(+) Add to Cart</a>
+										<a href="@Url.Action("Buy", "POS", new {UPC = item.UPC})"><i class="fa fa-plus-square" aria-hidden="true" style="color:black"></i></a>
+									</td>
+									<td>
+										@*blank space to eliminate white space for 'add to cart' header*@
 									</td>
 								</tr>
 							}
@@ -146,12 +153,15 @@
 					</table>
 				</div>
 			</div>
+			
 		</div>
+		<partial name="_PagingNavBar" />
 		<div class="cart">
 			@*Create a new table with headers for "Name", "Price", "Quantity".*@
 			@*Table starts empty. Items are added by POSController.AddToCart, returning a single JSON inventory object*@
 			@*The table is then populated with the JSON object*@
 			@*The table is then updated every time a new item is added to the cart*@
+			<h1>Cart</h1>
 			<table class="table table-striped" id="invoiceTable">
 				<thead>
 					<tr class="bg-info">
@@ -164,7 +174,9 @@
 						<th>
 							<input type="submit" disabled="disabled" value="Quantity" class="tableHeaders" />
 						</th>
-						<th></th>
+						<th>
+							<label>Remove from Cart</label>
+						</th>
 					</tr>
 				</thead>
 				<tbody id="cartData">
@@ -179,20 +191,20 @@
 						{		
 							foreach (Inventory item in cart)
 							{
-									<tr class="table-hover">
-										<td>
-											@Html.DisplayFor(modelItem => item.Name)
-										</td>
-										<td>
-											@Html.DisplayFor(modelItem => item.AdjustedPrice)
-										</td>
-										<td>
-											@Html.DisplayFor(modelItem => item.Quantity)
-										</td>
-										<td>
-											<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})">(-) Remove From Cart</a>
-										</td>
-									</tr>
+																	<tr class="table-hover">
+																		<td>
+																			@Html.DisplayFor(modelItem => item.Name)
+																		</td>
+																		<td>
+																			@Html.DisplayFor(modelItem => item.AdjustedPrice)
+																		</td>
+																		<td>
+																			@Html.DisplayFor(modelItem => item.Quantity)
+																		</td>
+																		<td>
+																			<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
+																		</td>
+																	</tr>
 							}
 						}
 					}
@@ -222,22 +234,48 @@
 								total = subtotal + tax;
 							}
 						}
-							<li>Subtotal: @subtotal.ToString("C")</li>
-							<li>Tax: @tax.ToString("C")</li>
-							<li>Total: @total.ToString("C")</li>
-							<li>Paid: @paid.ToString("C")</li>
-							<li>Change: @change.ToString("C")</li>	
+															<li>Subtotal: @subtotal.ToString("C")</li>
+															<li>Tax: @tax.ToString("C")</li>
+															<li>Total: @total.ToString("C")</li>
+															<li>Paid: @paid.ToString("C")</li>
+															<li>Change: @change.ToString("C")</li>	
 					}
 				</ul>
-
-				
 			</div>
 			<div id="cartPayment">
-
+				@*Payment Type: user selects between cash, debit, credit, or cheque (radio buttons? user can only select one option at a time). User enters payment amount in an input on the next line.*@
+				@*Checkout, Clear buttons*@
+				@*Use the "Pay" function to update the payment data *@
+				@*Use the "Pay" function to clear the cart and the summary data *@
+				@*Use the "ClearCart" function to clear the cart and the summary data *@
+				<form id="paymentForm" method="post" action="@Url.Action("Create", "Invoices")">
+					<div>
+						<input type="radio" id="cash" name="paymentType" value="Cash" required>
+						<label for="cash">Cash</label>
+					</div>
+					<div>
+						<input type="radio" id="debit" name="paymentType" value="Debit" required>
+						<label for="debit">Debit</label>
+					</div>
+					<div>
+						<input type="radio" id="credit" name="paymentType" value="Credit" required>
+						<label for="credit">Credit</label>
+					</div>
+					<div>
+						<input type="radio" id="cheque" name="paymentType" value="Cheque" required>
+						<label for="cheque">Cheque</label>
+					</div>
+					<div>
+						<label for="paymentAmount">Payment Amount:</label>
+						<input type="text" id="paymentAmount" name="paymentAmount" placeholder="Enter payment amount" required>
+					</div>
+					<button name="actionButton" value="Pay" type="submit" class="btn btn-primary" onclick="submitForm(event)">Pay</button>
+					<input name ="actionButton" type="submit" value="Clear" class="btn btn-primary" />
+				</form>
 			</div>
 		</div>
 
-		<partial name="_PagingNavBar" />
+		
 	</form>
 </main>
 
@@ -271,8 +309,59 @@
 	if (customerDetails !== null) {
 		$('#customer-details').html(customerDetails);
 	}
+	function submitForm(e) {
+		console.log("Event: " + e);
+		e.preventDefault();
+		var form = $('#paymentForm');
+		var url = form.attr('action');
+		var customerID = $('#CustomerID').val(); // get the customer ID from the hidden input field
+		var date = new Date().toISOString().substr(0, 10); // get today's date
+		var invoiceModel = {
+			Date: date,
+			Appreciation: 5.00,
+			Description: "Invoice",
+			CustomerID: customerID,
+			EmployeeID: 1
+		};
+		var payButton = form.find('button[name="actionButton"][value="Pay"]');
+
+		console.log("Invoice Model:", invoiceModel);
+
+		$.ajax({
+			url: '/Invoices/Create',
+			dataType: 'json',
+			contentType: 'application/json',
+			type: 'POST',
+			data: JSON.stringify(invoiceModel),
+			//beforeSend: function (xhr) {
+			//	xhr.setRequestHeader("X-CSRF-TOKEN", $('input[name="__RequestVerificationToken"]').val());
+			//},
+			success: function (result) {
+				console.log("submitForm (Payment) result: " + result);
+				if (result) {
+					alert("Payment success: Invoice ID " + result.id + " for CustomerID: " + result.customerID + " was added on " + result.date);
+					payButton.prop('disabled', true);
+				} else {
+					alert("payment failed");
+					//provide error message
+				}
+			},
+			error: function (xhr, status, error) {
+				console.log("submitForm error:", error);
+				console.log("submitForm xhr:", xhr);
+				console.log("submitForm status:", status);
+			}
+		});
+	}
+
+
+
+
+
 
 </script>
+
+
 
 
 

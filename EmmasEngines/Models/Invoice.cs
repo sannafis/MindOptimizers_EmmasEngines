@@ -64,8 +64,6 @@ namespace EmmasEngines.Models
             {
                 yield return new ValidationResult("Date must be a valid date.", new[] { "Date" });
             }
-
-
         }
 
     }

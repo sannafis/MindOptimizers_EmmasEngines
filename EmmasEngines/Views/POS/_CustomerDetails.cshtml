@@ -7,5 +7,7 @@
         <p>Name: @Model.FullName</p>
         <p>Phone: @Model.Phone</p>
         <!-- Add other customer properties here -->
+        @*Hidden field for CustomerID*@
+		<input type="hidden" name="CustomerID" value="@Model.ID" id="CustomerID" />
     </div>
 }

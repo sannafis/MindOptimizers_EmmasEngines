@@ -173,5 +173,31 @@ namespace EmmasEngines.Controllers
             }
         }
 
+        //Payment action
+        //Submit: Create InvoiceLines for each item in the cart
+        //Redirect to InvoiceController, passing the list of invoice lines
+        public IActionResult Submit(string actionButton)
+        {
+            var session = HttpContext.Session;
+
+            List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
+            var customer = Utilities.SessionExtensions.GetObjectFromJson<Customer>(session, "customer");
+
+            List<InvoiceLine> invoiceLines = new();
+            foreach (var item in cart)
+            {
+                InvoiceLine invoiceLine = new()
+                {
+                    InventoryUPC = item.UPC,
+                    Quantity = Convert.ToInt32(item.Quantity),
+                    SalePrice = item.MarkupPrice,
+                    // HOW TO GET INVOICE?
+                    //InvoiceID = ??
+                };
+                invoiceLines.Add(invoiceLine);
+            }
+            return RedirectToAction("Create", "Invoices", invoiceLines);
+        }
+
     }
 }
