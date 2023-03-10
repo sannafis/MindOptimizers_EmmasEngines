@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<EmmasEngines.Models.Supplier>
 
 @{
-	ViewData["Title"] = "Index";
+	ViewData["Title"] = "Suppliers";
 }
 
 <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
@@ -75,27 +75,33 @@
 									<input type="submit" name="actionButton" value="Name" class="tableHeaders" />
 								</th>
 								<th>
-									<input type="submit" disabled="disabled" value="Phone" class="tableHeaders" />
+									Phone
+									@*<input type="submit" disabled="disabled" value="Phone" class="tableHeaders" />*@
 									@*@Html.DisplayNameFor(model => model.Phone)*@
 								</th>
 								<th>
-									<input type="submit" disabled="disabled" value="Email" class="tableHeaders" />
+									Email
+									@*<input type="submit" disabled="disabled" value="Email" class="tableHeaders" />*@
 									@*@Html.DisplayNameFor(model => model.Email)*@
 								</th>
 								<th>
-									<input type="submit" disabled="disabled" value="Address" class="tableHeaders" />
+									Address
+									@*<input type="submit" disabled="disabled" value="Address" class="tableHeaders" />*@
 									@*@Html.DisplayNameFor(model => model.Address)*@
 								</th>
 								<th>
-									<input type="submit" disabled="disabled" value="City" class="tableHeaders" />
+									City
+									@*<input type="submit" disabled="disabled" value="City" class="tableHeaders" />*@
 									@*@Html.DisplayNameFor(model => model.City)*@
 								</th>
 								<th>
-									<input type="submit" disabled="disabled" value="Province" class="tableHeaders" />
+									Province
+									@*<input type="submit" disabled="disabled" value="Province" class="tableHeaders" />*@
 									@*@Html.DisplayNameFor(model => model.City.ProvinceCode)*@
 								</th>
 								<th>
-									<input type="submit" disabled="disabled" value="Postal" class="tableHeaders" />
+									Postal
+									@*<input type="submit" disabled="disabled" value="Postal" class="tableHeaders" />*@
 									@*@Html.DisplayNameFor(model => model.Postal)*@
 								</th>
 
@@ -130,8 +136,16 @@
 									</td>
 
 									<td>
-										<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-										<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+										<div class="btn">
+										<div class="btn_crud">
+										<button class="btn_crud_edit" asp-action="Edit" asp-route-id="@item.ID">Edit</button>
+										</div>
+											<div class="btn_crud">
+										<button class="btn_crud_edit" asp-action="Details" asp-route-id="@item.ID">Details</button>
+										</div>
+										</div>
+										@*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+										<a asp-action="Details" asp-route-id="@item.ID">Details</a> |*@
 @*Removed delete button *@
 @*										<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
 									</td>
