@@ -187,27 +187,33 @@
 
 					@{
 						var cart = (List<Inventory>)HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<Inventory>>("cart");
+						var invoiceLines = (List<InvoiceLine>)HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<InvoiceLine>>("invoiceLines");
 						if (cart != null)
 						{
 							foreach (Inventory item in cart)
 							{
-								<tr class="table-hover">
-									<td>
-										@Html.DisplayFor(modelItem => item.Name)
-									</td>
-									<td>
-										@Html.DisplayFor(modelItem => item.AdjustedPrice)
-									</td>
-									<td>
-										@Html.DisplayFor(modelItem => item.Quantity)
-									</td>
-									<td>
-										<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
-									</td>
-								</tr>
+								var invoiceLine = invoiceLines.FirstOrDefault(line => line.InventoryUPC == item.UPC);
+								var quantity = invoiceLine != null ? invoiceLine.Quantity : 0;
+								
+													<tr class="table-hover">
+														<td>
+															@Html.DisplayFor(modelItem => item.Name)
+														</td>
+														<td>
+															@Html.DisplayFor(modelItem => item.AdjustedPrice)
+														</td>
+														<td>
+															@quantity
+														</td>
+														<td>
+															<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
+														</td>
+													</tr>
+								
 							}
 						}
 					}
+
 				</tbody>
 			</table>
 			<div id="cartSummaryData">
@@ -227,18 +233,19 @@
 
 						if (cart != null)
 						{
-							foreach (Inventory item in cart)
+							foreach (InvoiceLine item in invoiceLines)
 							{
-								subtotal += item.AdjustedPrice;
+								subtotal += item.Quantity * item.Inventory.AdjustedPrice;
 								tax = subtotal * 0.13;
 								total = subtotal + tax;
+
 							}
 						}
-						<li>Subtotal: @subtotal.ToString("C")</li>
-						<li>Tax: @tax.ToString("C")</li>
-						<li>Total: @total.ToString("C")</li>
-						<li>Paid: @paid.ToString("C")</li>
-						<li>Change: @change.ToString("C")</li>
+										<li>Subtotal: @subtotal.ToString("C")</li>
+										<li>Tax: @tax.ToString("C")</li>
+										<li>Total: @total.ToString("C")</li>
+										<li>Paid: @paid.ToString("C")</li>
+										<li>Change: @change.ToString("C")</li>
 					}
 				</ul>
 			</div>
@@ -309,24 +316,46 @@
 	if (customerDetails !== null) {
 		$('#customer-details').html(customerDetails);
 	}
+	
+	function getInvoiceLineModels(cart, invoiceID){
+		var invoiceLineModels = [];
+		for (var i = 0; i < cart.length; i++) {
+			var invoiceLineModel = {
+				InvoiceID: invoiceID,
+				InventoryUPC: cart[i].InventoryUPC,
+				Quantity: cart[i].Quantity,
+				SalePrice: cart[i].AdjustedPrice
+			};
+			invoiceLineModels.push(invoiceLineModel);
+		}
+		return invoiceLineModels;
+	}
+
 	function submitForm(e) {
 		console.log("Event: " + e);
 		e.preventDefault();
 		var form = $('#paymentForm');
 		var url = form.attr('action');
 		var customerID = $('#CustomerID').val(); // get the customer ID from the hidden input field
+		if(customerID == null){
+			customerID = 1
+		}
 		var date = new Date().toISOString().substr(0, 10); // get today's date
 		var invoiceModel = {
 			Date: date,
 			Appreciation: 5.00,
-			Description: "Invoice",
+			Description: "Invoice Recipt",
 			CustomerID: customerID,
 			EmployeeID: 1
 		};
 		var payButton = form.find('button[name="actionButton"][value="Pay"]');
+		
+		var cart = JSON.parse(sessionStorage.getItem('cart'));
+		console.log("cart: ", cart)
+		
 
 		console.log("Invoice Model:", invoiceModel);
-
+		
 		$.ajax({
 			url: '/Invoices/Create',
 			dataType: 'json',
