@@ -11,8 +11,11 @@
 <script src="https://kit.fontawesome.com/f8c88d6b79.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 <main>
+	<form asp-action="Index" method="get">
+	<div class="main-content">
+			<div class="left-side">
 	<section id="pageName">
-		<h1>POS</h1>
+		<h1>Order #</h1>
 	</section>
 	<script src="/lib/jquery/dist/jquery.min.js"></script>
 
@@ -46,10 +49,9 @@
 
 	</section>
 
-	<form asp-action="Index" method="get">
-
-
-
+	
+		
+			
 		<div class="form-horizontal">
 
 
@@ -74,7 +76,8 @@
 				</div>
 			</section>
 		</div>
-
+		
+		
 		<div id="inventoryMain">
 			<div class=" divider2_desc_btn">
 				<div class="description">
@@ -89,22 +92,19 @@
 									<input type="submit" name="actionButton" value="Name" class="tableHeaders" />
 								</th>
 								<th>
-									<input type="submit" name="actionButton" value="Size" class="no-click" />
+									Size
+									@*<input type="submit" name="actionButton" value="Size" class="no-click" />*@
 								</th>
 								<th>
-									<input type="submit" name="actionButton" value="Quantity" class="no-click" />
-								</th>
-								<th>
-									<input type="submit" name="actionButton" value="Cost (AVG)" class="tableHeaders" />
+									Quantity
+									@*<input type="submit" name="actionButton" value="Quantity" class="no-click" />*@
 								</th>
 								<th>
 									<input type="submit" name="actionButton" value="Price (Retail)" class="tableHeaders" />
 								</th>
 								<th>
-									<input type="submit" disabled="disabled" value="Current" class="tableHeaders" />
-								</th>
-								<th>
-									<input type="submit" disabled="disabled" value="Stock" class="tableHeaders" />
+									Stock
+									@*<input type="submit" disabled="disabled" value="Stock" class="tableHeaders" />*@
 								</th>
 								<th></th>
 							</tr>
@@ -126,28 +126,34 @@
 										@Html.DisplayFor(modelItem => item.Quantity)
 									</td>
 									<td>
-										@Html.DisplayFor(modelItem => item.AdjustedPrice)
-									</td>
-									<td>
 										@Html.DisplayFor(modelItem => item.MarkupPrice)
-									</td>
-									<td>
-										@Html.DisplayFor(modelItem => item.Current)
 									</td>
 									<td>
 										@Html.DisplayFor(modelItem => item.TotalStock)
 									</td>
 									<td>
-										<a href="@Url.Action("Buy", "POS", new {UPC = item.UPC})">(+) Add to Cart</a>
+										<div class="btn">
+											<div class="btn_crud">
+												<input type="button" value="&#x2b" class="fa-solid fa-input btn_crud_edit" onclick="location.href='@Url.Action("Buy", "POS", new {UPC = item.UPC})'" />
+
+											</div>
+										</div>
+										@*<a href="@Url.Action("Buy", "POS", new {UPC = item.UPC})">(+) Add to Cart</a>*@
 									</td>
 								</tr>
 							}
 						</tbody>
 					</table>
 				</div>
+					<partial name="_PagingNavBar" />
 			</div>
+				
+
 		</div>
+			</div>
+
 		<div class="cart">
+				<h1>Cart</h1>
 			@*Create a new table with headers for "Name", "Price", "Quantity".*@
 			@*Table starts empty. Items are added by POSController.AddToCart, returning a single JSON inventory object*@
 			@*The table is then populated with the JSON object*@
@@ -156,13 +162,16 @@
 				<thead>
 					<tr class="bg-info">
 						<th>
-							<input type="submit" disabled="disabled" value="Name" class="tableHeaders" />
+							Name
+							@*<input type="submit" disabled="disabled" value="Name" class="tableHeaders" />*@
 						</th>
 						<th>
-							<input type="submit" disabled="disabled" value="Price" class="tableHeaders" />
+							Price
+							@*<input type="submit" disabled="disabled" value="Price" class="tableHeaders" />*@
 						</th>
 						<th>
-							<input type="submit" disabled="disabled" value="Quantity" class="tableHeaders" />
+							Quantity
+							@*<input type="submit" disabled="disabled" value="Quantity" class="tableHeaders" />*@
 						</th>
 						<th></th>
 					</tr>
@@ -237,7 +246,7 @@
 			</div>
 		</div>
 
-		<partial name="_PagingNavBar" />
+		</div>
 	</form>
 </main>
 

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="EmmasEngines.db" />
+	<None Remove="EmmasEngines.db-journal" />
     <None Remove="EmmasEnginesSecurity.db-journal" />
   </ItemGroup>
 
@@ -68,6 +68,12 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\css\pages\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="EmmasEnginesSecurity.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

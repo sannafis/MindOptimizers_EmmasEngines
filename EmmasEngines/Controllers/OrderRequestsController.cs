@@ -36,6 +36,7 @@ namespace EmmasEngines.Controllers
             var emmasEnginesContext = from i in _context.OrderRequests
                 .Include(o => o.Customer)
                 .Include(o => o.OrderRequestInventories)
+				.Include(o => o.Inventory)
                 .AsNoTracking()
                 select i;
 

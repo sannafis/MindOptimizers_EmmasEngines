@@ -625,6 +625,7 @@ Gabriel's CSS END ****************/
     background-color: #3d4856;
     border-radius: var(--size--border--radius);
     font-size: var(--font-regular);
+    font-weight: var(--weight-bold);
     color:var(--color-white);
     margin-left: 5px;
 }
@@ -797,4 +798,65 @@ Gabriel's CSS END ****************/
 }
 .no_pointer_fornow {
     pointer-events: none;
+}
+
+/*Sakha's edits*/
+
+.tableHeaders {
+    background: none;
+    border: 2px solid var(--color-white);
+    border-radius: 5px;
+    color: var(--color-white);
+    font-weight: var(--weight-bold)
+}
+
+.next-page {
+    border: 1px solid#3d4856;
+    color: #3d4856;
+    font-weight: var(--weight-bold)
+}
+
+.next-page:hover  {
+    border: 1px solid#3d4856;
+    color: #3d4856;
+}
+
+.btn_request:hover i {
+    animation: buttonBigger 1s ease-in-out;
+    color: #006E62;
+}
+
+.btn.page-link.page-number {
+    background-color: #3d4856;
+    border: 1px solid#3d4856;
+    font-weight: var(--weight-bold)
+}
+
+
+.btn_crud_edit:hover {
+    animation: buttonBigger 1s ease-in-out;
+}
+
+/*Add button wasn't animating for some reason*/
+.btn_crud_add:hover {
+    animation: buttonBigger 1s ease-in-out;
+    color: #FD8B7C;
+}
+
+/*made the buttons bigger*/
+.btn_crud_add, .btn_crud_edit, .btn_crud_remove {
+    width: 80px;
+}
+
+.main-content {
+    display:flex;
+
+}
+
+.left-side{
+    flex:3;
+}
+
+.cart {
+    flex:1;
 }

@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<EmmasEngines.Models.OrderRequest>
 
 @{
-	ViewData["Title"] = "Index";
+	ViewData["Title"] = "Order Requests";
 
 }
 
 <main>
 	<section id="pageName">
-		<h1>ORDER REQUEST</h1>
+		<h1>ORDER REQUESTS</h1>
 	</section>
 	<script src="/lib/jquery/dist/jquery.min.js"></script>
 
@@ -16,8 +16,8 @@
 		<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
 		<div class="form-horizontal">
 			<section id="inventorySearch" style="">
-				<h2><label id="searchHeader" class="control-label">Search Inventory: </label></h2>
-				<input class="form-control" id="SearchString" name="SearchString" type="text" placeholder="Enter UPC Eg. ###-####-# or Inventory Name Eg. Mower" value="@ViewData["Search Inventory"]" />
+				<h2><label id="searchHeader" class="control-label">Search Orders: </label></h2>
+				<input class="form-control" id="SearchString" name="SearchString" type="text" placeholder="Enter Request ID Ex. #, ##, ###, or ####... etc, Order Items Ex. Blade, or Date Ex. dd/mm/yyyy" value="@ViewData["Search Inventory"]" />
 				<div class="btn">
 					<div class="btn_crud">
 						<button type="submit" name="actionButton" value="Filter" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for edit items">
@@ -31,18 +31,24 @@
 						</button>
 						<span class="btn_tooltip">Clear</span>
 					</div>
+					<div class="btn_crud">
+						<button type="submit" name="actionButton" value="Send" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for sending order">
+							<i class="fa fa-share"></i>
+						</button>
+						<span class="btn_tooltip">Send Order</span>
+					</div>
+					<div class="btn_crud">
+						<button type="submit" name="actionButton" value="Receive" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for receiving order">
+							<i class="fa fa-box"></i>
+						</button>
+						<span class="btn_tooltip">Receive Order</span>
+					</div>
 					@*                   <div class="btn_crud">
 					<button  tabindex="190" class="btn_crud_edit" onclick="" id="btnEdit" aria-label="button for edit items">
 					<i class="fa-sharp fa-solid fa-pen"></i>
 					</button>
 					<span class="btn_tooltip">Edit Items</span>
 					</div>*@
-					<div class="btn_crud">
-						<button class="btn_crud_add" tabindex="180" asp-action="Create" id="btn_add_popup" aria-label="button for add items">
-							<i class="fa-solid fa-plus"></i>
-						</button>
-						<span class="btn_tooltip">Add Items</span>
-					</div>
 					@*                    <div class="btn_crud">
 					<button class="btn_crud_add" tabindex="180" onclick="" id="btn-add-request" aria-label="button for add order">
 					<i class="fa-solid fa-cart-plus"></i>
@@ -66,7 +72,13 @@
 						<thead>
 							<tr class="bg-info">
 								<th>
+									@Html.DisplayNameFor(model => model.ID)
+								</th>
+								<th>
 									@Html.DisplayNameFor(model => model.Description)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.Inventory.Name)
 								</th>
 								<th>
 									@Html.DisplayNameFor(model => model.SentDate)
@@ -88,7 +100,13 @@
 							{
 								<tr class="table-hover">
 									<td>
+										@Html.DisplayFor(modelItem => item.ID)
+									</td>
+									<td>
 										@Html.DisplayFor(modelItem => item.Description)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.Inventory.Name)
 									</td>
 									<td>
 										@Html.DisplayFor(modelItem => item.SentDate)
@@ -100,12 +118,20 @@
 										@Html.DisplayFor(modelItem => item.ExternalOrderNum)
 									</td>
 									<td>
-										@Html.DisplayFor(modelItem => item.Customer.Address)
+										@Html.DisplayFor(modelItem => item.Customer.FullName)
 									</td>
 									<td>
-										<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-										<a asp-action="Details" asp-route-id="@item.ID">Details</a>
-										@*Removed delete button *@|
+										<div class="btn">
+											<div class="btn_crud">
+												<button class="btn_crud_edit" asp-action="Edit" asp-route-id="@item.ID">Edit</button>
+											</div>
+											<div class="btn_crud">
+												<button class="btn_crud_edit" asp-action="Details" asp-route-id="@item.ID">Details</button>
+											</div>
+										</div>
+										@*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+										<a asp-action="Details" asp-route-id="@item.ID">Details</a>*@
+										@*Removed delete button *@
 										@*                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
 									</td>
 								</tr>
