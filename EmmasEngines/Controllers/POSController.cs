@@ -72,7 +72,7 @@ namespace EmmasEngines.Controllers
             ViewData["Filtering"] = "";
 
             var inventories = from i in _context.Inventories
-                .Include(p => p.Prices)
+               // .Include(p => p.Prices)
                               select i;
             var customer = _context.Customers.FirstOrDefault();
             ViewData["Customer"] = customer;
@@ -147,7 +147,7 @@ namespace EmmasEngines.Controllers
         {
             var inventory = _context.Inventories
                 .Where(i => i.UPC == UPC)
-                .Include(p => p.Prices)
+               // .Include(p => p.Prices)
                 .FirstOrDefault();
 
             if (inventory == null)
@@ -167,7 +167,7 @@ namespace EmmasEngines.Controllers
                 InventoryUPC = inventory.UPC,
                 Inventory = inventory,
                 Quantity = 1,
-                SalePrice = inventory.Prices.Where(p => p.InventoryUPC == inventory.UPC).FirstOrDefault()?.PurchasedCost ?? 0.0
+               // SalePrice = inventory.Prices.Where(p => p.InventoryUPC == inventory.UPC).FirstOrDefault()?.PurchasedCost ?? 0.0
             }
         };
 
@@ -193,7 +193,7 @@ namespace EmmasEngines.Controllers
                         InventoryUPC = inventory.UPC,
                         Inventory = inventory,
                         Quantity = 1,
-                        SalePrice = inventory.Prices.Where(p => p.InventoryUPC == inventory.UPC).FirstOrDefault()?.PurchasedCost ?? 0.0
+                       // SalePrice = inventory.Prices.Where(p => p.InventoryUPC == inventory.UPC).FirstOrDefault()?.PurchasedCost ?? 0.0
                     });
                 }
 
@@ -209,7 +209,7 @@ namespace EmmasEngines.Controllers
         {
             var inventories = from i in _context.Inventories
                              .Where(u => u.UPC == UPC)
-                             .Include(p => p.Prices)
+                            // .Include(p => p.Prices)
                               select i;
 
             var session = HttpContext.Session;
