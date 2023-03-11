@@ -17,7 +17,7 @@ namespace EmmasEngines.Data
         public DbSet<City> Cities { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
-        //public DbSet<Price> Prices { get; set; }
+        public DbSet<Price> Prices { get; set; }
         public DbSet<Customer> Customers { get; set; }
 
         public DbSet<Payment> Payments { get; set; }
@@ -54,6 +54,12 @@ namespace EmmasEngines.Data
                 .HasMany<Inventory>(p => p.Inventories)
                 .WithOne(c => c.Supplier)
                 .HasForeignKey(c => c.SupplierID)
+                .OnDelete(DeleteBehavior.Restrict);
+            //Prevent Cascade Delete from Prices to Inventory
+            modelBuilder.Entity<Inventory>()
+                .HasMany<Price>(p => p.Prices)
+                .WithOne(c => c.Inventory)
+                .HasForeignKey(c => c.InventoryUPC)
                 .OnDelete(DeleteBehavior.Restrict);
 
             //Prevent Cascade Delete from Supplier to OrderRequests

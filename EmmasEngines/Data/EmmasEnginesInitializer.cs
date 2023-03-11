@@ -251,8 +251,37 @@ namespace EmmasEngines.Data
                 }
 
                 string[] invUPCs = context.Inventories.Select(x => x.UPC).ToArray();
-                DateTime startDate = DateTime.Today;    
-                
+                DateTime startDate = DateTime.Today;
+
+                double priceMin = 20.00d;
+                double priceMax = 40.99d;
+
+                //Order Request Inventories
+                if (!context.Prices.Any())
+                {
+
+                    int k = 0;//Start with the first inventory
+                    foreach (string i in invUPCs)
+                    {
+                        int howMany = random.Next(1, invUPCs.Count());//add a few inventories to a order
+                        for (int j = 1; j <= howMany; j++)
+                        {
+                            k = (k >= invUPCs.Count()) ? 0 : k;//Resets counter k to 0 if we have run out of inventory
+                            Price o = new Price()
+                            {
+                                Stock = random.Next(20,51),
+                                InventoryUPC = invUPCs[k],
+                                PurchasedCost = random.NextDouble() * (priceMax - priceMin) + priceMin,
+                                PurchasedDate = startDate.AddDays(-random.Next(30, 365)
+                            };
+                            context.Prices.Add(o);
+                            k++;
+                        }
+                    }
+                    context.SaveChanges();
+                }
+
+
                 //Customer 
                 if (!context.Customers.Any())
                 {
@@ -443,9 +472,6 @@ namespace EmmasEngines.Data
 
                 string[] inventoryUPCs = context.Inventories.Select(x => x.UPC).ToArray();
                 int[] orderIDs = context.OrderRequests.Select(x => x.ID).ToArray();
-
-                double priceMin = 20.00d;
-                double priceMax = 40.99d;
 
                 //Order Request Inventories
                 if (!context.OrderRequestInventories.Any())

@@ -33,7 +33,7 @@ namespace EmmasEngines.Models
             {
                 if (OrderRequestInventories.Any())
                 {
-                    return Math.Round(OrderRequestInventories.Where(x => x.OrderRequest.ReceiveDate != null).Average(x => x.Price), 2);
+                    return Math.Round(Prices.Select(x => x.PurchasedCost).Average(), 2);
                 }
                 else
                 {
@@ -46,10 +46,10 @@ namespace EmmasEngines.Models
         public double MarkupPrice {
             get
             {
-                if (OrderRequestInventories.Any())
+                if (Prices.Any())
                 {
                     
-                    double average = Math.Round(OrderRequestInventories.Where(x => x.OrderRequest.ReceiveDate != null).Average(x => x.Price), 2);
+                    double average = Math.Round(Prices.Select(x => x.PurchasedCost).Average(), 2);
                     return Math.Round(((average * .23) + average),2);
                 }
                 else
@@ -71,7 +71,7 @@ namespace EmmasEngines.Models
         {
             get
             {
-                return OrderRequestInventories.Where(x=>x.OrderRequest.ReceiveDate != null).Sum(x=>x.Quantity);
+                return Prices.Select(x => x.Stock).Sum();
             }
         }
 
@@ -81,6 +81,7 @@ namespace EmmasEngines.Models
         public Supplier Supplier { get; set; }
 
         public ICollection<OrderRequestInventory> OrderRequestInventories { get; set; } = new HashSet<OrderRequestInventory>();
+        public ICollection<Price> Prices { get; set; } = new HashSet<Price>();
 
         public ICollection<InvoiceLine> InvoiceLines { get; set; } = new HashSet<InvoiceLine>();
     }
