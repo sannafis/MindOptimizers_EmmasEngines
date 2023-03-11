@@ -55,11 +55,11 @@ namespace EmmasEngines.Data
                 .WithOne(c => c.Supplier)
                 .HasForeignKey(c => c.SupplierID)
                 .OnDelete(DeleteBehavior.Restrict);
-            //Prevent Cascade Delete from Prices to Inventory
+
+            //Prevent Cascade Delete from Inventory to Price
             modelBuilder.Entity<Inventory>()
                 .HasMany<Price>(p => p.Prices)
                 .WithOne(c => c.Inventory)
-                .HasForeignKey(c => c.InventoryUPC)
                 .OnDelete(DeleteBehavior.Restrict);
 
             //Prevent Cascade Delete from Supplier to OrderRequests
@@ -168,7 +168,14 @@ namespace EmmasEngines.Data
                 .WithOne(i => i.Inventory)
                 .HasForeignKey(i => i.InventoryUPC)
                 .HasPrincipalKey(p => p.UPC);
-                
+
+            //1:many between inventory and prices
+            modelBuilder.Entity<Inventory>()
+                .HasMany(p => p.Prices)
+                .WithOne(i => i.Inventory)
+                .HasForeignKey(i => i.InventoryUPC)
+                .HasPrincipalKey(p => p.UPC);
+
             //1:many between OrderRequestInventory and OrderRequest
             modelBuilder.Entity<OrderRequest>()
                 .HasMany(p => p.OrderRequestInventories)

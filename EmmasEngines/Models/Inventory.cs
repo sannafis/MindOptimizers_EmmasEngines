@@ -81,6 +81,7 @@ namespace EmmasEngines.Models
         public Supplier Supplier { get; set; }
 
         public ICollection<OrderRequestInventory> OrderRequestInventories { get; set; } = new HashSet<OrderRequestInventory>();
+        
         public ICollection<Price> Prices { get; set; } = new HashSet<Price>();
 
         public ICollection<InvoiceLine> InvoiceLines { get; set; } = new HashSet<InvoiceLine>();
