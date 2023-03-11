@@ -164,12 +164,17 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("SupplierID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("UPC")
                         .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("SupplierID");
 
                     b.HasIndex("UPC")
                         .IsUnique();
@@ -267,14 +272,14 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .HasMaxLength(5)
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("InventoryID")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime?>("ReceiveDate")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("SentDate")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("SupplierID")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
 
@@ -283,7 +288,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.HasIndex("ExternalOrderNum")
                         .IsUnique();
 
-                    b.HasIndex("InventoryID");
+                    b.HasIndex("SupplierID");
 
                     b.ToTable("OrderRequests");
                 });
@@ -295,6 +300,9 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.Property<string>("InventoryUPC")
                         .HasColumnType("TEXT");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("REAL");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
@@ -345,37 +353,6 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .IsUnique();
 
                     b.ToTable("Positions");
-                });
-
-            modelBuilder.Entity("EmmasEngines.Models.Price", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("InventoryUPC")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<double>("PurchasedCost")
-                        .HasColumnType("REAL");
-
-                    b.Property<DateTime>("PurchasedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Stock")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("SupplierID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("InventoryUPC");
-
-                    b.HasIndex("SupplierID");
-
-                    b.ToTable("Prices");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Province", b =>
@@ -497,6 +474,17 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("Position");
                 });
 
+            modelBuilder.Entity("EmmasEngines.Models.Inventory", b =>
+                {
+                    b.HasOne("EmmasEngines.Models.Supplier", "Supplier")
+                        .WithMany("Inventories")
+                        .HasForeignKey("SupplierID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Supplier");
+                });
+
             modelBuilder.Entity("EmmasEngines.Models.Invoice", b =>
                 {
                     b.HasOne("EmmasEngines.Models.Customer", "Customer")
@@ -563,13 +551,15 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EmmasEngines.Models.Inventory", "Inventory")
-                        .WithMany()
-                        .HasForeignKey("InventoryID");
+                    b.HasOne("EmmasEngines.Models.Supplier", "Supplier")
+                        .WithMany("OrderRequests")
+                        .HasForeignKey("SupplierID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Customer");
 
-                    b.Navigation("Inventory");
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.OrderRequestInventory", b =>
@@ -590,26 +580,6 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("Inventory");
 
                     b.Navigation("OrderRequest");
-                });
-
-            modelBuilder.Entity("EmmasEngines.Models.Price", b =>
-                {
-                    b.HasOne("EmmasEngines.Models.Inventory", "Inventory")
-                        .WithMany("Prices")
-                        .HasForeignKey("InventoryUPC")
-                        .HasPrincipalKey("UPC")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("EmmasEngines.Models.Supplier", "Supplier")
-                        .WithMany("Prices")
-                        .HasForeignKey("SupplierID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Inventory");
-
-                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Supplier", b =>
@@ -639,8 +609,6 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("InvoiceLines");
 
                     b.Navigation("OrderRequestInventories");
-
-                    b.Navigation("Prices");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Invoice", b =>
@@ -672,7 +640,9 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
             modelBuilder.Entity("EmmasEngines.Models.Supplier", b =>
                 {
-                    b.Navigation("Prices");
+                    b.Navigation("Inventories");
+
+                    b.Navigation("OrderRequests");
                 });
 #pragma warning restore 612, 618
         }

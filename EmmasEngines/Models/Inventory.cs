@@ -33,7 +33,8 @@ namespace EmmasEngines.Models
             {
                 if (OrderRequestInventories.Any())
                 {
-                    return Math.Round(OrderRequestInventories.Where(x => x.OrderRequest.ReceiveDate != null).Average(x => x.Price), 2);
+                    // return Math.Round(OrderRequestInventories.Where(x => x.OrderRequest.ReceiveDate != null).Average(x => x.Price), 2);
+                    return 0;
                 }
                 else
                 {
@@ -48,9 +49,10 @@ namespace EmmasEngines.Models
             {
                 if (OrderRequestInventories.Any())
                 {
-                    
-                    double average = Math.Round(OrderRequestInventories.Where(x => x.OrderRequest.ReceiveDate != null).Average(x => x.Price), 2);
-                    return Math.Round(((average * .23) + average),2);
+
+                    //double average = Math.Round(OrderRequestInventories.Where(x => x.OrderRequest.ReceiveDate != null).Average(x => x.Price), 2);
+                    //return Math.Round(((average * .23) + average),2);
+                    return 0;
                 }
                 else
                 {
@@ -71,7 +73,8 @@ namespace EmmasEngines.Models
         {
             get
             {
-                return OrderRequestInventories.Where(x=>x.OrderRequest.ReceiveDate != null).Sum(x=>x.Quantity);
+                //return OrderRequestInventories.Where(x=>x.OrderRequest.ReceiveDate != null).Sum(x=>x.Quantity);
+                return 0;
             }
         }
 
