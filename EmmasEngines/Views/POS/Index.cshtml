@@ -288,6 +288,11 @@
 					</div>
 					<button name="actionButton" value="Pay" type="submit" class="btn btn-primary" onclick="submitForm(event)">Pay</button>
 					<input name="actionButton" type="submit" value="Clear" class="btn btn-primary" />
+					
+					<div id="invoice-buttons">
+						<button id="view-invoice-btn" class="btn btn-primary" style="display:none; width:auto">View Invoice</button>
+					</div>
+
 				</form>
 			</div>
 		</div>
@@ -364,10 +369,6 @@
 			]
 		};
 		var payButton = form.find('button[name="actionButton"][value="Pay"]');
-		
-		var cart = JSON.parse(sessionStorage.getItem('cart'));
-		console.log("cart: ", cart)
-		
 
 		console.log("Invoice Model:", invoiceModel);
 		
@@ -383,7 +384,17 @@
 			success: function (result) {
 				console.log("submitForm (Payment) result: " + result);
 				if (result) {
-					alert("Payment success: Invoice ID " + result.id + " for CustomerID: " + result.customerID + " was added on " + result.date);
+					//alert("Payment success: Invoice ID " + result.id + " for CustomerID: " + result.customerID + " was added on " + result.date);
+
+					//Create a button to view the invoice that was just created (at /Invoices/Details/{id})
+					var invoiceButton = $('<button>')
+						.attr('type', 'button')
+						.attr('onclick', 'window.location.href = \'/Invoices/Details/' + result.id + '\'')
+						.addClass('btn btn-primary')
+						.text('Invoice Details');
+
+					$('#invoice-buttons').empty().append(invoiceButton);
+					
 					payButton.prop('disabled', true);
 				} else {
 					alert("payment failed");
@@ -391,6 +402,22 @@
 				}
 			},
 			error: function (xhr, status, error) {
+				//alert xhr response text:
+				switch (xhr.responseText) {
+					case 'No invoice lines found':
+						alert('No invoice lines found. To correct this error, make sure you have at least one item in the cart before proceeding to pay.');
+						break;
+					case 'Invalid quantity':
+						alert('Invalid quantity. Please enter a valid number for the quantity.');
+						break;
+					// add more cases for specific errors here
+					default:
+						// If the error message is not one of the specific cases, display the default error message
+						alert(xhr.responseText);
+						break;
+				}
+				
+				//alert(xhr.responseText);
 				console.log("submitForm error:", error);
 				console.log("submitForm xhr:", xhr);
 				console.log("submitForm status:", status);
