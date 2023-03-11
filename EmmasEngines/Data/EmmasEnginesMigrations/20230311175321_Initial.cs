@@ -304,6 +304,28 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Prices",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    InventoryUPC = table.Column<string>(type: "TEXT", nullable: false),
+                    PurchasedCost = table.Column<double>(type: "REAL", nullable: false),
+                    PurchasedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Stock = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Prices", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Prices_Inventories_InventoryUPC",
+                        column: x => x.InventoryUPC,
+                        principalTable: "Inventories",
+                        principalColumn: "UPC",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderRequestInventories",
                 columns: table => new
                 {
@@ -438,6 +460,11 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Prices_InventoryUPC",
+                table: "Prices",
+                column: "InventoryUPC");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Provinces_Code",
                 table: "Provinces",
                 column: "Code",
@@ -475,6 +502,9 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 name: "OrderRequestInventories");
 
             migrationBuilder.DropTable(
+                name: "Prices");
+
+            migrationBuilder.DropTable(
                 name: "Positions");
 
             migrationBuilder.DropTable(
@@ -484,10 +514,10 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 name: "Payments");
 
             migrationBuilder.DropTable(
-                name: "Inventories");
+                name: "OrderRequests");
 
             migrationBuilder.DropTable(
-                name: "OrderRequests");
+                name: "Inventories");
 
             migrationBuilder.DropTable(
                 name: "Employees");

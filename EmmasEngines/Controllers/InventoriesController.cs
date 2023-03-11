@@ -59,7 +59,7 @@ namespace EmmasEngines.Controllers
 
                // .Include(i => i.Prices)
                .Include(o => o.OrderRequestInventories)
-               .ThenInclude(p => p.Price)
+               .Include(p => p.Prices)
                .AsQueryable();
 
 

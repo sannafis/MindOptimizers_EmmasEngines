@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmmasEngines.Data.EmmasEnginesMigrations
 {
     [DbContext(typeof(EmmasEnginesContext))]
-    [Migration("20230311171137_Initial")]
+    [Migration("20230311175321_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -357,6 +357,32 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.ToTable("Positions");
                 });
 
+            modelBuilder.Entity("EmmasEngines.Models.Price", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("InventoryUPC")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("PurchasedCost")
+                        .HasColumnType("REAL");
+
+                    b.Property<DateTime>("PurchasedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Stock")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("InventoryUPC");
+
+                    b.ToTable("Prices");
+                });
+
             modelBuilder.Entity("EmmasEngines.Models.Province", b =>
                 {
                     b.Property<int>("ID")
@@ -584,6 +610,18 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("OrderRequest");
                 });
 
+            modelBuilder.Entity("EmmasEngines.Models.Price", b =>
+                {
+                    b.HasOne("EmmasEngines.Models.Inventory", "Inventory")
+                        .WithMany("Prices")
+                        .HasForeignKey("InventoryUPC")
+                        .HasPrincipalKey("UPC")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Inventory");
+                });
+
             modelBuilder.Entity("EmmasEngines.Models.Supplier", b =>
                 {
                     b.HasOne("EmmasEngines.Models.City", "City")
@@ -611,6 +649,8 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("InvoiceLines");
 
                     b.Navigation("OrderRequestInventories");
+
+                    b.Navigation("Prices");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Invoice", b =>
