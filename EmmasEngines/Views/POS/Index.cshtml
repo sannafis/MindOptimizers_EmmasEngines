@@ -193,6 +193,16 @@
 							foreach (Inventory item in cart)
 							{
 								var invoiceLine = invoiceLines.FirstOrDefault(line => line.InventoryUPC == item.UPC);
+								@*Log invoice lines to console*@
+								foreach (InvoiceLine line in invoiceLines)
+								{
+									Console.WriteLine("InvoiceLine");
+									Console.WriteLine("UPC: " + line.InventoryUPC);
+									Console.WriteLine("SalePrice: " +line.SalePrice);
+									Console.WriteLine("Quantity: " +line.Quantity);
+									Console.WriteLine("InvoiceID: " +line.InvoiceID);
+									
+								}
 								var quantity = invoiceLine != null ? invoiceLine.Quantity : 0;
 								
 													<tr class="table-hover">
@@ -346,7 +356,12 @@
 			Appreciation: 5.00,
 			Description: "Invoice Recipt",
 			CustomerID: customerID,
-			EmployeeID: 1
+			EmployeeID: 1,
+			InvoicePayments:[
+				{
+					PaymentID : 1 //change later to actual paymentID
+				}
+			]
 		};
 		var payButton = form.find('button[name="actionButton"][value="Pay"]');
 		

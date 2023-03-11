@@ -119,10 +119,6 @@ namespace EmmasEngines.Controllers
                     inventories = inventories.OrderBy(s => Math.Round(((s.Prices.Select(p => p.PurchasedCost).Average() * 0.23) + s.Prices.Select(p => p.PurchasedCost).Average()), 2));
                 else
                     inventories = inventories.OrderByDescending(s => Math.Round(((s.Prices.Select(p => p.PurchasedCost).Average() * 0.23) + s.Prices.Select(p => p.PurchasedCost).Average()), 2));
-                 if(sortDirection == "asc")
-                {
-                    
-                }
             }
             else if (sortField == "Cost (Avg)")
             {
