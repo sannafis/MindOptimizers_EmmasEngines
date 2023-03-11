@@ -7,7 +7,7 @@ namespace EmmasEngines.Models
     {
         public int ID { get; set; }
 
-        Inventory foreign key
+        //Inventory foreign key
        [Display(Name = "Inventory UPC")]
        [Required(ErrorMessage = "Inventory associated with this price is required.")]
         public string InventoryUPC { get; set; }

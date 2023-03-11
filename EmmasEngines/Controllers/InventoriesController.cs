@@ -57,9 +57,7 @@ namespace EmmasEngines.Controllers
             //inventory list async
             var inventories = _context.Inventories
 
-               // .Include(i => i.Prices)
-               .Include(o => o.OrderRequestInventories)
-               .ThenInclude(p => p.Price)
+               .Include(i => i.Prices)
                .AsQueryable();
 
 
@@ -117,10 +115,10 @@ namespace EmmasEngines.Controllers
             }
             else if (sortField == "Price (Retail)")
             {
-               // if (sortDirection == "asc")
-                //    inventories = inventories.OrderBy(s => Math.Round(((s.Prices.Select(p => p.PurchasedCost).Average() * 0.23) + s.Prices.Select(p => p.PurchasedCost).Average()), 2));
-               // else
-                 //   inventories = inventories.OrderByDescending(s => Math.Round(((s.Prices.Select(p => p.PurchasedCost).Average() * 0.23) + s.Prices.Select(p => p.PurchasedCost).Average()), 2));
+                if (sortDirection == "asc")
+                    inventories = inventories.OrderBy(s => Math.Round(((s.Prices.Select(p => p.PurchasedCost).Average() * 0.23) + s.Prices.Select(p => p.PurchasedCost).Average()), 2));
+                else
+                    inventories = inventories.OrderByDescending(s => Math.Round(((s.Prices.Select(p => p.PurchasedCost).Average() * 0.23) + s.Prices.Select(p => p.PurchasedCost).Average()), 2));
                  if(sortDirection == "asc")
                 {
                     
@@ -128,10 +126,10 @@ namespace EmmasEngines.Controllers
             }
             else if (sortField == "Cost (Avg)")
             {
-               // if (sortDirection == "asc")
-                 //   inventories = inventories.OrderBy(s => s.Prices.Select(p => p.PurchasedCost).Average());
-               // else
-                  //  inventories = inventories.OrderByDescending(s => s.Prices.Select(p => p.PurchasedCost).Average());
+                if (sortDirection == "asc")
+                    inventories = inventories.OrderBy(s => s.Prices.Select(p => p.PurchasedCost).Average());
+                else
+                    inventories = inventories.OrderByDescending(s => s.Prices.Select(p => p.PurchasedCost).Average());
             }
 
 
@@ -157,7 +155,7 @@ namespace EmmasEngines.Controllers
             }
 
             var inventory = await _context.Inventories
-               // .Include(i => i.Prices)
+                .Include(i => i.Prices)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (inventory == null)
             {
