@@ -195,20 +195,20 @@
 								var invoiceLine = invoiceLines.FirstOrDefault(line => line.InventoryUPC == item.UPC);
 								var quantity = invoiceLine != null ? invoiceLine.Quantity : 0;
 								
-													<tr class="table-hover">
-														<td>
-															@Html.DisplayFor(modelItem => item.Name)
-														</td>
-														<td>
-															@Html.DisplayFor(modelItem => item.AdjustedPrice)
-														</td>
-														<td>
-															@quantity
-														</td>
-														<td>
-															<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
-														</td>
-													</tr>
+																	<tr class="table-hover">
+																		<td>
+																			@Html.DisplayFor(modelItem => item.Name)
+																		</td>
+																		<td>
+																			@Html.DisplayFor(modelItem => item.AdjustedPrice)
+																		</td>
+																		<td>
+																			@quantity
+																		</td>
+																		<td>
+																			<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
+																		</td>
+																	</tr>
 								
 							}
 						}
@@ -241,11 +241,11 @@
 
 							}
 						}
-										<li>Subtotal: @subtotal.ToString("C")</li>
-										<li>Tax: @tax.ToString("C")</li>
-										<li>Total: @total.ToString("C")</li>
-										<li>Paid: @paid.ToString("C")</li>
-										<li>Change: @change.ToString("C")</li>
+														<li>Subtotal: @subtotal.ToString("C")</li>
+														<li>Tax: @tax.ToString("C")</li>
+														<li>Total: @total.ToString("C")</li>
+														<li>Paid: @paid.ToString("C")</li>
+														<li>Change: @change.ToString("C")</li>
 					}
 				</ul>
 			</div>
@@ -337,22 +337,20 @@
 		var form = $('#paymentForm');
 		var url = form.attr('action');
 		var customerID = $('#CustomerID').val(); // get the customer ID from the hidden input field
-		if(customerID == null){
-			customerID = 1
-		}
-		var date = new Date().toISOString().substr(0, 10); // get today's date
+		var now = new Date();
+		var date = now.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		date = new Date(date).toISOString().slice(0, 10);
+		console.log(date);
+
+
 		var invoiceModel = {
 			Date: date,
-			Appreciation: 5.00,
+			Appreciation: 5.0,
 			Description: "Invoice Recipt",
 			CustomerID: customerID,
 			EmployeeID: 1
 		};
 		var payButton = form.find('button[name="actionButton"][value="Pay"]');
-		
-		var cart = JSON.parse(sessionStorage.getItem('cart'));
-		console.log("cart: ", cart)
-		
 
 		console.log("Invoice Model:", invoiceModel);
 		
@@ -366,7 +364,8 @@
 			//	xhr.setRequestHeader("X-CSRF-TOKEN", $('input[name="__RequestVerificationToken"]').val());
 			//},
 			success: function (result) {
-				console.log("submitForm (Payment) result: " + result);
+				console.log("submitForm (Payment) result: " + JSON.stringify(result));
+				
 				if (result) {
 					alert("Payment success: Invoice ID " + result.id + " for CustomerID: " + result.customerID + " was added on " + result.date);
 					payButton.prop('disabled', true);
