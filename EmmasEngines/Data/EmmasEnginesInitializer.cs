@@ -272,7 +272,7 @@ namespace EmmasEngines.Data
                                 Stock = random.Next(20,51),
                                 InventoryUPC = invUPCs[k],
                                 PurchasedCost = random.NextDouble() * (priceMax - priceMin) + priceMin,
-                                PurchasedDate = startDate.AddDays(-random.Next(30, 365)
+                                PurchasedDate = startDate.AddDays(-random.Next(30, 365))
                             };
                             context.Prices.Add(o);
                             k++;
