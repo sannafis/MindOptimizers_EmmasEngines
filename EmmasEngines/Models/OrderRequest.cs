@@ -29,10 +29,12 @@ namespace EmmasEngines.Models
 
         [Display(Name = "Customer")]
         public int CustomerID { get; set; }
-
         public Customer Customer { get; set; }
-        
-        public Inventory Inventory { get; set; }
+
+        [Display(Name = "Supplier")]
+        [Required(ErrorMessage = "Supplier is required")]
+        public int SupplierID { get; set; }
+        public Supplier Supplier { get; set; }
 
         public ICollection<OrderRequestInventory> OrderRequestInventories { get; set; } = new HashSet<OrderRequestInventory>();
 

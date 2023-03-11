@@ -17,7 +17,7 @@ namespace EmmasEngines.Data
         public DbSet<City> Cities { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
-        public DbSet<Price> Prices { get; set; }
+        //public DbSet<Price> Prices { get; set; }
         public DbSet<Customer> Customers { get; set; }
 
         public DbSet<Payment> Payments { get; set; }
@@ -39,13 +39,6 @@ namespace EmmasEngines.Data
             .HasIndex(p => p.UPC)
             .IsUnique();
 
-            //1:many between inventory and prices
-            modelBuilder.Entity<Inventory>()
-                .HasMany(p => p.Prices)
-                .WithOne(i => i.Inventory)
-                .HasForeignKey(i => i.InventoryUPC)
-                .HasPrincipalKey(p => p.UPC);
-
             //Add a unique index to the Province Code
             modelBuilder.Entity<Province>()
             .HasIndex(p => p.Code)
@@ -56,17 +49,18 @@ namespace EmmasEngines.Data
             .HasIndex(p => p.Name)
             .IsUnique();
 
-            //Prevent Cascade Delete from Supplier to Price
+            //Prevent Cascade Delete from Supplier to Inventory
             modelBuilder.Entity<Supplier>()
-                .HasMany<Price>(p => p.Prices)
+                .HasMany<Inventory>(p => p.Inventories)
                 .WithOne(c => c.Supplier)
                 .HasForeignKey(c => c.SupplierID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //Prevent Cascade Delete from Inventory to Price
-            modelBuilder.Entity<Inventory>()
-                .HasMany<Price>(p => p.Prices)
-                .WithOne(c => c.Inventory)
+            //Prevent Cascade Delete from Supplier to OrderRequests
+            modelBuilder.Entity<Supplier>()
+                .HasMany<OrderRequest>(p => p.OrderRequests)
+                .WithOne(c => c.Supplier)
+                .HasForeignKey(c => c.SupplierID)
                 .OnDelete(DeleteBehavior.Restrict);
 
             //Prevent Cascade Delete from Province to City

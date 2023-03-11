@@ -31,13 +31,13 @@ namespace EmmasEngines.Models
         public double AdjustedPrice {
             get
             {
-                if (Prices.Any())
+                if (OrderRequestInventories.Any())
                 {
-                    return Math.Round(Prices.Select(x => x.PurchasedCost).Average(), 2);
+                    return Math.Round(OrderRequestInventories.Where(x => x.OrderRequest.ReceiveDate != null).Average(x => x.Price), 2);
                 }
                 else
                 {
-                    return 0;
+                    return 0.00;
                 }
             }
         }
@@ -46,14 +46,15 @@ namespace EmmasEngines.Models
         public double MarkupPrice {
             get
             {
-                if (Prices.Any())
+                if (OrderRequestInventories.Any())
                 {
-                    double average = Math.Round(Prices.Select(x => x.PurchasedCost).Average(), 2);
+                    
+                    double average = Math.Round(OrderRequestInventories.Where(x => x.OrderRequest.ReceiveDate != null).Average(x => x.Price), 2);
                     return Math.Round(((average * .23) + average),2);
                 }
                 else
                 {
-                    return 0;
+                    return 0.00;
                 }
             }
         }
@@ -70,12 +71,14 @@ namespace EmmasEngines.Models
         {
             get
             {
-                return Prices.Select(x => x.Stock).Sum();
+                return OrderRequestInventories.Where(x=>x.OrderRequest.ReceiveDate != null).Sum(x=>x.Quantity);
             }
         }
-        
-        [Display(Name = "All Prices")]
-        public ICollection<Price> Prices { get; set; } = new HashSet<Price>();
+
+        [Display(Name = "Supplier")]
+        [Required(ErrorMessage = "Please select a supplier.")]
+        public int SupplierID { get; set; }
+        public Supplier Supplier { get; set; }
 
         public ICollection<OrderRequestInventory> OrderRequestInventories { get; set; } = new HashSet<OrderRequestInventory>();
 

@@ -38,8 +38,11 @@ namespace EmmasEngines.Models
 
         public City City { get; set; }
 
-        [Display(Name = "All Prices")]
-        public ICollection<Price> Prices { get; set; } = new HashSet<Price>();
+        [Display(Name = "All Associated Orders")]
+        public ICollection<OrderRequest> OrderRequests { get; set; } = new HashSet<OrderRequest>();
+
+        [Display(Name = "All Products")]
+        public ICollection<Inventory> Inventories { get; set; } = new HashSet<Inventory>();
 
     }
 }
