@@ -269,10 +269,10 @@ namespace EmmasEngines.Data
                             k = (k >= invUPCs.Count()) ? 0 : k;//Resets counter k to 0 if we have run out of inventory
                             Price o = new Price()
                             {
-                                Stock = random.Next(20, 51),
+                                Stock = random.Next(20,51),
                                 InventoryUPC = invUPCs[k],
                                 PurchasedCost = random.NextDouble() * (priceMax - priceMin) + priceMin,
-                                PurchasedDate = startDate.AddDays(-random.Next(30, 365));
+                                PurchasedDate = startDate.AddDays(-random.Next(30, 365))
                             };
                             context.Prices.Add(o);
                             k++;
