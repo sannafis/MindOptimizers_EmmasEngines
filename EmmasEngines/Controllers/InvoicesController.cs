@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmmasEngines.Data;
 using EmmasEngines.Models;
+using System.Diagnostics;
 
 namespace EmmasEngines.Controllers
 {
@@ -22,7 +23,11 @@ namespace EmmasEngines.Controllers
         // GET: Invoices
         public async Task<IActionResult> Index()
         {
-            var emmasEnginesContext = _context.Invoices.Include(i => i.Customer).Include(i => i.Employee);
+            var emmasEnginesContext = _context.Invoices
+                .Include(i => i.Customer)
+                .Include(i => i.Employee)
+                .Include(i => i.InvoiceLines)
+                .Include(i => i.InvoicePayments);
             return View(await emmasEnginesContext.ToListAsync());
         }
 
@@ -37,6 +42,8 @@ namespace EmmasEngines.Controllers
             var invoice = await _context.Invoices
                 .Include(i => i.Customer)
                 .Include(i => i.Employee)
+                .Include(i => i.InvoiceLines)
+                .Include(i => i.InvoicePayments)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (invoice == null)
             {
@@ -60,20 +67,104 @@ namespace EmmasEngines.Controllers
         [HttpPost]
         //[ValidateAntiForgeryToken]
         [Route("Invoices/Create")]
-        public async Task<IActionResult> Create([FromBody]Invoice invoice)
+        public async Task<IActionResult> Create([FromBody] Invoice invoice)
         {
             if (ModelState.IsValid)
             {
+                //Get the data to construct a complete invoice object
+                //This includes: invoice, invoice lines, invoice payments
 
-                _context.Invoices.Add(invoice);
-                
+                var session = HttpContext.Session;
+                var invoiceLines = Utilities.SessionExtensions.GetObjectFromJson<List<InvoiceLine>>(session, "invoiceLines");// Get the invoice lines from the session
+
+                if (invoiceLines == null || invoiceLines.Count == 0)
+                {
+                    // If there are no invoice lines, return an error
+                    return BadRequest("No invoice lines found");
+                }
+
+                Int32.TryParse(HttpContext.Session.GetString("CustomerID"), out int customerID);
+                if (customerID == 0)
+                {
+                    //return BadRequest("Customer must be selected!");
+                    customerID = 1;
+                }
+                var invoiceToAdd = new Invoice
+                {
+                    Date = DateTime.UtcNow,
+                    Appreciation = invoice.Appreciation,
+                    Description = invoice.Description,
+                    CustomerID = customerID, // Replace with actual customer ID
+                    EmployeeID = invoice.EmployeeID, // Replace with actual employee ID
+                    InvoiceLines = new List<InvoiceLine>(),
+                    InvoicePayments = new List<InvoicePayment>()
+                };
+
+
+                // Add the invoice to the context
+                _context.Invoices.Add(invoiceToAdd);
+
+                // Add the invoice lines to the invoice
+                foreach (var line in invoiceLines)
+                {
+                    Debug.WriteLine($"Creating new invoice line for inventory UPC: {line.InventoryUPC}...");
+
+                    var invoiceLineToAdd = new InvoiceLine
+                    {
+                        Quantity = line.Quantity,
+                        SalePrice = line.SalePrice,
+                        InventoryUPC = line.InventoryUPC,
+                        InvoiceID = invoiceToAdd.ID,
+                        Invoice = invoiceToAdd
+                    };
+
+                    // Add the invoice line to the context and the invoice
+                    invoiceToAdd.InvoiceLines.Add(invoiceLineToAdd);
+                    _context.InvoiceLines.Add(invoiceLineToAdd);
+                }
+
+                // Add the invoice payments to the invoice
+                foreach (var invoicePayment in invoice.InvoicePayments)
+                {
+                    // Create a new payment object
+                    var invoicePaymentToAdd = new InvoicePayment
+                    {
+                        PaymentID = 1,//change later
+                        Invoice = invoiceToAdd,
+                        InvoiceID = invoiceToAdd.ID
+                    };
+                    
+                    invoiceToAdd.InvoicePayments.Add(invoicePaymentToAdd);// Add the invoice payment to the invoice
+                    _context.InvoicePayments.Add(invoicePaymentToAdd);// Add the invoice payment to the context
+                }
+
                 await _context.SaveChangesAsync();
-                return Json(invoice);
-                
+                //// Return the complete invoice object including invoice lines and invoice payments
+                var completeInvoice = await _context.Invoices
+                    .Include(i => i.Customer)
+                    .Include(i => i.Employee)
+                    .Include(i => i.InvoiceLines)
+                    .Include(i => i.InvoicePayments)
+                    .FirstOrDefaultAsync(m => m.ID == invoiceToAdd.ID);
+                return Json(completeInvoice);
             }
+            // check if invoiceLines is null or empty: if so, return error
+            if (invoice.InvoiceLines == null || invoice.InvoiceLines.Count == 0)
+            {
+                var error = "No invoice lines found. To correct this error, make sure you have at least one item in the cart before proceeding to pay.";
+                ModelState.AddModelError("InvoiceLines", error);
+                ViewData["InvoiceLinesError"] = error;
+                return BadRequest(error);
+            }
+            // check if invoicePayments is null or empty: if so, return error
+            if (invoice.InvoicePayments == null || invoice.InvoicePayments.Count == 0)
+            {
+                ModelState.AddModelError("InvoicePayments", "No invoice payments found. To correct this error, make sure you have at least one payment method selected before proceeding to pay.");
+                return View(invoice);
+            }
+
             return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors) });
         }
-        
 
 
         // GET: Invoices/Edit/5

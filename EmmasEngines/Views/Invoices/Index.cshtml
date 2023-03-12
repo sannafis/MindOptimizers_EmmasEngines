@@ -4,6 +4,12 @@
     ViewData["Title"] = "Index";
 }
 
+<style>
+    th, dt, a {
+        color: black;
+    }
+</style>
+
 <h1>Index</h1>
 
 <p>
@@ -27,12 +33,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.Employee)
             </th>
+            <th>Invoice Lines Count</th>
+            <th>Payment Count</th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="myTable">
 @foreach (var item in Model) {
-        <tr>
+        <tr class ="table-hover">
             <td>
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
@@ -43,10 +51,18 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Customer.Address)
+                @Html.DisplayFor(modelItem => item.Customer.FullName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Employee.FirstName)
+                @Html.DisplayFor(modelItem => item.Employee.FullName)
+            </td>
+            <td>
+			    @*Invoice Line Count*@
+                @Html.DisplayFor(modelItem => item.InvoiceLines.Count)
+            </td>
+            <td>
+                @*Payment Line Count*@
+				@Html.DisplayFor(modelItem => item.InvoicePayments.Count)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

@@ -34,7 +34,7 @@ namespace EmmasEngines.Controllers
                                   select i;
 
                 ViewData["Filtering"] = "show";
-
+                
                 return Json(inventories.ToList().FirstOrDefault());
             }
             else
@@ -56,7 +56,8 @@ namespace EmmasEngines.Controllers
                                 select c;
 
                 ViewData["Filtering"] = "show";
-
+                // set customer id to session variable
+                session.SetString("CustomerID", customers.FirstOrDefault().ID.ToString());
                 return PartialView("_CustomerDetails", customers.FirstOrDefault());
             }
             else
@@ -109,11 +110,24 @@ namespace EmmasEngines.Controllers
         public IActionResult RemoveFromCart(string UPC)
         {
             var session = HttpContext.Session;
+            List<InvoiceLine> invoiceLines = Utilities.SessionExtensions.GetObjectFromJson<List<InvoiceLine>>(session, "invoiceLines");
+            var existingLine = invoiceLines.FirstOrDefault(l => l.InventoryUPC == UPC);
 
-            List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
-            int index = isExist(UPC);
-            cart.RemoveAt(index);
-            Utilities.SessionExtensions.SetObjectAsJson(session, "cart", cart);
+            if (existingLine != null && existingLine.Quantity > 1)
+            {
+                // If the item is already in the cart, increment the quantity of the existing line
+                existingLine.Quantity--;
+                Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
+            }
+            else
+            {
+                List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
+                int index = isExist(UPC);
+                cart.RemoveAt(index);
+                invoiceLines.RemoveAt(index);
+                Utilities.SessionExtensions.SetObjectAsJson(session, "cart", cart);
+                Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
+            }
             return RedirectToAction("Index", "POS");
         }
 
@@ -126,10 +140,11 @@ namespace EmmasEngines.Controllers
             int index = isExist(UPC);
             cart[index].Quantity = quantity.ToString();
             Utilities.SessionExtensions.SetObjectAsJson(session, "cart", cart);
+
             return RedirectToAction("Index", "POS");
         }
 
-        //Check if item is in cart
+        //Check if item is in cart, return index value
         private int isExist(string UPC)
         {
             List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(HttpContext.Session, "cart");
@@ -142,7 +157,7 @@ namespace EmmasEngines.Controllers
             }
             return -1;
         }
-
+        //called when items are added to the cart
         public ActionResult Buy(string UPC)
         {
             var inventory = _context.Inventories
@@ -168,6 +183,7 @@ namespace EmmasEngines.Controllers
                 Inventory = inventory,
                 Quantity = 1,
                // SalePrice = inventory.Prices.Where(p => p.InventoryUPC == inventory.UPC).FirstOrDefault()?.PurchasedCost ?? 0.0
+               SalePrice = 1
             }
         };
 
@@ -193,12 +209,15 @@ namespace EmmasEngines.Controllers
                         InventoryUPC = inventory.UPC,
                         Inventory = inventory,
                         Quantity = 1,
-                       // SalePrice = inventory.Prices.Where(p => p.InventoryUPC == inventory.UPC).FirstOrDefault()?.PurchasedCost ?? 0.0
+                        // SalePrice = inventory.Prices.Where(p => p.InventoryUPC == inventory.UPC).FirstOrDefault()?.PurchasedCost ?? 0.0
+                        SalePrice = 1
                     });
                 }
 
                 Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
                 AddInventoryItemToCart(UPC);
+
+               
             }
 
             return RedirectToAction("Index", "POS");
