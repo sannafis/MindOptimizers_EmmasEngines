@@ -84,6 +84,7 @@ namespace EmmasEngines.Controllers
 
             var inventories = from i in _context.Inventories
                              .Include(p => p.Prices)
+                             .Include(o => o.OrderRequestInventories)
                               select i;
             var customer = _context.Customers.FirstOrDefault();
             ViewData["Customer"] = customer;

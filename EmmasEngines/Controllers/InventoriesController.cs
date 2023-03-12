@@ -58,6 +58,7 @@ namespace EmmasEngines.Controllers
             var inventories = _context.Inventories
 
                .Include(i => i.Prices)
+               .Include(o => o.OrderRequestInventories)
                .AsQueryable();
 
 

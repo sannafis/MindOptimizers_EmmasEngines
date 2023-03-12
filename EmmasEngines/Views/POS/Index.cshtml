@@ -132,6 +132,8 @@
 										@Html.DisplayFor(modelItem => item.Quantity)
 									</td>
 									<td>
+										@*Adjusted price (CostAVG)*@
+
 										@Html.DisplayFor(modelItem => item.AdjustedPrice)
 									</td>
 									<td>
@@ -411,16 +413,32 @@
 			},
 			error: function (xhr, status, error) {
 				//alert xhr response text:
-				switch (xhr.responseText) {
-					case 'No invoice lines found':
+				let errorType = '';
+
+				if (xhr.responseText === 'No invoice lines found') {
+					errorType = 'no-invoice-lines';
+				} else if (xhr.responseText === 'Invalid quantity') {
+					errorType = 'invalid-quantity';
+				} else if (xhr.responseText.includes('The field CustomerID must be between')) {
+					errorType = 'invalid-customer-id';
+				} else if (xhr.responseText.includes('PaymentID')) {
+					errorType = 'invalid-payment-method';
+				}
+
+				switch (errorType) {
+					case 'no-invoice-lines':
 						alert('No invoice lines found. To correct this error, make sure you have at least one item in the cart before proceeding to pay.');
 						break;
-					case 'Invalid quantity':
+					case 'invalid-quantity':
 						alert('Invalid quantity. Please enter a valid number for the quantity.');
 						break;
-					// add more cases for specific errors here
+					case 'invalid-customer-id':
+						alert('Invalid customer ID. Please select a valid customer at the top of the page.');
+						break;
+					case 'invalid-payment-method':
+						alert('Invalid payment method. Please select a valid payment method before continuing.');
+						break;
 					default:
-						// If the error message is not one of the specific cases, display the default error message
 						alert(xhr.responseText);
 						break;
 				}
