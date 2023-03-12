@@ -32,19 +32,8 @@
 				await Html.PartialAsync("_CustomerDetails", TempData["CustomerDetails"]);
 			}
 		</div>
-		@*When pressed, Modal box of Customer Name, Phone, Address, Postal*@
-		<div class="btn_crud">
-			<button type="submit" name="actionButton" value="customerDetails" tabindex="190" class="" onclick="" aria-label="button to show customer details">
-				<i class="fa fa-info" aria-hidden="true"></i> - Customer Details
-			</button>
-		</div>
-		@*When pressed, Modal box to add customer. Set cart to this customer.*@
-		<div class="btn_crud">
-			<button type="submit" name="actionButton" value="addCustomer" tabindex="190" class="" onclick="" aria-label="button to add customer">
-				<i class="fa fa-plus-square" aria-hidden="true"></i> - Add Customer
-			</button>
-		</div>
-
+		
+		
 	</section>
 
 	
@@ -206,7 +195,7 @@
 							foreach (Inventory item in cart)
 							{
 								var invoiceLine = invoiceLines.FirstOrDefault(line => line.InventoryUPC == item.UPC);
-									@*Log invoice lines to console*@
+										@*Log invoice lines to console*@
 								foreach (InvoiceLine line in invoiceLines)
 								{
 									Console.WriteLine("InvoiceLine");
@@ -219,20 +208,20 @@
 								var quantity = invoiceLine != null ? invoiceLine.Quantity : 0;
 								var price = invoiceLine != null ? invoiceLine.SalePrice : 0;
 								
-														<tr class="table-hover">
-															<td>
-																@Html.DisplayFor(modelItem => item.Name)
-															</td>
-															<td>
-																@price
-															</td>
-															<td>
-																@quantity
-															</td>
-															<td>
-																<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
-															</td>
-														</tr>
+															<tr class="table-hover">
+																<td>
+																	@Html.DisplayFor(modelItem => item.Name)
+																</td>
+																<td>
+																	@price
+																</td>
+																<td>
+																	@quantity
+																</td>
+																<td>
+																	<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
+																</td>
+															</tr>
 								
 							}
 						}
@@ -266,11 +255,11 @@
 
 							}
 						}
-											<li>Subtotal: @subtotal.ToString("C")</li>
-											<li>Tax: @tax.ToString("C")</li>
-											<li>Total: @total.ToString("C")</li>
-											<li>Paid: @paid.ToString("C")</li>
-											<li>Change: @change.ToString("C")</li>
+												<li>Subtotal: @subtotal.ToString("C")</li>
+												<li>Tax: @tax.ToString("C")</li>
+												<li>Total: @total.ToString("C")</li>
+												<li>Paid: @paid.ToString("C")</li>
+												<li>Change: @change.ToString("C")</li>
 					}
 				</ul>
 			</div>
@@ -311,7 +300,7 @@
 
 				</form>
 			</div>
-		</div>
+		
 
 
 	
@@ -348,19 +337,13 @@
 		$('#customer-details').html(customerDetails);
 	}
 	
-	function getInvoiceLineModels(cart, invoiceID){
-		var invoiceLineModels = [];
-		for (var i = 0; i < cart.length; i++) {
-			var invoiceLineModel = {
-				InvoiceID: invoiceID,
-				InventoryUPC: cart[i].InventoryUPC,
-				Quantity: cart[i].Quantity,
-				SalePrice: cart[i].AdjustedPrice
-			};
-			invoiceLineModels.push(invoiceLineModel);
-		}
-		return invoiceLineModels;
+
+	var customerID = $('#CustomerID').val(); // get the customer ID from the hidden input field
+	//function to redirect to Customer details page with current customer ID
+	function viewCustomerDetails(custID) {
+		window.location.href = "/Customers/Details/" + custID;
 	}
+
 
 	function submitForm(e) {
 		console.log("Event: " + e);

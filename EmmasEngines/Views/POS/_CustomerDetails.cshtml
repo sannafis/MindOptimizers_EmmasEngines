@@ -2,11 +2,29 @@
 
 @if (Model != null)
 {
-    <div>
+    
         <label><b>Customer Details</b></label>
         <p>Name: @Model.FullName</p>
         <p>Phone: @Model.Phone</p>
         <!-- Add other customer properties here -->
+        @*Button to redirect to customer detail page*@
+		@*<a href="@Url.Action("Details", "Customers", new { id = @Model.ID })" class="btn btn-primary">Customer Details</a>*@
+	<div class="btn">
+		<div class="btn_crud">
+			@*When pressed, Modal box of Customer Name, Phone, Address, Postal*@
+			<form action="@Url.Action("Details", "Customers", new { id = @Model.ID })" method="get">
+				<button type="submit" class="btn_crud_add"><i class="fa fa-list" aria-hidden="true"></i></button>
+			</form>
+			<span class="btn_tooltip">Details</span>
+		</div>
+		<div class="btn_crud">
+			@*When pressed, Modal box to add customer. Set cart to this customer.*@
+			<form action="@Url.Action("Create", "Customers")" method="get">
+				<button type="submit" class="btn_crud_add"><i class="fa fa-plus" aria-hidden="true"></i></button>
+			</form>
+			<span class ="btn_tooltip">Create</span>
+		</div>
+		
         @*Hidden field for CustomerID*@
 		<input type="hidden" name="CustomerID" value="@Model.ID" id="CustomerID" />
     </div>

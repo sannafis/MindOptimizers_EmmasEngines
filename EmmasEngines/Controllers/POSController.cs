@@ -62,8 +62,8 @@ namespace EmmasEngines.Controllers
                 var cust = customers.FirstOrDefault();
                 if (cust != null)
                 {
-                    session.SetString("CustomerID", customers.FirstOrDefault().ID.ToString());
-                    return PartialView("_CustomerDetails", customers.FirstOrDefault());
+                    session.SetString("CustomerID", cust.ID.ToString());
+                    return PartialView("_CustomerDetails", cust);
                 }
                 else
                 {
