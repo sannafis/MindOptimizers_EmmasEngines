@@ -7,6 +7,9 @@
 @{
 	ViewData["Title"] = "Index";
 	Html.AntiForgeryToken();
+	var customers = (List<Customer>)HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<Customer>>("customers");
+	// get list of customer full names
+	var customerNames = customers.Select(c => c.FullName).ToList();
 }
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <script src="https://kit.fontawesome.com/f8c88d6b79.js" crossorigin="anonymous"></script>
@@ -20,20 +23,17 @@
 	<section id="customerSearch">
 		<label id="searchHeader" class="control-label">Search Customer: </label>
 		@*Customer Details*@
+
+		<datalist id="customerNames">
+			@foreach (var name in customerNames)
+			{
+				<option value="@name" />
+			}
+		</datalist>
+
 		<form id="search-form" action="@Url.Action("SearchCustomer")" method="post">
-			@{
-				var customers = (List<Customer>)HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<Customer>>("customers");
-							// get list of customer full names
-				var customerNames = customers.Select(c => c.FullName).ToList();			
-			}	
-				
 			<input type="text" name="SearchString" placeholder="Search by name or phone. Eg. 'John' or '1234'" list="customerNames"/>
-			<datalist id="customerNames">
-				@foreach (var name in customerNames)
-				{
-					<option value="@name" />
-				}
-			</datalist>
+			@**@
 			<button type="submit" name="actionButton" value="FilterCustomer"><i class="fa fa-search" aria-hidden="true"></i> - Search</button>
 
 		</form>

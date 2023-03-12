@@ -54,7 +54,9 @@ namespace EmmasEngines.Controllers
             {
                 var customers = from c in _context.Customers
                                 .Where(s => s.FirstName.ToUpper().Contains(SearchString.ToUpper())
-                                || s.Phone.ToUpper().Contains(SearchString.ToUpper()))
+                                || s.Phone.ToUpper().Contains(SearchString.ToUpper())
+                                || s.LastName.ToUpper().Contains(SearchString.ToUpper())
+                                || (s.FirstName.ToUpper() + " " + s.LastName.ToUpper()).Contains(SearchString.ToUpper()))
                                 select c;
 
                 ViewData["Filtering"] = "show";
