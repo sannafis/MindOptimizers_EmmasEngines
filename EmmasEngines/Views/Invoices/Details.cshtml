@@ -76,26 +76,25 @@
         </tbody>
         <tfoot>
             <tr>
+            @{
+                double subtotal = Model.Subtotal;
+                double tax = Model.Subtotal * 0.13;
+                double total = Model.Subtotal * 1.13;
+            }
                 <td></td>
-                <td>Subtotal: @Model.Subtotal</td>
+                <td>Subtotal: @subtotal.ToString("C")</td>
                 <td></td>
             </tr>
             <tr>
-            @{
-                double tax = Model.Subtotal * 0.13;
-            }
                 <td></td>
-                <td>Tax: @tax</td>
+                <td>Tax: @tax.ToString("C")</td>
                 <td></td>
             </tr>
-        <tr>
-            @{
-                double total = Model.Subtotal * 1.13;
-            }
-            <td></td>
-            <td>Total: @total</td>
-            <td></td>
-        </tr>
+            <tr>
+                <td></td>
+                <td>Total: @total.ToString("C")</td>
+                <td></td>
+            </tr>
         </tfoot>
     </table>
     
