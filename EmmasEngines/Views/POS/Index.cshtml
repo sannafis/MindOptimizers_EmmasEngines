@@ -47,10 +47,10 @@
 
 	</section>
 
+	
+
+
 	<form asp-action="Index" method="get">
-
-
-
 		<div class="form-horizontal">
 
 
@@ -76,6 +76,8 @@
 			</section>
 		</div>
 
+
+		
 		<div id="inventoryMain">
 			<div class=" divider2_desc_btn">
 				<div class="description">
@@ -193,7 +195,7 @@
 							foreach (Inventory item in cart)
 							{
 								var invoiceLine = invoiceLines.FirstOrDefault(line => line.InventoryUPC == item.UPC);
-								@*Log invoice lines to console*@
+									@*Log invoice lines to console*@
 								foreach (InvoiceLine line in invoiceLines)
 								{
 									Console.WriteLine("InvoiceLine");
@@ -204,21 +206,22 @@
 									
 								}
 								var quantity = invoiceLine != null ? invoiceLine.Quantity : 0;
+								var price = invoiceLine != null ? invoiceLine.SalePrice : 0;
 								
-													<tr class="table-hover">
-														<td>
-															@Html.DisplayFor(modelItem => item.Name)
-														</td>
-														<td>
-															@Html.DisplayFor(modelItem => item.AdjustedPrice)
-														</td>
-														<td>
-															@quantity
-														</td>
-														<td>
-															<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
-														</td>
-													</tr>
+														<tr class="table-hover">
+															<td>
+																@Html.DisplayFor(modelItem => item.Name)
+															</td>
+															<td>
+																@price
+															</td>
+															<td>
+																@quantity
+															</td>
+															<td>
+																<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
+															</td>
+														</tr>
 								
 							}
 						}
@@ -226,6 +229,7 @@
 
 				</tbody>
 			</table>
+			</div>
 			<div id="cartSummaryData">
 				@*Subtotal, Tax, Total, Paid, Change*@
 				@*Using Summary, returning json result of these properties, display in an unordered list*@
@@ -245,20 +249,21 @@
 						{
 							foreach (InvoiceLine item in invoiceLines)
 							{
-								subtotal += item.Quantity * item.Inventory.AdjustedPrice;
+								subtotal += item.Quantity * item.Inventory.MarkupPrice;
 								tax = subtotal * 0.13;
 								total = subtotal + tax;
 
 							}
 						}
-										<li>Subtotal: @subtotal.ToString("C")</li>
-										<li>Tax: @tax.ToString("C")</li>
-										<li>Total: @total.ToString("C")</li>
-										<li>Paid: @paid.ToString("C")</li>
-										<li>Change: @change.ToString("C")</li>
+											<li>Subtotal: @subtotal.ToString("C")</li>
+											<li>Tax: @tax.ToString("C")</li>
+											<li>Total: @total.ToString("C")</li>
+											<li>Paid: @paid.ToString("C")</li>
+											<li>Change: @change.ToString("C")</li>
 					}
 				</ul>
 			</div>
+	</form>
 			<div id="cartPayment">
 				@*Payment Type: user selects between cash, debit, credit, or cheque (radio buttons? user can only select one option at a time). User enters payment amount in an input on the next line.*@
 				@*Checkout, Clear buttons*@
@@ -267,19 +272,19 @@
 				@*Use the "ClearCart" function to clear the cart and the summary data *@
 				<form id="paymentForm" method="post" action="@Url.Action("Create", "Invoices")">
 					<div>
-						<input type="radio" id="cash" name="paymentType" value="Cash" required>
+						<input type="radio" id="cash" name="paymentType" value="1" required>
 						<label for="cash">Cash</label>
 					</div>
 					<div>
-						<input type="radio" id="debit" name="paymentType" value="Debit" required>
+						<input type="radio" id="debit" name="paymentType" value="2" required>
 						<label for="debit">Debit</label>
 					</div>
 					<div>
-						<input type="radio" id="credit" name="paymentType" value="Credit" required>
+						<input type="radio" id="credit" name="paymentType" value="3" required>
 						<label for="credit">Credit</label>
 					</div>
 					<div>
-						<input type="radio" id="cheque" name="paymentType" value="Cheque" required>
+						<input type="radio" id="cheque" name="paymentType" value="4" required>
 						<label for="cheque">Cheque</label>
 					</div>
 					<div>
@@ -298,7 +303,7 @@
 		</div>
 
 
-	</form>
+	
 </main>
 
 
@@ -356,6 +361,9 @@
 			customerID = 1
 		}
 		var date = new Date().toISOString().substr(0, 10); // get today's date
+		var paymentID = $('input[name="paymentType"]:checked').val(); // get the selected paymentID from the radio buttons
+		console.log("PAYMENT ID: " + paymentID);
+		////TODO error handle / validate paymentID
 		var invoiceModel = {
 			Date: date,
 			Appreciation: 5.00,
@@ -364,7 +372,7 @@
 			EmployeeID: 1,
 			InvoicePayments:[
 				{
-					PaymentID : 1 //change later to actual paymentID
+					PaymentID : paymentID //this needs to be set to  paymentID
 				}
 			]
 		};
