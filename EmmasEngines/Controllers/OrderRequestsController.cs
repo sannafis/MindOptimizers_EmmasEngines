@@ -31,7 +31,7 @@ namespace EmmasEngines.Controllers
             ViewData["Filtering"] = "";
 
             //sort options for the table (match column headings)
-            string[] sortOptions = new[] { "Description", "SentDate", "ReceiveDate", "ExternalOrderNum"};
+            string[] sortOptions = new[] { "ID", "Description", "SentDate", "ReceiveDate", "ExternalOrderNum"};
 
             var emmasEnginesContext = from i in _context.OrderRequests
                 .Include(o => o.Customer)
@@ -62,6 +62,13 @@ namespace EmmasEngines.Controllers
                 }
             }
             //Now sort by field and direction
+            if (sortField == "ID")
+            {
+                if (sortDirection == "asc")
+                    emmasEnginesContext = emmasEnginesContext.OrderBy(s => s.ID);
+                else
+                    emmasEnginesContext = emmasEnginesContext.OrderByDescending(s => s.ID);
+            }
             if (sortField == "Description")
             {
                 if (sortDirection == "asc")
