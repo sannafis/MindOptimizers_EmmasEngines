@@ -195,7 +195,7 @@
 							foreach (Inventory item in cart)
 							{
 								var invoiceLine = invoiceLines.FirstOrDefault(line => line.InventoryUPC == item.UPC);
-										@*Log invoice lines to console*@
+																										@*Log invoice lines to console*@
 								foreach (InvoiceLine line in invoiceLines)
 								{
 									Console.WriteLine("InvoiceLine");
@@ -208,20 +208,20 @@
 								var quantity = invoiceLine != null ? invoiceLine.Quantity : 0;
 								var price = invoiceLine != null ? invoiceLine.SalePrice : 0;
 								
-															<tr class="table-hover">
-																<td>
-																	@Html.DisplayFor(modelItem => item.Name)
-																</td>
-																<td>
-																	@price
-																</td>
-																<td>
-																	@quantity
-																</td>
-																<td>
-																	<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
-																</td>
-															</tr>
+																															<tr class="table-hover">
+																																<td>
+																																	@Html.DisplayFor(modelItem => item.Name)
+																																</td>
+																																<td>
+																																	@price
+																																</td>
+																																<td>
+																																	@quantity
+																																</td>
+																																<td>
+																																	<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
+																																</td>
+																															</tr>
 								
 							}
 						}
@@ -255,11 +255,40 @@
 
 							}
 						}
-												<li>Subtotal: @subtotal.ToString("C")</li>
-												<li>Tax: @tax.ToString("C")</li>
-												<li>Total: @total.ToString("C")</li>
-												<li>Paid: @paid.ToString("C")</li>
-												<li>Change: @change.ToString("C")</li>
+																				<table>
+																					<thead>
+																						<tr>
+																							<th>Item</th>
+																							<th>Value</th>
+																						</tr>
+																					</thead>
+																					<tbody>
+																						<tr>
+																							<td>Subtotal</td>
+																							<td id="subtotal">@subtotal.ToString("C")</td>
+																						</tr>
+																						<tr>
+																							<td>Tax</td>
+																							<td id="tax">@tax.ToString("C")</td>
+																						</tr>
+																						<tr>
+																							<td>Total</td>
+																							<td id="total">@total.ToString("C")</td>
+																						</tr>
+																						<tr>
+																							<td>Paid</td>
+																							<td id="paid">@paid.ToString("C")</td>
+																						</tr>
+																						<tr>
+																							<td>Remainder</td>
+																							<td id="remainder">@change.ToString("C")</td>
+																						</tr>
+																						<tr>
+																							<td>Change</td>
+																							<td id="change">@change.ToString("C")</td>
+																						</tr>
+																					</tbody>
+																				</table>
 					}
 				</ul>
 			</div>
@@ -271,6 +300,7 @@
 				@*Use the "Pay" function to clear the cart and the summary data *@
 				@*Use the "ClearCart" function to clear the cart and the summary data *@
 				<form id="paymentForm" method="post" action="@Url.Action("Create", "Invoices")">
+					<label class="control-label" style="font-weight:bold">Select Payment Details...</label>
 					<div>
 						<input type="radio" id="cash" name="paymentType" value="1" required>
 						<label for="cash">Cash</label>
@@ -344,10 +374,66 @@
 		window.location.href = "/Customers/Details/" + custID;
 	}
 
+	function processPayment() {
+		const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
+		const total = parseFloat(document.getElementById('total').textContent.replace(/[^\d.-]/g, ''));
+
+		if (isNaN(paymentAmount) || paymentAmount <= 0) {
+			alert('Invalid payment amount. Please enter a valid number.');
+			return false;
+		}
+		let paid = parseFloat(document.getElementById('paid').textContent.replace(/[^\d.-]/g, ''));
+		let remainder = parseFloat(document.getElementById('remainder').textContent.replace(/[^\d.-]/g, ''));
+		let change = parseFloat(document.getElementById('change').textContent.replace(/[^\d.-]/g, ''))
+
+		if (total > paid || remainder > 0) {
+
+			if (isNaN(paid)) {
+				paid = 0;
+			}
+			if (isNaN(remainder)) {
+				remainder = total;
+			}
+
+			if (paymentAmount < remainder) {
+				//there will be a remainder / additional payment
+			}
+			
+			paid += paymentAmount;
+			remainder = total - paid;
+			change = paid - total;
+
+			if (remainder < 0) {//remainder cannot be below 0
+				remainder = 0;
+			}
+			document.getElementById('paid').textContent = '$' + paid.toFixed(2);
+			document.getElementById('remainder').textContent = '$' + remainder.toFixed(2);
+			if (remainder <= 0) 
+			{
+				alert(`Payment complete. Change: ${(change).toFixed(2)}`);
+				document.getElementById('change').textContent = '$' + change.toFixed(2);
+				return true;
+			}
+			else
+			{
+				alert(`Payment amount remaining: ${remainder.toFixed(2)}`);
+			}
+		}
+	}
+
 
 	function submitForm(e) {
-		console.log("Event: " + e);
 		e.preventDefault();
+		var paymentID = $('input[name="paymentType"]:checked').val(); // get the selected paymentID from the radio buttons
+		if(paymentID == null || paymentID == undefined){
+			alert("Please select a payment method!");
+			return false;
+		}
+		
+		if(!processPayment())
+		{
+			return false;
+		}
 		var form = $('#paymentForm');
 		var url = form.attr('action');
 		var customerID = $('#CustomerID').val(); // get the customer ID from the hidden input field
@@ -355,9 +441,7 @@
 			customerID = 1
 		}
 		var date = new Date().toISOString().substr(0, 10); // get today's date
-		var paymentID = $('input[name="paymentType"]:checked').val(); // get the selected paymentID from the radio buttons
-		console.log("PAYMENT ID: " + paymentID);
-		////TODO error handle / validate paymentID
+
 		var invoiceModel = {
 			Date: date,
 			Appreciation: 5.00,
@@ -441,6 +525,7 @@
 				console.log("submitForm status:", status);
 			}
 		});
+		
 	}
 
 
