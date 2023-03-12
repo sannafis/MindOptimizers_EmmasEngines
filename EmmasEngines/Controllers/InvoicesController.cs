@@ -129,7 +129,7 @@ namespace EmmasEngines.Controllers
                     // Create a new payment object
                     var invoicePaymentToAdd = new InvoicePayment
                     {
-                        PaymentID = 1,//change later
+                        PaymentID = invoicePayment.PaymentID,//Get the payment ID from the form data
                         Invoice = invoiceToAdd,
                         InvoiceID = invoiceToAdd.ID
                     };

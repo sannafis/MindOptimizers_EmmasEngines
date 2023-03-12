@@ -32,25 +32,14 @@
 				await Html.PartialAsync("_CustomerDetails", TempData["CustomerDetails"]);
 			}
 		</div>
-		@*When pressed, Modal box of Customer Name, Phone, Address, Postal*@
-		<div class="btn_crud">
-			<button type="submit" name="actionButton" value="customerDetails" tabindex="190" class="" onclick="" aria-label="button to show customer details">
-				<i class="fa fa-info" aria-hidden="true"></i> - Customer Details
-			</button>
-		</div>
-		@*When pressed, Modal box to add customer. Set cart to this customer.*@
-		<div class="btn_crud">
-			<button type="submit" name="actionButton" value="addCustomer" tabindex="190" class="" onclick="" aria-label="button to add customer">
-				<i class="fa fa-plus-square" aria-hidden="true"></i> - Add Customer
-			</button>
-		</div>
-
+		
+		
 	</section>
 
+	
+
+
 	<form asp-action="Index" method="get">
-
-
-
 		<div class="form-horizontal">
 
 
@@ -76,6 +65,8 @@
 			</section>
 		</div>
 
+
+		
 		<div id="inventoryMain">
 			<div class=" divider2_desc_btn">
 				<div class="description">
@@ -130,13 +121,24 @@
 										@Html.DisplayFor(modelItem => item.Quantity)
 									</td>
 									<td>
+										@*Adjusted price (CostAVG)*@
+
 										@Html.DisplayFor(modelItem => item.AdjustedPrice)
 									</td>
 									<td>
 										@Html.DisplayFor(modelItem => item.MarkupPrice)
 									</td>
 									<td>
-										@Html.DisplayFor(modelItem => item.Current)
+										@if (item.Current)
+										{
+											//feather icon check
+											<span class="fa-solid fa-check"></span>
+										}
+										else
+										{
+											//feather icon x
+											<span class="fa-solid fa-x"></span>
+										}
 									</td>
 									<td>
 										@Html.DisplayFor(modelItem => item.TotalStock)
@@ -193,7 +195,7 @@
 							foreach (Inventory item in cart)
 							{
 								var invoiceLine = invoiceLines.FirstOrDefault(line => line.InventoryUPC == item.UPC);
-								@*Log invoice lines to console*@
+										@*Log invoice lines to console*@
 								foreach (InvoiceLine line in invoiceLines)
 								{
 									Console.WriteLine("InvoiceLine");
@@ -204,21 +206,22 @@
 									
 								}
 								var quantity = invoiceLine != null ? invoiceLine.Quantity : 0;
+								var price = invoiceLine != null ? invoiceLine.SalePrice : 0;
 								
-													<tr class="table-hover">
-														<td>
-															@Html.DisplayFor(modelItem => item.Name)
-														</td>
-														<td>
-															@Html.DisplayFor(modelItem => item.AdjustedPrice)
-														</td>
-														<td>
-															@quantity
-														</td>
-														<td>
-															<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
-														</td>
-													</tr>
+															<tr class="table-hover">
+																<td>
+																	@Html.DisplayFor(modelItem => item.Name)
+																</td>
+																<td>
+																	@price
+																</td>
+																<td>
+																	@quantity
+																</td>
+																<td>
+																	<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
+																</td>
+															</tr>
 								
 							}
 						}
@@ -226,6 +229,7 @@
 
 				</tbody>
 			</table>
+			</div>
 			<div id="cartSummaryData">
 				@*Subtotal, Tax, Total, Paid, Change*@
 				@*Using Summary, returning json result of these properties, display in an unordered list*@
@@ -245,20 +249,21 @@
 						{
 							foreach (InvoiceLine item in invoiceLines)
 							{
-								subtotal += item.Quantity * item.Inventory.AdjustedPrice;
+								subtotal += item.Quantity * item.Inventory.MarkupPrice;
 								tax = subtotal * 0.13;
 								total = subtotal + tax;
 
 							}
 						}
-										<li>Subtotal: @subtotal.ToString("C")</li>
-										<li>Tax: @tax.ToString("C")</li>
-										<li>Total: @total.ToString("C")</li>
-										<li>Paid: @paid.ToString("C")</li>
-										<li>Change: @change.ToString("C")</li>
+												<li>Subtotal: @subtotal.ToString("C")</li>
+												<li>Tax: @tax.ToString("C")</li>
+												<li>Total: @total.ToString("C")</li>
+												<li>Paid: @paid.ToString("C")</li>
+												<li>Change: @change.ToString("C")</li>
 					}
 				</ul>
 			</div>
+	</form>
 			<div id="cartPayment">
 				@*Payment Type: user selects between cash, debit, credit, or cheque (radio buttons? user can only select one option at a time). User enters payment amount in an input on the next line.*@
 				@*Checkout, Clear buttons*@
@@ -267,19 +272,19 @@
 				@*Use the "ClearCart" function to clear the cart and the summary data *@
 				<form id="paymentForm" method="post" action="@Url.Action("Create", "Invoices")">
 					<div>
-						<input type="radio" id="cash" name="paymentType" value="Cash" required>
+						<input type="radio" id="cash" name="paymentType" value="1" required>
 						<label for="cash">Cash</label>
 					</div>
 					<div>
-						<input type="radio" id="debit" name="paymentType" value="Debit" required>
+						<input type="radio" id="debit" name="paymentType" value="2" required>
 						<label for="debit">Debit</label>
 					</div>
 					<div>
-						<input type="radio" id="credit" name="paymentType" value="Credit" required>
+						<input type="radio" id="credit" name="paymentType" value="3" required>
 						<label for="credit">Credit</label>
 					</div>
 					<div>
-						<input type="radio" id="cheque" name="paymentType" value="Cheque" required>
+						<input type="radio" id="cheque" name="paymentType" value="4" required>
 						<label for="cheque">Cheque</label>
 					</div>
 					<div>
@@ -295,10 +300,10 @@
 
 				</form>
 			</div>
-		</div>
+		
 
 
-	</form>
+	
 </main>
 
 
@@ -332,19 +337,13 @@
 		$('#customer-details').html(customerDetails);
 	}
 	
-	function getInvoiceLineModels(cart, invoiceID){
-		var invoiceLineModels = [];
-		for (var i = 0; i < cart.length; i++) {
-			var invoiceLineModel = {
-				InvoiceID: invoiceID,
-				InventoryUPC: cart[i].InventoryUPC,
-				Quantity: cart[i].Quantity,
-				SalePrice: cart[i].AdjustedPrice
-			};
-			invoiceLineModels.push(invoiceLineModel);
-		}
-		return invoiceLineModels;
+
+	var customerID = $('#CustomerID').val(); // get the customer ID from the hidden input field
+	//function to redirect to Customer details page with current customer ID
+	function viewCustomerDetails(custID) {
+		window.location.href = "/Customers/Details/" + custID;
 	}
+
 
 	function submitForm(e) {
 		console.log("Event: " + e);
@@ -356,6 +355,9 @@
 			customerID = 1
 		}
 		var date = new Date().toISOString().substr(0, 10); // get today's date
+		var paymentID = $('input[name="paymentType"]:checked').val(); // get the selected paymentID from the radio buttons
+		console.log("PAYMENT ID: " + paymentID);
+		////TODO error handle / validate paymentID
 		var invoiceModel = {
 			Date: date,
 			Appreciation: 5.00,
@@ -364,7 +366,7 @@
 			EmployeeID: 1,
 			InvoicePayments:[
 				{
-					PaymentID : 1 //change later to actual paymentID
+					PaymentID : paymentID //this needs to be set to  paymentID
 				}
 			]
 		};
@@ -403,16 +405,32 @@
 			},
 			error: function (xhr, status, error) {
 				//alert xhr response text:
-				switch (xhr.responseText) {
-					case 'No invoice lines found':
+				let errorType = '';
+
+				if (xhr.responseText === 'No invoice lines found') {
+					errorType = 'no-invoice-lines';
+				} else if (xhr.responseText === 'Invalid quantity') {
+					errorType = 'invalid-quantity';
+				} else if (xhr.responseText.includes('The field CustomerID must be between')) {
+					errorType = 'invalid-customer-id';
+				} else if (xhr.responseText.includes('PaymentID')) {
+					errorType = 'invalid-payment-method';
+				}
+
+				switch (errorType) {
+					case 'no-invoice-lines':
 						alert('No invoice lines found. To correct this error, make sure you have at least one item in the cart before proceeding to pay.');
 						break;
-					case 'Invalid quantity':
+					case 'invalid-quantity':
 						alert('Invalid quantity. Please enter a valid number for the quantity.');
 						break;
-					// add more cases for specific errors here
+					case 'invalid-customer-id':
+						alert('Invalid customer ID. Please select a valid customer at the top of the page.');
+						break;
+					case 'invalid-payment-method':
+						alert('Invalid payment method. Please select a valid payment method before continuing.');
+						break;
 					default:
-						// If the error message is not one of the specific cases, display the default error message
 						alert(xhr.responseText);
 						break;
 				}

@@ -18,7 +18,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Invoice</h4>
+    <h4>Invoice #@Html.DisplayFor(model => model.ID)</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -55,8 +55,8 @@
     </dl>
 
 </div>
-    <caption>Invoice Lines</caption>
     <table class="table">
+
         <thead>
             <tr class ="table-hover">
                 <th>Quantity</th>
@@ -74,7 +74,22 @@
                 </tr>
             }
         </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td>Subtotal: @Model.Subtotal</td>
+                <td></td>
+            </tr>
+        </tfoot>
     </table>
+    
+@foreach (var pay in Model.InvoicePayments)
+{
+	<p>Payment ID: @pay.PaymentID</p>
+}
+    
+   
+
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |

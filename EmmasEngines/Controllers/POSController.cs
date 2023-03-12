@@ -48,6 +48,8 @@ namespace EmmasEngines.Controllers
         {
             Console.WriteLine("SearchString: " + SearchString);
             ViewData["Filtering"] = "";
+            session = HttpContext.Session;
+            
             if (!String.IsNullOrEmpty(SearchString))
             {
                 var customers = from c in _context.Customers
@@ -57,8 +59,16 @@ namespace EmmasEngines.Controllers
 
                 ViewData["Filtering"] = "show";
                 // set customer id to session variable
-                session.SetString("CustomerID", customers.FirstOrDefault().ID.ToString());
-                return PartialView("_CustomerDetails", customers.FirstOrDefault());
+                var cust = customers.FirstOrDefault();
+                if (cust != null)
+                {
+                    session.SetString("CustomerID", cust.ID.ToString());
+                    return PartialView("_CustomerDetails", cust);
+                }
+                else
+                {
+                    return PartialView("_CustomerDetails", null);
+                }
             }
             else
             {
@@ -73,7 +83,8 @@ namespace EmmasEngines.Controllers
             ViewData["Filtering"] = "";
 
             var inventories = from i in _context.Inventories
-               // .Include(p => p.Prices)
+                             .Include(p => p.Prices)
+                             .Include(o => o.OrderRequestInventories)
                               select i;
             var customer = _context.Customers.FirstOrDefault();
             ViewData["Customer"] = customer;
@@ -162,7 +173,7 @@ namespace EmmasEngines.Controllers
         {
             var inventory = _context.Inventories
                 .Where(i => i.UPC == UPC)
-               // .Include(p => p.Prices)
+                .Include(p => p.Prices)
                 .FirstOrDefault();
 
             if (inventory == null)
@@ -182,8 +193,7 @@ namespace EmmasEngines.Controllers
                 InventoryUPC = inventory.UPC,
                 Inventory = inventory,
                 Quantity = 1,
-               // SalePrice = inventory.Prices.Where(p => p.InventoryUPC == inventory.UPC).FirstOrDefault()?.PurchasedCost ?? 0.0
-               SalePrice = 1
+                SalePrice = inventory.MarkupPrice
             }
         };
 
@@ -209,8 +219,7 @@ namespace EmmasEngines.Controllers
                         InventoryUPC = inventory.UPC,
                         Inventory = inventory,
                         Quantity = 1,
-                        // SalePrice = inventory.Prices.Where(p => p.InventoryUPC == inventory.UPC).FirstOrDefault()?.PurchasedCost ?? 0.0
-                        SalePrice = 1
+                        SalePrice = inventory.MarkupPrice
                     });
                 }
 
