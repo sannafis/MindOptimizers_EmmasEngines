@@ -88,7 +88,11 @@ namespace EmmasEngines.Controllers
                               select i;
             var customer = _context.Customers.FirstOrDefault();
             ViewData["Customer"] = customer;
-            
+
+            var session = HttpContext.Session;
+            var customers = _context.Customers.ToList();
+            Utilities.SessionExtensions.SetObjectAsJson(session, "customers", customers);
+
 
             if (!String.IsNullOrEmpty(SearchString))
             {

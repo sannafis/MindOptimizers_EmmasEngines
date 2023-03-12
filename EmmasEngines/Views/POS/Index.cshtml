@@ -21,7 +21,19 @@
 		<label id="searchHeader" class="control-label">Search Customer: </label>
 		@*Customer Details*@
 		<form id="search-form" action="@Url.Action("SearchCustomer")" method="post">
-			<input type="text" name="SearchString" placeholder="Search by name or phone. Eg. 'John' or '1234'" />
+			@{
+				var customers = (List<Customer>)HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<Customer>>("customers");
+							// get list of customer full names
+				var customerNames = customers.Select(c => c.FullName).ToList();			
+			}	
+				
+			<input type="text" name="SearchString" placeholder="Search by name or phone. Eg. 'John' or '1234'" list="customerNames"/>
+			<datalist id="customerNames">
+				@foreach (var name in customerNames)
+				{
+					<option value="@name" />
+				}
+			</datalist>
 			<button type="submit" name="actionButton" value="FilterCustomer"><i class="fa fa-search" aria-hidden="true"></i> - Search</button>
 
 		</form>
