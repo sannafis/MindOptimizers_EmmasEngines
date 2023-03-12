@@ -26,24 +26,6 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Inventories",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    UPC = table.Column<string>(type: "TEXT", maxLength: 11, nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Size = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Quantity = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Current = table.Column<bool>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Inventories", x => x.ID);
-                    table.UniqueConstraint("AK_Inventories_UPC", x => x.UPC);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -217,6 +199,31 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Inventories",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UPC = table.Column<string>(type: "TEXT", maxLength: 11, nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Size = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Quantity = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Current = table.Column<bool>(type: "INTEGER", nullable: false),
+                    SupplierID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Inventories", x => x.ID);
+                    table.UniqueConstraint("AK_Inventories_UPC", x => x.UPC);
+                    table.ForeignKey(
+                        name: "FK_Inventories_Suppliers_SupplierID",
+                        column: x => x.SupplierID,
+                        principalTable: "Suppliers",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderRequests",
                 columns: table => new
                 {
@@ -227,7 +234,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     ReceiveDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     ExternalOrderNum = table.Column<string>(type: "TEXT", maxLength: 5, nullable: false),
                     CustomerID = table.Column<int>(type: "INTEGER", nullable: false),
-                    InventoryID = table.Column<int>(type: "INTEGER", nullable: true)
+                    SupplierID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -239,37 +246,33 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderRequests_Inventories_InventoryID",
-                        column: x => x.InventoryID,
-                        principalTable: "Inventories",
-                        principalColumn: "ID");
+                        name: "FK_OrderRequests_Suppliers_SupplierID",
+                        column: x => x.SupplierID,
+                        principalTable: "Suppliers",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Prices",
+                name: "InvoicePayments",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    InventoryUPC = table.Column<string>(type: "TEXT", nullable: false),
-                    PurchasedCost = table.Column<double>(type: "REAL", nullable: false),
-                    PurchasedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Stock = table.Column<int>(type: "INTEGER", nullable: false),
-                    SupplierID = table.Column<int>(type: "INTEGER", nullable: false)
+                    InvoiceID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PaymentID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Prices", x => x.ID);
+                    table.PrimaryKey("PK_InvoicePayments", x => new { x.InvoiceID, x.PaymentID });
                     table.ForeignKey(
-                        name: "FK_Prices_Inventories_InventoryUPC",
-                        column: x => x.InventoryUPC,
-                        principalTable: "Inventories",
-                        principalColumn: "UPC",
-                        onDelete: ReferentialAction.Restrict);
+                        name: "FK_InvoicePayments_Invoices_InvoiceID",
+                        column: x => x.InvoiceID,
+                        principalTable: "Invoices",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Prices_Suppliers_SupplierID",
-                        column: x => x.SupplierID,
-                        principalTable: "Suppliers",
+                        name: "FK_InvoicePayments_Payments_PaymentID",
+                        column: x => x.PaymentID,
+                        principalTable: "Payments",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -301,26 +304,24 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "InvoicePayments",
+                name: "Prices",
                 columns: table => new
                 {
-                    InvoiceID = table.Column<int>(type: "INTEGER", nullable: false),
-                    PaymentID = table.Column<int>(type: "INTEGER", nullable: false)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    InventoryUPC = table.Column<string>(type: "TEXT", nullable: false),
+                    PurchasedCost = table.Column<double>(type: "REAL", nullable: false),
+                    PurchasedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Stock = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InvoicePayments", x => new { x.InvoiceID, x.PaymentID });
+                    table.PrimaryKey("PK_Prices", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_InvoicePayments_Invoices_InvoiceID",
-                        column: x => x.InvoiceID,
-                        principalTable: "Invoices",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_InvoicePayments_Payments_PaymentID",
-                        column: x => x.PaymentID,
-                        principalTable: "Payments",
-                        principalColumn: "ID",
+                        name: "FK_Prices_Inventories_InventoryUPC",
+                        column: x => x.InventoryUPC,
+                        principalTable: "Inventories",
+                        principalColumn: "UPC",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -330,7 +331,8 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 {
                     OrderRequestID = table.Column<int>(type: "INTEGER", nullable: false),
                     InventoryUPC = table.Column<string>(type: "TEXT", nullable: false),
-                    Quantity = table.Column<int>(type: "INTEGER", nullable: false)
+                    Quantity = table.Column<int>(type: "INTEGER", nullable: false),
+                    Price = table.Column<double>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -380,6 +382,11 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 table: "Employees",
                 column: "Username",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Inventories_SupplierID",
+                table: "Inventories",
+                column: "SupplierID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Inventories_UPC",
@@ -436,9 +443,9 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderRequests_InventoryID",
+                name: "IX_OrderRequests_SupplierID",
                 table: "OrderRequests",
-                column: "InventoryID");
+                column: "SupplierID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_Type",
@@ -456,11 +463,6 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 name: "IX_Prices_InventoryUPC",
                 table: "Prices",
                 column: "InventoryUPC");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Prices_SupplierID",
-                table: "Prices",
-                column: "SupplierID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Provinces_Code",
@@ -515,7 +517,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 name: "OrderRequests");
 
             migrationBuilder.DropTable(
-                name: "Suppliers");
+                name: "Inventories");
 
             migrationBuilder.DropTable(
                 name: "Employees");
@@ -524,7 +526,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 name: "Customers");
 
             migrationBuilder.DropTable(
-                name: "Inventories");
+                name: "Suppliers");
 
             migrationBuilder.DropTable(
                 name: "Cities");

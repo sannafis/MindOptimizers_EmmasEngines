@@ -135,6 +135,76 @@ namespace EmmasEngines.Controllers
             return View(supplier);
         }
 
+        /*************************************************************************************************/
+        /*************************************************************************************************/
+        //AddOrEdit get and post controller to combine this two actions
+
+        // GET: Suppliers/AddOrEdit
+        // GET: Suppliers/AddOrEdit/5
+        public async Task<IActionResult> AddOrEdit(int id = 0)
+        {
+            if (id == 0)
+            {
+                ViewData["CityID"] = new SelectList(_context.Cities, "ID", "Name");
+                return View(new Supplier());    
+            }
+            else
+            {
+                var supplier = await _context.Suppliers.FindAsync(id);
+                if (supplier == null)
+                {
+                    return NotFound();
+                }
+                ViewData["CityID"] = new SelectList(_context.Cities, "ID", "Name", supplier.CityID);
+                return View(supplier);
+            }
+
+        }
+
+        // POST: Suppliers/AddOrEdit
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddOrEdit(int id, [Bind("ID,Name,Phone,Email,Address,Postal,CityID")] Supplier supplier)
+        {
+            if (ModelState.IsValid)
+            {
+                if (id == 0)
+                {
+                    _context.Add(supplier);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    try
+                    {
+                        _context.Update(supplier);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!SupplierExists(supplier.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+
+                ViewData["CityID"] = new SelectList(_context.Cities, "ID", "Name", supplier.CityID);
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Index", _context.Suppliers.ToList()) });
+            }
+            ViewData["CityID"] = new SelectList(_context.Cities, "ID", "Name", supplier.CityID);
+            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEdit", supplier) });
+        }
+
+        /*************************************************************************************************/
+        /*************************************************************************************************/
+
         // GET: Suppliers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

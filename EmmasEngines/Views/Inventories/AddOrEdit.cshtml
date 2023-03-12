@@ -1,51 +1,42 @@
 ﻿@model EmmasEngines.Models.Inventory
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "AddOrEdit";
+    Layout = null;
 }
 
 
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+
+<div class="form-popup">
+        <form asp-action="AddOrEdit" class="form-container" >
+            <h4 id='add_edit'>ADD PRODUCT</h4>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
-            <div class="form-group">
-                <label asp-for="UPC" class="control-label"></label>
-                <input asp-for="UPC" class="form-control" />
+
+                <label asp-for="UPC" class="margin-top-22"></label>
+                <input asp-for="UPC" class="no-bottom-margin" />
                 <span asp-validation-for="UPC" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+
+                <label asp-for="Name" class="margin-top-22"></label>
+                <input asp-for="Name" class="no-bottom-margin" />
                 <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Size" class="control-label"></label>
-                <input asp-for="Size" class="form-control" />
+
+                <label  asp-for="Size" class="margin-top-22"></label>
+                <input asp-for="Size" class="no-bottom-margin" />
                 <span asp-validation-for="Size" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
+
+                <label asp-for="Quantity" class="margin-top-22"></label>
+                <input asp-for="Quantity" class="no-bottom-margin" />
                 <span asp-validation-for="Quantity" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Current" /> @Html.DisplayNameFor(model => model.Current)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+
+            <button type="submit" value="submit" class="btn_submit" style="margin-top: 22px;">Submit</button>
+            <button type="button" value="Close" class="btn_cancel">Close</button>
+
         </form>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -7,9 +7,9 @@ namespace EmmasEngines.Models
     {
         public int ID { get; set; }
 
-        // Inventory foreign key
-        [Display(Name = "Inventory UPC")]
-        [Required(ErrorMessage = "Inventory associated with this price is required.")]
+        //Inventory foreign key
+       [Display(Name = "Inventory UPC")]
+       [Required(ErrorMessage = "Inventory associated with this price is required.")]
         public string InventoryUPC { get; set; }
 
         [Display(Name = "Inventory")]
@@ -30,11 +30,11 @@ namespace EmmasEngines.Models
         [Range(0, Int32.MaxValue, ErrorMessage = "Stock must be greater than or equal to 0.")]
         public int Stock { get; set; }
 
-        [Display(Name = "Supplier")]
-        [Required(ErrorMessage = "Please select a supplier.")]
-        public int SupplierID { get; set; }
+        //[Display(Name = "Supplier")]
+        //[Required(ErrorMessage = "Please select a supplier.")]
+        //public int SupplierID { get; set; }
 
-        public Supplier Supplier { get; set; }
+        //public Supplier Supplier { get; set; }
 
     }
 }

@@ -132,48 +132,7 @@ namespace EmmasEngines.Data
                     context.SaveChanges();
                 }
 
-                //Inventory 
-                if (!context.Inventories.Any())
-                {
-                    context.Inventories.AddRange(
-                     new Inventory
-                     {
-                         UPC = $"060-5910-0",
-                         Name = "Mower Blade",
-                         Size = "(S) - 8\" Length x 4\" Width",
-                         Quantity = "3-Pack",
-                         Current = true
-                     }, new Inventory
-                     {
-                         UPC = $"063-5210-5",
-                         Name = "Saw Blade",
-                         Size = "(L) - 12\" Length x 5\" Width",
-                         Quantity = "3-Pack",
-                         Current = true
-                     }, new Inventory
-                     {
-                         UPC = $"060-7007-0",
-                         Name = "Atlas Lawnmower Engine Brake Cable",
-                         Size = "54\" (137 cm) cable",
-                         Quantity = "1",
-                         Current = true
-                     }, new Inventory
-                     {
-                         UPC = $"060-7410-3",
-                         Name = "MTD Replacement Blade Adapter",
-                         Size = "Fits 7/8\" crankshaft with 3/16\" key",
-                         Quantity = "1",
-                         Current = true
-                     }, new Inventory
-                     {
-                         UPC = $"060-6410-4",
-                         Name = "Champion 224cc OHV Horizontal Gas Engine",
-                         Size = "Shaft dimensions (D x L): 2.4 D x 3/4\" D",
-                         Quantity = "1",
-                         Current = true
-                     });
-                    context.SaveChanges();
-                }
+                
 
                 int[] cityIDs = context.Cities.Select(x => x.ID).ToArray();
 
@@ -241,45 +200,93 @@ namespace EmmasEngines.Data
                     context.SaveChanges();
                 }
 
-                string[] invUPCs = context.Inventories.Select(x => x.UPC).ToArray();
                 int[] suppIDs = context.Suppliers.Select(x => x.ID).ToArray();
-                double priceMin = 20.00d;
-                double priceMax = 50.99d;
-                DateTime startDate = DateTime.Today;    
 
-                //Price 
+                //Inventory 
+                if (!context.Inventories.Any())
+                {
+                    context.Inventories.AddRange(
+                     new Inventory
+                     {
+                         UPC = $"060-5910-0",
+                         Name = "Mower Blade",
+                         Size = "(S) - 8\" Length x 4\" Width",
+                         Quantity = "3-Pack",
+                         Current = true,
+                         SupplierID = 5
+                     }, new Inventory
+                     {
+                         UPC = $"063-5210-5",
+                         Name = "Saw Blade",
+                         Size = "(L) - 12\" Length x 5\" Width",
+                         Quantity = "3-Pack",
+                         Current = true,
+                         SupplierID = 4
+                     }, new Inventory
+                     {
+                         UPC = $"060-7007-0",
+                         Name = "Atlas Lawnmower Engine Brake Cable",
+                         Size = "54\" (137 cm) cable",
+                         Quantity = "1",
+                         Current = true,
+                         SupplierID = 3
+                     }, new Inventory
+                     {
+                         UPC = $"060-7410-3",
+                         Name = "MTD Replacement Blade Adapter",
+                         Size = "Fits 7/8\" crankshaft with 3/16\" key",
+                         Quantity = "1",
+                         Current = true,
+                         SupplierID = 2
+                     }, new Inventory
+                     {
+                         UPC = $"060-6410-4",
+                         Name = "Champion 224cc OHV Horizontal Gas Engine",
+                         Size = "Shaft dimensions (D x L): 2.4 D x 3/4\" D",
+                         Quantity = "1",
+                         Current = true,
+                         SupplierID = 6
+                     });
+                    context.SaveChanges();
+                }
+
+                string[] invUPCs = context.Inventories.Select(x => x.UPC).ToArray();
+                DateTime startDate = DateTime.Today;
+
+                double priceMin = 20.00d;
+                double priceMax = 40.99d;
+
+                //Order Request Inventories
                 if (!context.Prices.Any())
                 {
-                    foreach(string upc in invUPCs)
+
+                    int k = 0;//Start with the first inventory
+                    foreach (string i in invUPCs)
                     {
-                        for (int i = 1; i < 3; i++) {
-                            Price p = new Price()
+                        int howMany = random.Next(1, invUPCs.Count());//add a few inventories to a order
+                        for (int j = 1; j <= howMany; j++)
+                        {
+                            k = (k >= invUPCs.Count()) ? 0 : k;//Resets counter k to 0 if we have run out of inventory
+                            Price o = new Price()
                             {
-                                InventoryUPC = upc,
+                                Stock = random.Next(20,51),
+                                InventoryUPC = invUPCs[k],
                                 PurchasedCost = random.NextDouble() * (priceMax - priceMin) + priceMin,
-                                PurchasedDate = startDate.AddDays(-random.Next(1, 365)),
-                                Stock = random.Next(2, 50),
-                                SupplierID = suppIDs[random.Next(suppIDs.Count())]
+                                PurchasedDate = startDate.AddDays(-random.Next(30, 365))
                             };
-                        context.Prices.Add(p);
+                            context.Prices.Add(o);
+                            k++;
                         }
                     }
                     context.SaveChanges();
                 }
+
 
                 //Customer 
                 if (!context.Customers.Any())
                 {
                     context.Customers.AddRange(
                      new Customer
-                     {
-                         FirstName = "Anonymous",
-                         LastName = "Customer",
-                         Phone = "000-000-0000",
-                         Address = "N/A",
-                         Postal = "O0O 0O0",
-                         CityID = 1
-                     }, new Customer
                      {
                          FirstName = "Bob",
                          LastName = "Smith",
@@ -447,7 +454,7 @@ namespace EmmasEngines.Data
                 {
                     DateTime start = new DateTime(2022, 1, 1);
                     int range = (new DateTime(2023, 1, 1) - start).Days;
-                    for (int i = 0; i < 15; i++) {
+                    for (int i = 0; i < 10; i++) {
                         DateTime sendDate = start.AddDays(random.Next(range));
                          OrderRequest order = new OrderRequest()
                          {
@@ -455,7 +462,8 @@ namespace EmmasEngines.Data
                              SentDate = sendDate,
                              ReceiveDate = (i%2 == 0? sendDate.AddDays(random.Next(10, 30)) : null), 
                              ExternalOrderNum = (100 + i).ToString(),
-                             CustomerID = customerIDs[random.Next(customerIDs.Count())]
+                             CustomerID = customerIDs[random.Next(customerIDs.Count())],
+                             SupplierID = suppIDs[random.Next(suppIDs.Count())]
                          };
                         context.OrderRequests.Add(order);
                     }
@@ -480,7 +488,8 @@ namespace EmmasEngines.Data
                             {
                                 OrderRequestID = i,
                                 InventoryUPC = inventoryUPCs[k],
-                                Quantity = random.Next(20, 51)
+                                Quantity = random.Next(20, 51),
+                                Price = random.NextDouble() * (priceMax - priceMin) + priceMin
                             };
                             context.OrderRequestInventories.Add(o);
                             k++;

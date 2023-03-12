@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="~/css/variables.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pages/inventory.css" asp-append-version="true" />
     <link rel="preconnect" href="~/font-awesome-4.7.0/css/font-awesome.css" asp-append-version="true">
+    <link runat="server" rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link runat="server" rel="icon" href="/favicon.ico" type="image/ico" />
     <script src="~/js/site.js" asp-append-version="true"></script>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -25,22 +27,22 @@
             <div class="">
                     <ul id="pageLinks">
                         <li class="">
-                            <a class="" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <a class="" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-sharp fa-solid fa-house"></i>Home</a>
                         </li>
                         <li class="">
-                            <a class="" asp-area="" asp-controller="Inventories" asp-action="Index">Inventory</a>
+                        <a class="" asp-area="" asp-controller="Inventories" asp-action="Index"><i class="fa-solid fa-warehouse"></i>Inventory</a>
                         </li>
                         <li class="">
-                            <a class="" asp-area="" asp-controller="Suppliers" asp-action="Index">Suppliers</a>
+                        <a class="" asp-area="" asp-controller="Suppliers" asp-action="Index"><i class="fa-regular fa-handshake"></i>Suppliers</a>
                         </li>
                         <li class="">
-                            <a class="" asp-area="" asp-controller="Customers" asp-action="Index">Customers</a>
+                        <a class="" asp-area="" asp-controller="Customers" asp-action="Index"><i class="fa-solid fa-users"></i>Customers</a>
                         </li>
                         <li class="">
-                            <a class="" asp-area="" asp-controller="OrderRequests" asp-action="Index">Orders</a>
+                        <a class="" asp-area="" asp-controller="OrderRequests" asp-action="Index"><i class="fa-solid fa-screwdriver-wrench"></i>Order Requests</a>
                         </li>
                         <li class="">
-                            <a class="" asp-area="" asp-controller="POS" asp-action="Index">POS</a>
+                        <a class="" asp-area="" asp-controller="POS" asp-action="Index"><i class="fa-regular fa-credit-card"></i>POS</a>
                         </li>
                     </ul>
                     @*
@@ -61,12 +63,10 @@
     <div class="modal" tabindex="-1" role="dialog" id="form-modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
+@*                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">*@
+@*                        <span aria-hidden="true">&times;</span>*@
+@*                    </button>*@
                 <div class="modal-body">
                     
                 </div>

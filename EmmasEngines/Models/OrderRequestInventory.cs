@@ -19,5 +19,10 @@ namespace EmmasEngines.Models
         [Required(ErrorMessage = "Quantity is required")]
         [Range(0, Int32.MaxValue, ErrorMessage = "Quantity cannot be less than 0")]
         public int Quantity { get; set; }
+
+        [Display(Name = "Price")]
+        [Required(ErrorMessage = "Price is required")]
+        [Range(0.0, Double.MaxValue, ErrorMessage = "Price must be greater than or equal to 0.00.")]
+        public double Price { get; set; }
     }
 }

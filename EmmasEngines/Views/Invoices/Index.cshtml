@@ -1,0 +1,75 @@
+﻿@model IEnumerable<EmmasEngines.Models.Invoice>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    th, dt, a {
+        color: black;
+    }
+</style>
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appreciation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Customer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee)
+            </th>
+            <th>Invoice Lines Count</th>
+            <th>Payment Count</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="myTable">
+@foreach (var item in Model) {
+        <tr class ="table-hover">
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Appreciation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee.FullName)
+            </td>
+            <td>
+			    @*Invoice Line Count*@
+                @Html.DisplayFor(modelItem => item.InvoiceLines.Count)
+            </td>
+            <td>
+                @*Payment Line Count*@
+				@Html.DisplayFor(modelItem => item.InvoicePayments.Count)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

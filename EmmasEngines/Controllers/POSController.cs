@@ -34,7 +34,7 @@ namespace EmmasEngines.Controllers
                                   select i;
 
                 ViewData["Filtering"] = "show";
-
+                
                 return Json(inventories.ToList().FirstOrDefault());
             }
             else
@@ -48,6 +48,8 @@ namespace EmmasEngines.Controllers
         {
             Console.WriteLine("SearchString: " + SearchString);
             ViewData["Filtering"] = "";
+            session = HttpContext.Session;
+            
             if (!String.IsNullOrEmpty(SearchString))
             {
                 var customers = from c in _context.Customers
@@ -56,8 +58,17 @@ namespace EmmasEngines.Controllers
                                 select c;
 
                 ViewData["Filtering"] = "show";
-
-                return PartialView("_CustomerDetails", customers.FirstOrDefault());
+                // set customer id to session variable
+                var cust = customers.FirstOrDefault();
+                if (cust != null)
+                {
+                    session.SetString("CustomerID", cust.ID.ToString());
+                    return PartialView("_CustomerDetails", cust);
+                }
+                else
+                {
+                    return PartialView("_CustomerDetails", null);
+                }
             }
             else
             {
@@ -72,7 +83,8 @@ namespace EmmasEngines.Controllers
             ViewData["Filtering"] = "";
 
             var inventories = from i in _context.Inventories
-                .Include(p => p.Prices)
+                             .Include(p => p.Prices)
+                             .Include(o => o.OrderRequestInventories)
                               select i;
             var customer = _context.Customers.FirstOrDefault();
             ViewData["Customer"] = customer;
@@ -109,11 +121,24 @@ namespace EmmasEngines.Controllers
         public IActionResult RemoveFromCart(string UPC)
         {
             var session = HttpContext.Session;
+            List<InvoiceLine> invoiceLines = Utilities.SessionExtensions.GetObjectFromJson<List<InvoiceLine>>(session, "invoiceLines");
+            var existingLine = invoiceLines.FirstOrDefault(l => l.InventoryUPC == UPC);
 
-            List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
-            int index = isExist(UPC);
-            cart.RemoveAt(index);
-            Utilities.SessionExtensions.SetObjectAsJson(session, "cart", cart);
+            if (existingLine != null && existingLine.Quantity > 1)
+            {
+                // If the item is already in the cart, increment the quantity of the existing line
+                existingLine.Quantity--;
+                Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
+            }
+            else
+            {
+                List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
+                int index = isExist(UPC);
+                cart.RemoveAt(index);
+                invoiceLines.RemoveAt(index);
+                Utilities.SessionExtensions.SetObjectAsJson(session, "cart", cart);
+                Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
+            }
             return RedirectToAction("Index", "POS");
         }
 
@@ -126,10 +151,11 @@ namespace EmmasEngines.Controllers
             int index = isExist(UPC);
             cart[index].Quantity = quantity.ToString();
             Utilities.SessionExtensions.SetObjectAsJson(session, "cart", cart);
+
             return RedirectToAction("Index", "POS");
         }
 
-        //Check if item is in cart
+        //Check if item is in cart, return index value
         private int isExist(string UPC)
         {
             List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(HttpContext.Session, "cart");
@@ -142,10 +168,108 @@ namespace EmmasEngines.Controllers
             }
             return -1;
         }
+        //called when items are added to the cart
+        public ActionResult Buy(string UPC)
+        {
+            var inventory = _context.Inventories
+                .Where(i => i.UPC == UPC)
+                .Include(p => p.Prices)
+                .FirstOrDefault();
 
+            if (inventory == null)
+            {
+                return NotFound();
+            }
+
+            var session = HttpContext.Session;
+
+            if (session.GetString("invoiceLines") == null)
+            {
+                // If the cart doesn't exist, create a new list of invoice lines
+                List<InvoiceLine> invoiceLines = new List<InvoiceLine>()
+        {
+            new InvoiceLine
+            {
+                InventoryUPC = inventory.UPC,
+                Inventory = inventory,
+                Quantity = 1,
+                SalePrice = inventory.MarkupPrice
+            }
+        };
+
+                Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
+                AddInventoryItemToCart(UPC);
+            }
+            else
+            {
+                // If the cart already exists, check if the item is already in the cart
+                List<InvoiceLine> invoiceLines = Utilities.SessionExtensions.GetObjectFromJson<List<InvoiceLine>>(session, "invoiceLines");
+                var existingLine = invoiceLines.FirstOrDefault(l => l.InventoryUPC == inventory.UPC);
+
+                if (existingLine != null)
+                {
+                    // If the item is already in the cart, increment the quantity of the existing line
+                    existingLine.Quantity++;
+                }
+                else
+                {
+                    // If the item is not in the cart, add a new invoice line for the inventory item
+                    invoiceLines.Add(new InvoiceLine
+                    {
+                        InventoryUPC = inventory.UPC,
+                        Inventory = inventory,
+                        Quantity = 1,
+                        SalePrice = inventory.MarkupPrice
+                    });
+                }
+
+                Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
+                AddInventoryItemToCart(UPC);
+
+               
+            }
+
+            return RedirectToAction("Index", "POS");
+        }
+
+
+        public void AddInventoryItemToCart(string UPC)
+        {
+            var inventories = from i in _context.Inventories
+                             .Where(u => u.UPC == UPC)
+                            // .Include(p => p.Prices)
+                              select i;
+
+            var session = HttpContext.Session;
+            List<InvoiceLine> invoices = new List<InvoiceLine>();
+            //for each cart item, add an InvoiceLine
+
+
+            if (session.GetString("cart") == null)
+            {
+                List<Inventory> cart = new()
+                {
+                    inventories.FirstOrDefault()
+                    
+                };
+
+
+                Utilities.SessionExtensions.SetObjectAsJson(session, "cart", inventories);
+            }
+            else
+            {
+
+                List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
+                //if item with matching upc isnt already in cart, add it
+                if (cart.FirstOrDefault(i => i.UPC == UPC) == null)
+                    cart.Add(inventories.FirstOrDefault());
+
+                Utilities.SessionExtensions.SetObjectAsJson(session, "cart", cart);
+            }
+        }
 
         //Add to cart
-        public ActionResult Buy(string UPC)
+        /*public ActionResult Buy(string UPC)
         {
             var inventories = from i in _context.Inventories
                               .Where(u => u.UPC == UPC)
@@ -153,6 +277,9 @@ namespace EmmasEngines.Controllers
                               select i;
 
             var session = HttpContext.Session;
+            List < InvoiceLine > invoices = new List<InvoiceLine>();
+            //for each cart item, add an InvoiceLine
+            
 
             if (session.GetString("cart") == null)
             {
@@ -160,6 +287,8 @@ namespace EmmasEngines.Controllers
                 {
                     inventories.FirstOrDefault()
                 };
+                
+                
                 Utilities.SessionExtensions.SetObjectAsJson(session, "cart", inventories);
                 return RedirectToAction("Index", "POS");
             }
@@ -168,9 +297,37 @@ namespace EmmasEngines.Controllers
 
                 List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
                 cart.Add(inventories.FirstOrDefault());
+
                 Utilities.SessionExtensions.SetObjectAsJson(session, "cart", cart);
                 return RedirectToAction("Index", "POS");
             }
+
+        }*/
+
+        //Payment action
+        //Submit: Create InvoiceLines for each item in the cart
+        //Redirect to InvoiceController, passing the list of invoice lines
+        public IActionResult Submit(string actionButton, string invoiceID)
+        {
+            var session = HttpContext.Session;
+
+            List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
+            var customer = Utilities.SessionExtensions.GetObjectFromJson<Customer>(session, "customer");
+
+            List<InvoiceLine> invoiceLines = new();
+            foreach (var item in cart)
+            {
+                InvoiceLine invoiceLine = new()
+                {
+                    InventoryUPC = item.UPC,
+                    Quantity = Convert.ToInt32(item.Quantity),
+                    SalePrice = item.MarkupPrice,
+                    // HOW TO GET INVOICE?
+                    //InvoiceID = ??
+                };
+                invoiceLines.Add(invoiceLine);
+            }
+            return RedirectToAction("Create", "Invoices", invoiceLines);
         }
 
     }

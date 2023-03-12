@@ -31,13 +31,13 @@ namespace EmmasEngines.Models
         public double AdjustedPrice {
             get
             {
-                if (Prices.Any())
+                if (OrderRequestInventories.Any())
                 {
                     return Math.Round(Prices.Select(x => x.PurchasedCost).Average(), 2);
                 }
                 else
                 {
-                    return 0;
+                    return 0.00;
                 }
             }
         }
@@ -48,12 +48,13 @@ namespace EmmasEngines.Models
             {
                 if (Prices.Any())
                 {
+                    
                     double average = Math.Round(Prices.Select(x => x.PurchasedCost).Average(), 2);
                     return Math.Round(((average * .23) + average),2);
                 }
                 else
                 {
-                    return 0;
+                    return 0.00;
                 }
             }
         }
@@ -73,11 +74,15 @@ namespace EmmasEngines.Models
                 return Prices.Select(x => x.Stock).Sum();
             }
         }
-        
-        [Display(Name = "All Prices")]
-        public ICollection<Price> Prices { get; set; } = new HashSet<Price>();
+
+        [Display(Name = "Supplier")]
+        [Required(ErrorMessage = "Please select a supplier.")]
+        public int SupplierID { get; set; }
+        public Supplier Supplier { get; set; }
 
         public ICollection<OrderRequestInventory> OrderRequestInventories { get; set; } = new HashSet<OrderRequestInventory>();
+        
+        public ICollection<Price> Prices { get; set; } = new HashSet<Price>();
 
         public ICollection<InvoiceLine> InvoiceLines { get; set; } = new HashSet<InvoiceLine>();
     }
