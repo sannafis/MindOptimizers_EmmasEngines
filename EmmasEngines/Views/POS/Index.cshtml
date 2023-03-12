@@ -140,7 +140,16 @@
 										@Html.DisplayFor(modelItem => item.MarkupPrice)
 									</td>
 									<td>
-										@Html.DisplayFor(modelItem => item.Current)
+										@if (item.Current)
+										{
+											//feather icon check
+											<span class="fa-solid fa-check"></span>
+										}
+										else
+										{
+											//feather icon x
+											<span class="fa-solid fa-x"></span>
+										}
 									</td>
 									<td>
 										@Html.DisplayFor(modelItem => item.TotalStock)
