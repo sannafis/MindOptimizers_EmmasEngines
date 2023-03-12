@@ -172,7 +172,7 @@ namespace EmmasEngines.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,UPC,Name,Size,Quantity,Current")] Inventory inventory)
+        public async Task<IActionResult> Create([Bind("ID,UPC,Name,Size,Quantity,Current,SupplierID")] Inventory inventory)
         {
             if (ModelState.IsValid)
             {
@@ -193,7 +193,7 @@ namespace EmmasEngines.Controllers
         {
             if (id==0)
             {
-                return View();
+                return View(new Inventory());
             }
             else
             {
@@ -207,20 +207,44 @@ namespace EmmasEngines.Controllers
 
         }
 
-        // POST: Inventories/Create
+        // POST: Inventories/AddOrEdit
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEdit([Bind("ID,UPC,Name,Size,Quantity,Current")] Inventory inventory)
+        public async Task<IActionResult> AddOrEdit(int id,[Bind("ID,UPC,Name,Size,Quantity,Current,SupplierID")] Inventory inventory)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(inventory);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (id == 0)
+                {
+                    _context.Add(inventory);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    try
+                    {
+                        _context.Update(inventory);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!InventoryExists(inventory.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+
+
+                return Json(new{isValid = true, html = Helper.RenderRazorViewToString(this, "Index", _context.Inventories.ToList()) });
             }
-            return View(inventory);
+            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEdit", inventory) });
         }
 
         /*************************************************************************************************/
