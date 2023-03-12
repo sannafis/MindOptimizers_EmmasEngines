@@ -80,6 +80,22 @@
                 <td>Subtotal: @Model.Subtotal</td>
                 <td></td>
             </tr>
+            <tr>
+            @{
+                double tax = Model.Subtotal * 0.13;
+            }
+                <td></td>
+                <td>Tax: @tax</td>
+                <td></td>
+            </tr>
+        <tr>
+            @{
+                double total = Model.Subtotal * 1.13;
+            }
+            <td></td>
+            <td>Total: @total</td>
+            <td></td>
+        </tr>
         </tfoot>
     </table>
     
