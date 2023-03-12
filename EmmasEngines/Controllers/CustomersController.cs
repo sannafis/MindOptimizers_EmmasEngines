@@ -24,7 +24,7 @@ namespace EmmasEngines.Controllers
         public async Task<IActionResult> Index(string SearchString, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc", string sortField = "Name")
         {
             //List of sort options
-            string[] sortOptions = new[] { "ID", "FirstName", "LastName" };
+            string[] sortOptions = new[] { "ID", "First Name", "Last Name" };
 
 
 
@@ -56,7 +56,7 @@ namespace EmmasEngines.Controllers
             }
 
             //Which field and direction to sort by
-            if (sortField == "LastName")
+            if (sortField == "Last Name")
             {
                 if(sortDirection == "asc")
                 {
@@ -69,7 +69,7 @@ namespace EmmasEngines.Controllers
                         .OrderByDescending(Customer => Customer.LastName);
                 }
             }
-            else if (sortField == "FirstName")
+            else if (sortField == "First Name")
             {
                 if (sortDirection == "asc")
                 {
