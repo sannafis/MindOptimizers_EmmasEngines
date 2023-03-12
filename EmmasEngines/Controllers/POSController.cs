@@ -54,7 +54,9 @@ namespace EmmasEngines.Controllers
             {
                 var customers = from c in _context.Customers
                                 .Where(s => s.FirstName.ToUpper().Contains(SearchString.ToUpper())
-                                || s.Phone.ToUpper().Contains(SearchString.ToUpper()))
+                                || s.Phone.ToUpper().Contains(SearchString.ToUpper())
+                                || s.LastName.ToUpper().Contains(SearchString.ToUpper())
+                                || (s.FirstName.ToUpper() + " " + s.LastName.ToUpper()).Contains(SearchString.ToUpper()))
                                 select c;
 
                 ViewData["Filtering"] = "show";
@@ -88,7 +90,11 @@ namespace EmmasEngines.Controllers
                               select i;
             var customer = _context.Customers.FirstOrDefault();
             ViewData["Customer"] = customer;
-            
+
+            var session = HttpContext.Session;
+            var customers = _context.Customers.ToList();
+            Utilities.SessionExtensions.SetObjectAsJson(session, "customers", customers);
+
 
             if (!String.IsNullOrEmpty(SearchString))
             {

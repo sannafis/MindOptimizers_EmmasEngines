@@ -21,18 +21,18 @@ namespace EmmasEngines.Controllers
         }
 
         // GET: Suppliers
-        public async Task<IActionResult> Index(string SearchString, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc",  string sortField = "Name")
+        public async Task<IActionResult> Index(string SearchString, string query, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc",  string sortField = "Name")
         {
             //List of sort options
-            string[] sortOptions = new[] { "ID", "FName" }; 
+            string[] sortOptions = new[] { "ID", "Name" }; 
             
-            var emmasEnginesContext = _context.Suppliers
+            var suppliers = _context.Suppliers
                 .Include(s => s.City)
                 .AsNoTracking();
 
             if (!String.IsNullOrEmpty(SearchString))
             {
-                emmasEnginesContext = emmasEnginesContext.Where(s => s.Name.ToLower().Contains(SearchString.ToLower())
+                suppliers = suppliers.Where(s => s.Name.ToLower().Contains(SearchString.ToLower())
                 || s.Phone.Contains(SearchString)
                 || s.Email.ToLower().Contains(SearchString.ToLower()));
                 ViewData["Search Suppliers"] = SearchString;
@@ -57,25 +57,23 @@ namespace EmmasEngines.Controllers
             {
                 if (sortDirection == "asc")
                 {
-                    emmasEnginesContext = emmasEnginesContext
-                        .OrderBy(Suppliers => Suppliers.Name);
+                    suppliers = suppliers.OrderBy(s => s.Name);
                 }
                 else
                 {
-                    emmasEnginesContext = emmasEnginesContext
-                        .OrderByDescending(Suppliers => Suppliers.Name);
+                    suppliers = suppliers.OrderByDescending(s => s.Name);
                 }
             }
             else
             {
                 if(sortDirection == "asc")
                 {
-                    emmasEnginesContext = emmasEnginesContext
+                    suppliers = suppliers
                         .OrderBy(Supplier => Supplier.ID);
                 }
                 else
                 {
-                    emmasEnginesContext = emmasEnginesContext
+                    suppliers = suppliers
                         .OrderByDescending(Supplier => Supplier.ID);
                 }
             }
@@ -87,7 +85,7 @@ namespace EmmasEngines.Controllers
             int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "Supplier");
             ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
 
-            var pagedData = await PaginatedList<Supplier>.CreateAsync(emmasEnginesContext.AsNoTracking(), page ?? 1, pageSize);
+            var pagedData = await PaginatedList<Supplier>.CreateAsync(suppliers.AsNoTracking(), page ?? 1, pageSize);
             //return View(await emmasEnginesContext.ToListAsync());
             return View(pagedData);
         }
