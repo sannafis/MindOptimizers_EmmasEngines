@@ -79,8 +79,8 @@
 									@Html.DisplayNameFor(model => model.Description)
 								</th>
 								<th>
-									@*@Html.DisplayNameFor(model => model.Inventory.Name)*@
-									<input type="submit" name="actionButton" value="Inventory Name" class="tableHeaders" />
+									@*Html.DisplayNameFor(model => model.OrderRequestInventories.FirstOrDefault().Inventory.Name)*@
+									<input type="submit" name="actionButton" value="InventoryName" class="tableHeaders" />
 								</th>
 								<th>
 									<input type="submit" name="actionButton" value="SentDate" class="tableHeaders" />
@@ -93,10 +93,6 @@
 								<th>
 									<input type="submit" name="actionButton" value="ExternalOrderNum" class="tableHeaders" />
 									@*@Html.DisplayNameFor(model => model.ExternalOrderNum)*@
-								</th>
-								<th>
-									@*<input type="submit" name="actionButton" value="Name" class="tableHeaders" />*@
-									@Html.DisplayNameFor(model => model.Customer)
 								</th>
 								<th></th>
 							</tr>
@@ -112,7 +108,15 @@
 										@Html.DisplayFor(modelItem => item.Description)
 									</td>
 									<td>
-									@*	@Html.DisplayFor(modelItem => item.OrderRequestInventories)*@
+										@if (item.OrderRequestInventories.Count() == 1){
+										@Html.DisplayFor(modelItem => item.OrderRequestInventories.FirstOrDefault().Inventory.Name)
+                                        }
+                                        else { 
+											@foreach (var inventoryItem in item.OrderRequestInventories)
+											{
+												@inventoryItem.Inventory.Name <br/>
+											}
+										}
 									</td>
 									<td>
 										@Html.DisplayFor(modelItem => item.SentDate)
@@ -124,9 +128,6 @@
 										@Html.DisplayFor(modelItem => item.ExternalOrderNum)
 									</td>
 									<td>
-										@Html.DisplayFor(modelItem => item.Customer.FullName)
-									</td>
-									<td>
 										<div class="btn">
 											<div class="btn_crud">
 												<button class="btn_crud_edit" asp-action="Edit" asp-route-id="@item.ID">Edit</button>
@@ -136,7 +137,9 @@
 											</div>
 										</div>
 										@*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-										<a asp-action="Details" asp-route-id="@item.ID">Details</a>*@
+									<a asp-action="Details" asp-route-id="@item.ID">Details</a>|
+									<a asp-action="Send" asp-route-id="@item.ID">Send Order</a>|
+									<a asp-action="Receive" asp-route-id="@item.ID">Receive Order</a>*@
 										@*Removed delete button *@
 										@*                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
 									</td>
