@@ -1,0 +1,47 @@
+﻿@model EmmasEngines.Models.Customer
+
+@{
+    ViewData["Title"] = "AddOrEdit";
+    Layout = null;
+}
+
+
+<div class="form-popup">
+    <form asp-action="AddOrEdit" class="form-container">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+
+                <label asp-for="FirstName" class="margin-top-22"></label>
+                <input asp-for="FirstName" class="no-bottom-margin" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+
+                <label asp-for="LastName" class="margin-top-22"></label>
+                <input asp-for="LastName" class="no-bottom-margin" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+
+                <label asp-for="Phone" class="margin-top-22"></label>
+                <input asp-for="Phone" class="no-bottom-margin" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+
+                <label asp-for="Address" class="margin-top-22"></label>
+                <input asp-for="Address" class="no-bottom-margin" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+
+                <label asp-for="Postal" class="margin-top-22"></label>
+                <input asp-for="Postal" class="no-bottom-margin" />
+                <span asp-validation-for="Postal" class="text-danger"></span>
+
+                <label asp-for="CityID" class="margin-top-22"></label>
+                <select asp-for="CityID" class="no-bottom-margin" asp-items="ViewBag.CityID" id="dropdown" tabindex="261"></select>
+                <span asp-validation-for="CityID" class="text-danger"></span>
+
+        <button type="submit" value="submit" class="btn_submit" style="margin-top: 22px;">Submit</button>
+        <button type="button" value="Close" class="btn_cancel">Close</button>
+
+        </form>
+    </div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
