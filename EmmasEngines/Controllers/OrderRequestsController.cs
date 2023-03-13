@@ -33,10 +33,11 @@ namespace EmmasEngines.Controllers
             {
                 return NotFound();
             }
-
+            
             var orderRequest = await _context.OrderRequests
                 .Include(o => o.Customer)
                 .Include(o => o.Supplier)
+                .Include(o => o.OrderRequestInventories)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (orderRequest == null)
             {
