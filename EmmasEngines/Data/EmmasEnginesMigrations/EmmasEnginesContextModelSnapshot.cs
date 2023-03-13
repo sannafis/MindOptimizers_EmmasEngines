@@ -505,7 +505,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.HasOne("EmmasEngines.Models.Supplier", "Supplier")
                         .WithMany("Inventories")
                         .HasForeignKey("SupplierID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Supplier");

@@ -220,7 +220,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         column: x => x.SupplierID,
                         principalTable: "Suppliers",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
