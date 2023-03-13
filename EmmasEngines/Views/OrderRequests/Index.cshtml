@@ -32,16 +32,10 @@
 						<span class="btn_tooltip">Clear</span>
 					</div>
 					<div class="btn_crud">
-						<button type="submit" name="actionButton" value="Send" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for sending order">
-							<i class="fa fa-share"></i>
+						<button type="submit" asp-action="Create" value="Send" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for sending order">
+							<i class="fa fa-plus"></i>
 						</button>
-						<span class="btn_tooltip">Send Order</span>
-					</div>
-					<div class="btn_crud">
-						<button type="submit" name="actionButton" value="Receive" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for receiving order">
-							<i class="fa fa-box"></i>
-						</button>
-						<span class="btn_tooltip">Receive Order</span>
+						<span class="btn_tooltip">Create Order</span>
 					</div>
 					@*                   <div class="btn_crud">
 					<button  tabindex="190" class="btn_crud_edit" onclick="" id="btnEdit" aria-label="button for edit items">
@@ -130,10 +124,28 @@
 									<td>
 										<div class="btn">
 											<div class="btn_crud">
-												<button class="btn_crud_edit" asp-action="Edit" asp-route-id="@item.ID">Edit</button>
+												<button class="btn_crud_edit" asp-action="Edit" asp-route-id="@item.ID">
+													<i class="fa fa-edit"></i>
+												</button>
+												<span class="btn_tooltip">Edit Order</span>
 											</div>
 											<div class="btn_crud">
-												<button class="btn_crud_edit" asp-action="Details" asp-route-id="@item.ID">Details</button>
+												<button class="btn_crud_edit" asp-action="Details" asp-route-id="@item.ID">
+													<i class="fa fa-info"></i>
+												</button>
+												<span class="btn_tooltip">Details</span>
+											</div>
+											<div class="btn_crud">
+												<button type="submit" name="actionButton" value="Receive" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for receiving order">
+													<i class="fa fa-box"></i>
+												</button>
+												<span class="btn_tooltip">Receive Order</span>
+											</div>
+											<div class="btn_crud">
+												<button type="submit" name="actionButton" value="Receive" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for receiving order">
+													<i class="fa fa-share"></i>
+												</button>
+												<span class="btn_tooltip">Send Order</span>
 											</div>
 										</div>
 										@*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

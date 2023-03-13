@@ -133,9 +133,34 @@ namespace EmmasEngines.Controllers
             ViewData["SupplierID"] = new SelectList(_context.Suppliers, "ID", "Address", orderRequest.SupplierID);
             return View(orderRequest);
         }
+        //GET: OrderRequests/Details/1
+        public async Task<IActionResult> Details(int? id)
+        {
+            {
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-        // GET: OrderRequests/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+                var orderRequest = await _context.OrderRequests
+                    .Include(o => o.Customer)
+                    .Include(o => o.Supplier)
+                    .Include(o => o.OrderRequestInventories)
+                        .ThenInclude(o => o.Inventory)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.ID == id);
+                if (orderRequest == null)
+                {
+                    return NotFound();
+                }
+
+                return View(orderRequest);
+            }
+        }
+
+
+		// GET: OrderRequests/Edit/5
+		public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.OrderRequests == null)
             {
