@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmmasEngines.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230313061523_Initial")]
+    [Migration("20230313062051_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

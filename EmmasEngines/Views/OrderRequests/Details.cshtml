@@ -63,20 +63,28 @@
                     <td>@item.Inventory.Name</td>
                     <td>@item.Price.ToString("C")</td>
                     <td>@item.Quantity</td>
+                    <td>
+                        <div class="btn_crud">
+                            <button type="submit" name="actionButton" value="Receive" tabindex="190" class="btn_crud_edit" onclick="" aria-label="adding item">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            <span class="btn_tooltip">Remove Item</span>
+                        </div>
+                    </td>
                 </tr>
             }
         }
         else
         {
             <tr class ="table-hover">
-                <td colspan="4">Add items to Order</td>
+                <td colspan="5">Add items to Order</td>
             </tr>
         }
 
     </tbody>
     <tfoot class ="bg-info">
         <tr>
-            <td colspan="4">
+            <td colspan="5">
                 <div class="btn_crud">
                     <button type="submit" name="actionButton" value="Receive" tabindex="190" class="btn_crud_edit" onclick="" aria-label="adding item">
                         <i class="fa fa-plus"></i>
