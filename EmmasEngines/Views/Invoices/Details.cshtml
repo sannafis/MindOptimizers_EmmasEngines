@@ -3,110 +3,105 @@
 @{
     ViewData["Title"] = "Details";
 }
-<style>
-    th, dt, a {
-        color:black;
-    }
-    caption {
-		color: black;
-		font-size: 20px;
-		font-weight: bold;
-	}
-    
-</style>
 
-<h1>Details</h1>
+<link rel="stylesheet" href="~/css/pages/invoiceDetails.css" asp-append-version="true" />
+
 
 <div>
+
+    <img id="logo" src="~/imgs/Logo_ESE.png" alt="Emma's Engines Logo" />
+    <h1>Emma's Small Engines</h1>
+    <p>
+        53 Niagara Street, Welland, Ontario<br />
+        (905) - 777 - 7777<br />
+        EmmasEngines@gmail.com<br />
+        @Html.DisplayFor(model => model.Employee.FullName)
+    </p>
+    <hr />
+    <p>
+        <strong>Bill To:</strong><br />
+        @Html.DisplayFor(model => model.Customer.FullName)<br />
+        @Html.DisplayFor(model => model.Customer.Address),
+        @Html.DisplayFor(model => model.Customer.Postal)<br />
+        @Html.DisplayFor(model => model.Customer.Phone)
+    </p>
+    <hr />
     <h4>Invoice #@Html.DisplayFor(model => model.ID)</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
+        <dt class="col-sm-2">
+            Invoice Date:
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Date)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Appreciation)
+        <dt class="col-sm-2">
+            Description:
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Appreciation)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer)
+        <dt class="col-sm-2">
+            Payment Method(s):
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Customer.FullName)
+        <dd class="col-sm-10">
+            @foreach (InvoicePayment payment in Model.InvoicePayments)
+            {
+                @payment.Payment.Type
+                ;
+                <br />
+            }
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Employee)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Employee.FullName)
-        </dd>
-        <dd></dd>
     </dl>
 
 </div>
-    <table class="table">
+<table class="table">
 
-        <thead>
-            <tr class ="table-hover">
-                <th>Quantity</th>
-                <th>Sale Price</th>
-                <th>Inventory UPC</th>
-            </tr>
-        </thead>
-        <tbody id ="myTable">
-            @foreach (var item in Model.InvoiceLines)
-            {
-                <tr>
-                    <td>@item.Quantity</td>
-                    <td>@item.SalePrice</td>
-                    <td>@item.InventoryUPC</td>
-                </tr>
-            }
-        </tbody>
-        <tfoot>
+    <thead>
+
+    <th>UPC</th>
+    <th>Item Name</th>
+    <th>Quantity</th>
+    <th>Total</th>
+    </tr>
+    </thead>
+    <tbody id="myTable">
+        @foreach (var item in Model.InvoiceLines)
+        {
+            double price = item.SalePrice * item.Quantity;
             <tr>
+                <td>@item.InventoryUPC</td>
+                <td>@item.Inventory.Name</td>
+                <td>@item.Quantity</td>
+                <td>@price.ToString("C2")</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
             @{
                 double subtotal = Model.Subtotal;
                 double tax = Model.Subtotal * 0.13;
                 double total = Model.Subtotal * 1.13;
             }
-                <td></td>
-                <td>Subtotal: @subtotal.ToString("C")</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>Tax: @tax.ToString("C")</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>Total: @total.ToString("C")</td>
-                <td></td>
-            </tr>
-        </tfoot>
-    </table>
-    
-@foreach (var pay in Model.InvoicePayments)
-{
-	<p>Payment ID: @pay.PaymentID</p>
-}
-    
-   
+            <td></td>
+            <td><strong>Subtotal:</strong> @subtotal.ToString("C2")</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><strong>Tax:</strong> @tax.ToString("C2")</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><strong>Total:</strong> @total.ToString("C2")</td>
+            <td></td>
+        </tr>
+    </tfoot>
+</table>
 
-
-<div>
+@*<div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
     <a asp-action="Index">Back to List</a>
-</div>
+</div>*@

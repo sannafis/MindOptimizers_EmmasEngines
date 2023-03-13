@@ -67,10 +67,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\css\pages\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="EmmasEnginesSecurity.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

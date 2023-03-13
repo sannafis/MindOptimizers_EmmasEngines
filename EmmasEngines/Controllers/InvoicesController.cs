@@ -43,7 +43,9 @@ namespace EmmasEngines.Controllers
                 .Include(i => i.Customer)
                 .Include(i => i.Employee)
                 .Include(i => i.InvoiceLines)
+                .ThenInclude(i => i.Inventory)
                 .Include(i => i.InvoicePayments)
+                .ThenInclude(i => i.Payment)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (invoice == null)
             {
