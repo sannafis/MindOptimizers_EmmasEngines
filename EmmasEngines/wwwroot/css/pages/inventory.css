@@ -216,6 +216,10 @@ button:not(:disabled) {
     font-style: italic;
 }
 
+main[role="main"]{
+    padding-left:100px;
+}
+
 @media (max-width: 2800px) {
     .floating-search-placeholder{
         left: 7.4%;
@@ -226,11 +230,18 @@ button:not(:disabled) {
     .floating-search-placeholder{
         left: 9.4%;
     }
+    main[role="main"] {
+        padding-left: 120px;
+    }
 }
 
 @media (max-width: 2240px) {
     .floating-search-placeholder{
         left: 10%;
+    }
+
+    main[role="main"] {
+        padding-left: 140px;
     }
 }
 
@@ -243,6 +254,10 @@ button:not(:disabled) {
 @media (max-width: 1680px) {
     .floating-search-placeholder{
         left: 11.8%;
+    }
+
+    main[role="main"] {
+        padding-left: 160px;
     }
 }
 
@@ -267,6 +282,10 @@ button:not(:disabled) {
 @media (max-width: 1366px) {
     .floating-search-placeholder{
         left: 14.8%;
+    }
+
+    main[role="main"] {
+        padding-left: 100px;
     }
 }
 
@@ -589,7 +608,7 @@ Gabriel's CSS END ****************/
     width: 100%;
 }
 .description {
-    width: 95%;
+    width: 100%;
     justify-content: space-between;
     background-color: var(--color-white);
     align-items: flex-start;
@@ -809,4 +828,9 @@ Gabriel's CSS END ****************/
 
 .cart {
     flex:1;
+}
+
+
+main{
+    width:auto;
 }
