@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmmasEngines.Data;
 using EmmasEngines.Models;
+using EmmasEngines.Utilities;
 
 namespace EmmasEngines.Controllers
 {
@@ -20,31 +21,84 @@ namespace EmmasEngines.Controllers
         }
 
         // GET: OrderRequests
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SearchString, string query, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc", string sortField = "Name")
         {
-            var emmasEnginesContext = _context.OrderRequests.Include(o => o.Customer).Include(o => o.Supplier);
-            return View(await emmasEnginesContext.ToListAsync());
-        }
+            string[] sortOptions = new[] { "ID", "Description", "SentDate", "ReceiveDate", "ExternalOrderNum" };
 
-        // GET: OrderRequests/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.OrderRequests == null)
+            var emmasEnginesContext = from i in _context.OrderRequests
+                  .Include(o => o.Customer)
+                  //.Include(o => o.OrderRequestInventories)
+                  //.Include(o => o.Inventory)
+                  .AsNoTracking()
+                                      select i;
+
+            if (!String.IsNullOrEmpty(SearchString))
             {
-                return NotFound();
-            }
-            
-            var orderRequest = await _context.OrderRequests
-                .Include(o => o.Customer)
-                .Include(o => o.Supplier)
-                .Include(o => o.OrderRequestInventories)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (orderRequest == null)
-            {
-                return NotFound();
+                //Filter by UPC and Name
+                emmasEnginesContext = emmasEnginesContext.Where(s => s.Description.ToUpper().Contains(SearchString.ToUpper()));
+                ViewData["Filtering"] = "show";
+                ViewData["Search Inventory"] = SearchString;
             }
 
-            return View(orderRequest);
+            if (!String.IsNullOrEmpty(actionButton))//check if form submitted
+            {
+                page = 1;//reset page to 1
+                if (sortOptions.Contains(actionButton))
+                {
+                    if (actionButton == sortField)//reverse order  same column
+                    {
+                        sortDirection = (sortDirection == "asc" ? "desc" : "asc");
+                    }
+                    //sort by button clicked
+                    sortField = actionButton;
+                }
+            }
+            //Now sort by field and direction
+            if (sortField == "ID")
+            {
+                if (sortDirection == "asc")
+                    emmasEnginesContext = emmasEnginesContext.OrderBy(s => s.ID);
+                else
+                    emmasEnginesContext = emmasEnginesContext.OrderByDescending(s => s.ID);
+            }
+            if (sortField == "Description")
+            {
+                if (sortDirection == "asc")
+                    emmasEnginesContext = emmasEnginesContext.OrderBy(s => s.Description);
+                else
+                    emmasEnginesContext = emmasEnginesContext.OrderByDescending(s => s.Description);
+            }
+            else if (sortField == "SentDate")
+            {
+                if (sortDirection == "asc")
+                    emmasEnginesContext = emmasEnginesContext.OrderBy(s => s.SentDate);
+                else
+                    emmasEnginesContext = emmasEnginesContext.OrderByDescending(s => s.SentDate);
+            }
+            else if (sortField == "ReceiveDate")
+            {
+                if (sortDirection == "asc")
+                    emmasEnginesContext = emmasEnginesContext.OrderBy(s => s.ReceiveDate);
+                else
+                    emmasEnginesContext = emmasEnginesContext.OrderByDescending(s => s.ReceiveDate);
+            }
+            else if (sortField == "ExternalOrderNum")
+            {
+                if (sortDirection == "asc")
+                    emmasEnginesContext = emmasEnginesContext.OrderBy(s => s.ExternalOrderNum);
+                else
+                    emmasEnginesContext = emmasEnginesContext.OrderByDescending(s => s.ExternalOrderNum);
+            }
+            //set sort for in ViewData
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "Inventory");
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+
+            var pagedData = await PaginatedList<OrderRequest>.CreateAsync(emmasEnginesContext.AsNoTracking(), page ?? 1, pageSize);
+
+            return View(pagedData);
         }
 
         // GET: OrderRequests/Create
