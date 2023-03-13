@@ -32,7 +32,7 @@ namespace EmmasEngines.Models
         public Customer Customer { get; set; }
 
         [Display(Name = "Supplier")]
-        [Required(ErrorMessage = "Supplier is required")]
+        //[Required(ErrorMessage = "Supplier is required")]
         public int SupplierID { get; set; }
         public Supplier Supplier { get; set; }
 

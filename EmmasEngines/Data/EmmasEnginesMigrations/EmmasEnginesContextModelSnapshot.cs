@@ -164,7 +164,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("SupplierID")
+                    b.Property<int?>("SupplierID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UPC")
@@ -502,13 +502,9 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
             modelBuilder.Entity("EmmasEngines.Models.Inventory", b =>
                 {
-                    b.HasOne("EmmasEngines.Models.Supplier", "Supplier")
+                    b.HasOne("EmmasEngines.Models.Supplier", null)
                         .WithMany("Inventories")
-                        .HasForeignKey("SupplierID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Supplier");
+                        .HasForeignKey("SupplierID");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Invoice", b =>

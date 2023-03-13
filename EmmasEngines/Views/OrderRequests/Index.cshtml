@@ -72,25 +72,30 @@
 						<thead>
 							<tr class="bg-info">
 								<th>
-									@Html.DisplayNameFor(model => model.ID)
+									<input type="submit" name="actionButton" value="ID" class="tableHeaders" />
+									@*@Html.DisplayNameFor(model => model.ID)*@
 								</th>
 								<th>
 									@Html.DisplayNameFor(model => model.Description)
 								</th>
 								<th>
 									@*@Html.DisplayNameFor(model => model.Inventory.Name)*@
-									Inventory Name
+									<input type="submit" name="actionButton" value="Inventory Name" class="tableHeaders" />
 								</th>
 								<th>
-									@Html.DisplayNameFor(model => model.SentDate)
+									<input type="submit" name="actionButton" value="SentDate" class="tableHeaders" />
+									@*@Html.DisplayNameFor(model => model.SentDate)*@
 								</th>
 								<th>
-									@Html.DisplayNameFor(model => model.ReceiveDate)
+									<input type="submit" name="actionButton" value="ReceiveDate" class="tableHeaders" />
+									@*@Html.DisplayNameFor(model => model.ReceiveDate)*@
 								</th>
 								<th>
-									@Html.DisplayNameFor(model => model.ExternalOrderNum)
+									<input type="submit" name="actionButton" value="ExternalOrderNum" class="tableHeaders" />
+									@*@Html.DisplayNameFor(model => model.ExternalOrderNum)*@
 								</th>
 								<th>
+									@*<input type="submit" name="actionButton" value="Name" class="tableHeaders" />*@
 									@Html.DisplayNameFor(model => model.Customer)
 								</th>
 								<th></th>
@@ -107,7 +112,7 @@
 										@Html.DisplayFor(modelItem => item.Description)
 									</td>
 									<td>
-										@*@Html.DisplayFor(modelItem => item.Inventory.Name)*@
+									@*	@Html.DisplayFor(modelItem => item.OrderRequestInventories)*@
 									</td>
 									<td>
 										@Html.DisplayFor(modelItem => item.SentDate)

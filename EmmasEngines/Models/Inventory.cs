@@ -75,10 +75,10 @@ namespace EmmasEngines.Models
             }
         }
 
-        [Display(Name = "Supplier")]
-        [Required(ErrorMessage = "Please select a supplier.")]
-        public int SupplierID { get; set; }
-        public Supplier Supplier { get; set; }
+        //[Display(Name = "Supplier")]
+        //[Required(ErrorMessage = "Please select a supplier.")]
+        //public int SupplierID { get; set; }
+        //public Supplier Supplier { get; set; }
 
         public ICollection<OrderRequestInventory> OrderRequestInventories { get; set; } = new HashSet<OrderRequestInventory>();
         

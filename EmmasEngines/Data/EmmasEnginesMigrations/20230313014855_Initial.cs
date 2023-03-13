@@ -209,7 +209,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     Size = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Quantity = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Current = table.Column<bool>(type: "INTEGER", nullable: false),
-                    SupplierID = table.Column<int>(type: "INTEGER", nullable: false)
+                    SupplierID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -219,8 +219,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         name: "FK_Inventories_Suppliers_SupplierID",
                         column: x => x.SupplierID,
                         principalTable: "Suppliers",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(

@@ -212,40 +212,35 @@ namespace EmmasEngines.Data
                          Name = "Mower Blade",
                          Size = "(S) - 8\" Length x 4\" Width",
                          Quantity = "3-Pack",
-                         Current = true,
-                         SupplierID = 5
+                         Current = true
                      }, new Inventory
                      {
                          UPC = $"063-5210-5",
                          Name = "Saw Blade",
                          Size = "(L) - 12\" Length x 5\" Width",
                          Quantity = "3-Pack",
-                         Current = true,
-                         SupplierID = 4
+                         Current = true
                      }, new Inventory
                      {
                          UPC = $"060-7007-0",
                          Name = "Atlas Lawnmower Engine Brake Cable",
                          Size = "54\" (137 cm) cable",
                          Quantity = "1",
-                         Current = true,
-                         SupplierID = 3
+                         Current = true
                      }, new Inventory
                      {
                          UPC = $"060-7410-3",
                          Name = "MTD Replacement Blade Adapter",
                          Size = "Fits 7/8\" crankshaft with 3/16\" key",
                          Quantity = "1",
-                         Current = true,
-                         SupplierID = 2
+                         Current = true
                      }, new Inventory
                      {
                          UPC = $"060-6410-4",
                          Name = "Champion 224cc OHV Horizontal Gas Engine",
                          Size = "Shaft dimensions (D x L): 2.4 D x 3/4\" D",
                          Quantity = "1",
-                         Current = true,
-                         SupplierID = 6
+                         Current = true
                      });
                     context.SaveChanges();
                 }

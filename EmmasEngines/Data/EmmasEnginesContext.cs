@@ -50,11 +50,12 @@ namespace EmmasEngines.Data
             .IsUnique();
 
             //Prevent Cascade Delete from Supplier to Inventory
-            modelBuilder.Entity<Supplier>()
+            /* modelBuilder.Entity<Supplier>()
                 .HasMany<Inventory>(p => p.Inventories)
                 .WithOne(c => c.Supplier)
                 .HasForeignKey(c => c.SupplierID)
                 .OnDelete(DeleteBehavior.Restrict);
+			*/
 
             //Prevent Cascade Delete from Inventory to Price
             modelBuilder.Entity<Inventory>()

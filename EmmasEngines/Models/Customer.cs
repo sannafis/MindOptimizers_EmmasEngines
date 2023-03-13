@@ -27,7 +27,7 @@ namespace EmmasEngines.Models
         }
 
         [Required(ErrorMessage = "Phone number is required.")]
-        [RegularExpression("^\\d{3}-\\d{3}-\\d{4}-\\d$", ErrorMessage = "Please match the required format: ###-###-####")]
+        [RegularExpression("^\\d{3}-\\d{3}-\\d{4}", ErrorMessage = "Please match the required format: ###-###-####")]
         [DataType(DataType.PhoneNumber)]
         [StringLength(12)]
         public string Phone { get; set; }

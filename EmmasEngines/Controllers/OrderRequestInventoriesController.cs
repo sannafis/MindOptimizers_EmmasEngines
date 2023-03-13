@@ -22,9 +22,7 @@ namespace EmmasEngines.Controllers
         // GET: OrderRequestInventories
         public async Task<IActionResult> Index()
         {
-            var emmasEnginesContext = _context.OrderRequestInventories
-                .Include(o => o.Inventory)
-                .Include(o => o.OrderRequest);
+            var emmasEnginesContext = _context.OrderRequestInventories.Include(o => o.Inventory).Include(o => o.OrderRequest);
             return View(await emmasEnginesContext.ToListAsync());
         }
 
@@ -33,8 +31,7 @@ namespace EmmasEngines.Controllers
         {
             if (id == null || _context.OrderRequestInventories == null)
             {
-                //show all records inside OrderRequestInventories
-				return NotFound();
+                return NotFound();
             }
 
             var orderRequestInventory = await _context.OrderRequestInventories
@@ -62,7 +59,7 @@ namespace EmmasEngines.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderRequestID,InventoryUPC,Quantity")] OrderRequestInventory orderRequestInventory)
+        public async Task<IActionResult> Create([Bind("OrderRequestID,InventoryUPC,Quantity,Price")] OrderRequestInventory orderRequestInventory)
         {
             if (ModelState.IsValid)
             {
@@ -98,7 +95,7 @@ namespace EmmasEngines.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderRequestID,InventoryUPC,Quantity")] OrderRequestInventory orderRequestInventory)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderRequestID,InventoryUPC,Quantity,Price")] OrderRequestInventory orderRequestInventory)
         {
             if (id != orderRequestInventory.OrderRequestID)
             {

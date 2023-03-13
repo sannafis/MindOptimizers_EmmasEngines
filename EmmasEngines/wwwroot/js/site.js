@@ -15,3 +15,24 @@ showInPopup = (url, title) => {
         }
     })
 }
+
+//window.onload = function () {
+//    var el = document.querySelector('btn_cancel');
+//    if (el) {
+//        el.addEventListener('click', function () {
+//            document.querySelector('modal').style.display = 'none';
+//        })
+//    }
+//}
+    
+
+function closeModal() {
+
+    $('#form-modal').modal('hide');
+
+}
+
+
+
+
+
