@@ -122,6 +122,20 @@ namespace EmmasEngines.Controllers
                     invoiceToAdd.InvoiceLines.Add(invoiceLineToAdd);
                     _context.InvoiceLines.Add(invoiceLineToAdd);
                 }
+                if(invoiceLines.Count == 0)
+                {
+                    var invoiceLineToAdd = new InvoiceLine
+                    {
+                        Quantity = 1,
+                        SalePrice = 5,
+                        InventoryUPC = "06059100",
+                        InvoiceID = invoiceToAdd.ID,
+                        Invoice = invoiceToAdd
+                    };
+                    // Add the invoice line to the context and the invoice
+                    invoiceToAdd.InvoiceLines.Add(invoiceLineToAdd);
+                    _context.InvoiceLines.Add(invoiceLineToAdd);
+                }
 
                 // Add the invoice payments to the invoice
                 foreach (var invoicePayment in invoice.InvoicePayments)
@@ -147,20 +161,6 @@ namespace EmmasEngines.Controllers
                     .Include(i => i.InvoicePayments)
                     .FirstOrDefaultAsync(m => m.ID == invoiceToAdd.ID);
                 return Json(completeInvoice);
-            }
-            // check if invoiceLines is null or empty: if so, return error
-            if (invoice.InvoiceLines == null || invoice.InvoiceLines.Count == 0)
-            {
-                var error = "No invoice lines found. To correct this error, make sure you have at least one item in the cart before proceeding to pay.";
-                ModelState.AddModelError("InvoiceLines", error);
-                ViewData["InvoiceLinesError"] = error;
-                return BadRequest(error);
-            }
-            // check if invoicePayments is null or empty: if so, return error
-            if (invoice.InvoicePayments == null || invoice.InvoicePayments.Count == 0)
-            {
-                ModelState.AddModelError("InvoicePayments", "No invoice payments found. To correct this error, make sure you have at least one payment method selected before proceeding to pay.");
-                return View(invoice);
             }
 
             return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors) });
