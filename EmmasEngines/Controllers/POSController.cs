@@ -18,7 +18,6 @@ namespace EmmasEngines.Controllers
         public POSController(EmmasEnginesContext context)
         {
             _context = context;
-           // session = HttpContext.Session;
         }
 
         [HttpPost]
@@ -174,6 +173,16 @@ namespace EmmasEngines.Controllers
             }
             return -1;
         }
+
+        //clear cart
+        public IActionResult ClearCart()
+        {
+            var session = HttpContext.Session;
+            session.Remove("cart");
+            session.Remove("invoiceLines");
+            return RedirectToAction("Index", "POS");
+        }
+
         //called when items are added to the cart
         public ActionResult Buy(string UPC)
         {
@@ -181,6 +190,7 @@ namespace EmmasEngines.Controllers
                 .Where(i => i.UPC == UPC)
                 .Include(p => p.Prices)
                 .FirstOrDefault();
+            
 
             if (inventory == null)
             {
@@ -191,7 +201,7 @@ namespace EmmasEngines.Controllers
 
             if (session.GetString("invoiceLines") == null)
             {
-                // If the cart doesn't exist, create a new list of invoice lines
+                // If there are no invoice lines, creating a new list
                 List<InvoiceLine> invoiceLines = new List<InvoiceLine>()
         {
             new InvoiceLine
@@ -219,7 +229,7 @@ namespace EmmasEngines.Controllers
                 }
                 else
                 {
-                    // If the item is not in the cart, add a new invoice line for the inventory item
+                    //if  If the item is not already in the cart, add a new line
                     invoiceLines.Add(new InvoiceLine
                     {
                         InventoryUPC = inventory.UPC,
@@ -229,10 +239,11 @@ namespace EmmasEngines.Controllers
                     });
                 }
 
+                
+
                 Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
                 AddInventoryItemToCart(UPC);
 
-               
             }
 
             return RedirectToAction("Index", "POS");
@@ -243,12 +254,11 @@ namespace EmmasEngines.Controllers
         {
             var inventories = from i in _context.Inventories
                              .Where(u => u.UPC == UPC)
-                            // .Include(p => p.Prices)
+                             .Include(p => p.Prices)
                               select i;
 
             var session = HttpContext.Session;
-            List<InvoiceLine> invoices = new List<InvoiceLine>();
-            //for each cart item, add an InvoiceLine
+
 
 
             if (session.GetString("cart") == null)

@@ -1,0 +1,33 @@
+﻿thead {
+    background: #3d4856;
+    font-weight: 400;
+}
+
+dt, a {
+    color: black;
+}
+
+th {
+    color: white;
+}
+
+caption {
+    color: black;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.row {
+    width: 800px;
+}
+
+img {
+    width: 80px;
+    border-radius: 30px;
+    display: inline;
+}
+
+h1 {
+    display: inline;
+    vertical-align: middle;
+}
