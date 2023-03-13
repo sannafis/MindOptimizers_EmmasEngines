@@ -16,11 +16,12 @@
 <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 <main>
 	<section id="pageName">
-		<h1>Order #</h1>
+		<h1>POS</h1>
 	</section>
 	<script src="/lib/jquery/dist/jquery.min.js"></script>
-
-	<section id="customerSearch">
+	
+	<section  id="customerSearch">
+		<div class="search_container">
 		<label id="searchHeader" class="control-label">Search Customer: </label>
 		@*Customer Details*@
 
@@ -32,12 +33,13 @@
 		</datalist>
 
 		<form id="search-form" action="@Url.Action("SearchCustomer")" method="post">
-			<input type="text" name="SearchString" placeholder="Search by name or phone. Eg. 'John' or '1234'" list="customerNames"/>
+			<input type="text" class="customer-list " name="SearchString" placeholder="Search by name or phone. Eg. 'John' or '1234'" list="customerNames" />
 			@**@
-			<button type="submit" name="actionButton" value="FilterCustomer"><i class="fa fa-search" aria-hidden="true"></i> - Search</button>
+			<button type="submit" class="btnCustView" name="actionButton" value="FilterCustomer"><i class="fa fa-search" aria-hidden="true"></i> - Search</button>
 
 		</form>
-		<div id="customer-details">
+	</div>
+		<div id="customer-details" class="customer-details">
 			@if (TempData.ContainsKey("CustomerDetails"))
 			{
 				//Html.RenderPartial("_CustomerDetails", TempData["CustomerDetails"]);
@@ -176,7 +178,7 @@
 			@*The table is then populated with the JSON object*@
 			@*The table is then updated every time a new item is added to the cart*@
 			<h1>Cart</h1>
-			<table class="table table-striped" id="invoiceTable">
+			<table class="table table-striped show_items" id="invoiceTable">
 				<thead>
 					<tr class="bg-info">
 						<th>
@@ -242,7 +244,7 @@
 				</tbody>
 			</table>
 			</div>
-			<div id="cartSummaryData">
+		<div class="pay_amount" id="cartSummaryData">
 				@*Subtotal, Tax, Total, Paid, Change*@
 				@*Using Summary, returning json result of these properties, display in an unordered list*@
 				@*Use the "Summary" function to update the summary data *@
@@ -305,7 +307,7 @@
 				</ul>
 			</div>
 	</form>
-			<div id="cartPayment">
+	<div id="cartPayment" class="checkout">
 				@*Payment Type: user selects between cash, debit, credit, or cheque (radio buttons? user can only select one option at a time). User enters payment amount in an input on the next line.*@
 				@*Checkout, Clear buttons*@
 				@*Use the "Pay" function to update the payment data *@
@@ -313,41 +315,43 @@
 				@*Use the "ClearCart" function to clear the cart and the summary data *@
 				<form id="paymentForm" method="post" action="@Url.Action("Create", "Invoices")">
 					<label class="control-label" style="font-weight:bold">Select Payment Details...</label>
-					<div>
-						<input type="radio" id="cash" name="paymentType" value="1" required>
-						<label for="cash">Cash</label>
+			<div id="chkContainer" class="outer-payment-container">
+				<div class="payment-container">
+					<input type="radio" id="cash" class="chkPayment" name="paymentType" value="1" required>
+					<label class="lblPayment" for="cash">Cash</label>
 					</div>
-					<div>
-						<input type="radio" id="debit" name="paymentType" value="2" required>
-						<label for="debit">Debit</label>
+				<div class="payment-container">
+					<input type="radio" id="debit" name="paymentType" class="chkPayment" value="2" required>
+						<label class="lblPayment" for="debit">Debit</label>
 					</div>
-					<div>
-						<input type="radio" id="credit" name="paymentType" value="3" required>
-						<label for="credit">Credit</label>
+					<div class="payment-container">
+						<input type="radio" id="credit" name="paymentType" class="chkPayment" value="3" required>
+					<label class="lblPayment" for="credit">Credit</label>
 					</div>
-					<div>
-						<input type="radio" id="cheque" name="paymentType" value="4" required>
-						<label for="cheque">Cheque</label>
+				<div class="payment-container">
+						<input type="radio" id="cheque" name="paymentType" class="chkPayment" value="4" required>
+					<label class="lblPayment" for="cheque">Cheque</label>
 					</div>
+			</div>
 					<div>
 						<label for="paymentAmount">Payment Amount:</label>
 						<input type="number" id="paymentAmount" name="paymentAmount" placeholder="Enter payment amount" required>
 					</div>
-					<button name="actionButton" value="Pay" type="submit" class="btn btn-primary" onclick="submitForm(event)">Pay</button>
-			
+			<button name="actionButton" value="Pay" type="submit" class="btn btn-primary checkout-margin btnCheckout" onclick="submitForm(event)">Pay</button>
+
 					
 					<div id="invoice-buttons">
-						<button name="actionButton" id="view-invoice-btn" class="btn btn-primary" style="display:none; width:auto">View Invoice</button>
+				<button name="actionButton" id="view-invoice-btn" class="btn btn-primary checkout-margin btnCheckout" style="display:none; width:auto">View Invoice</button>
 					</div>
 
 				</form>
 			</div>
-
+	<div class="checkout">
 	@using (Html.BeginForm("ClearCart", "POS", FormMethod.Post))
 	{
-		<button name="actionButton" class="btn btn-primary" type="submit">Clear Cart</button>
+		<button name="actionButton" class="btn btn-primary checkout-margin btnClear" type="submit">Clear Cart</button>
 	}
-
+	</div>
 	
 </main>
 

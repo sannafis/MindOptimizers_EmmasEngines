@@ -42,14 +42,12 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class="col-sm-2">
-            Payment Method(s):
+            Payment Method:
         </dt>
         <dd class="col-sm-10">
-            @foreach (InvoicePayment payment in Model.InvoicePayments)
+            @foreach (var pay in Model.InvoicePayments)
             {
-                @payment.Payment.Type
-                ;
-                <br />
+	            <p>@pay.Payment.Type</p>
             }
         </dd>
     </dl>

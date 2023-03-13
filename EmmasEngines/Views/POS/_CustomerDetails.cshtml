@@ -9,7 +9,7 @@
         <!-- Add other customer properties here -->
         @*Button to redirect to customer detail page*@
 		@*<a href="@Url.Action("Details", "Customers", new { id = @Model.ID })" class="btn btn-primary">Customer Details</a>*@
-	<div class="btn">
+	<div class="btn customer-btns">
 		<div class="btn_crud">
 			@*When pressed, Modal box of Customer Name, Phone, Address, Postal*@
 			<form action="@Url.Action("Details", "Customers", new { id = @Model.ID })" method="get">
