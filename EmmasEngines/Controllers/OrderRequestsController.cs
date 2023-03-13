@@ -27,8 +27,8 @@ namespace EmmasEngines.Controllers
 
             var emmasEnginesContext = from i in _context.OrderRequests
                   .Include(o => o.Customer)
-                  //.Include(o => o.OrderRequestInventories)
-                  //.Include(o => o.Inventory)
+                  .Include(o => o.OrderRequestInventories)
+                    .ThenInclude(o => o.Inventory)
                   .AsNoTracking()
                                       select i;
 
@@ -61,7 +61,14 @@ namespace EmmasEngines.Controllers
                 else
                     emmasEnginesContext = emmasEnginesContext.OrderByDescending(s => s.ID);
             }
-            if (sortField == "Description")
+			if (sortField == "InventoryName")
+			{
+				if (sortDirection == "asc")
+					emmasEnginesContext = emmasEnginesContext.OrderBy(s => s.OrderRequestInventories.FirstOrDefault().Inventory.Name);
+				else
+					emmasEnginesContext = emmasEnginesContext.OrderByDescending(s => s.OrderRequestInventories.FirstOrDefault().Inventory.Name);
+			}
+			if (sortField == "Description")
             {
                 if (sortDirection == "asc")
                     emmasEnginesContext = emmasEnginesContext.OrderBy(s => s.Description);
