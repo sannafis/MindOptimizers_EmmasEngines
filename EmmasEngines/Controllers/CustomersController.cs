@@ -154,6 +154,76 @@ namespace EmmasEngines.Controllers
             return View(customer);
         }
 
+        /*************************************************************************************************/
+        /*************************************************************************************************/
+        //AddOrEdit get and post controller to combine this two actions
+
+        // GET: Customers/AddOrEdit
+        // GET: Customers/AddOrEdit/5
+        public async Task<IActionResult> AddOrEdit(int id = 0)
+        {
+            if (id == 0)
+            {
+                ViewData["CityID"] = new SelectList(_context.Cities, "ID", "Name");
+                return View(new Customer());
+            }
+            else
+            {
+                var customer = await _context.Inventories.FindAsync(id);
+                if (customer == null)
+                {
+                    return NotFound();
+                }
+                ViewData["CityID"] = new SelectList(_context.Cities, "ID", "Name");
+                return View(customer);
+            }
+
+        }
+
+        // POST: Customers/AddOrEdit
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddOrEdit(int id, [Bind("ID,FirstName,LastName,Phone,Address,Postal,CityID")] Customer customer)
+        {
+            if (ModelState.IsValid)
+            {
+                if (id == 0)
+                {
+                    _context.Add(customer);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    try
+                    {
+                        _context.Update(customer);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!CustomerExists(customer.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+
+                ViewData["CityID"] = new SelectList(_context.Cities, "ID", "Name");
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Index", _context.Customers.ToList()) });
+            }
+            ViewData["CityID"] = new SelectList(_context.Cities, "ID", "Name");
+            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEdit", customer) });
+        }
+
+        /*************************************************************************************************/
+        /*************************************************************************************************/
+
         // GET: Customers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
