@@ -1,0 +1,91 @@
+﻿@model IEnumerable<EmmasEngines.Models.Inventory>
+
+
+
+<table class="table table-striped" id="inventoryTable">
+	<thead>
+		<tr class="bg-info">
+			<th>
+				<input type="submit" name="actionButton" value="UPC" class="tableHeaders" />
+			</th>
+			<th>
+				<input type="submit" name="actionButton" value="Name" class="tableHeaders" />
+			</th>
+			<th>
+				@*<input type="submit" name="actionButton" value="Size" class="no-click" />*@
+				Size
+			</th>
+			<th>
+				@*<input type="submit" name="actionButton" value="Quantity" class="no-click" />*@
+				Quantity
+			</th>
+			<th>
+				<input type="submit" name="actionButton" value="Cost (Avg)" class="tableHeaders" />
+			</th>
+			<th>
+				<input type="submit" name="actionButton" value="Price (Retail)" class="tableHeaders" />
+			</th>
+			<th>
+
+				Current
+				@*<input type="submit" disabled="disabled" value="Current" class="tableHeaders" />*@
+			</th>
+			<th>
+
+				Stock
+				@*<input type="submit" disabled="disabled" value="Stock" class="tableHeaders" />*@
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody id="myTable">
+		@foreach (var item in Model)
+		{
+			<tr class="table-hover">
+				<td>
+					@Html.DisplayFor(modelItem => item.UPC)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Size)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Quantity)
+				</td>
+				<td>
+					@string.Format("{0:C}", item.AdjustedPrice)
+				</td>
+				<td>
+					@string.Format("{0:C}", item.MarkupPrice)
+
+				</td>
+				<td>
+					@if (item.Current)
+					{
+					//feather icon check
+						<span class="fa-solid fa-check"></span>
+					}
+					else
+					{
+						//feather icon x
+						<span class="fa-solid fa-x"></span>
+					}
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.TotalStock)
+				</td>
+				<td>
+					<div class="btn_crud">
+						<button class="btn_crud_add" type="button" tabindex="180" onclick="showInPopup('@Url.Action("AddOrEdit","Inventories",new {id = item.ID},Context.Request.Scheme)','ADD SUPPLIER')" id="btn_add_popup" aria-label="button for add suppliers">
+							<i class="fa-solid fa-plus"></i>
+						</button>
+					</div>
+					@*Removed delete button *@
+					@*										<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

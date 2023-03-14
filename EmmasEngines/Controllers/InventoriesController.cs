@@ -213,7 +213,7 @@ namespace EmmasEngines.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEdit(int id,[Bind("ID,UPC,Name,Size,Quantity,Current,SupplierID")] Inventory inventory)
+        public async Task<IActionResult> AddOrEdit(int id,[Bind("ID,UPC,Name,Size,Quantity,Current  ")] Inventory inventory)
         {
             if (ModelState.IsValid)
             {
@@ -243,7 +243,7 @@ namespace EmmasEngines.Controllers
                 }
 
 
-                return Json(new{isValid = true, html = Helper.RenderRazorViewToString(this, "Index", _context.Inventories.ToList()) });
+                return Json(new{isValid = true, html = Helper.RenderRazorViewToString(this, "_ViewAll", _context.Inventories.ToList()) });
             }
             return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEdit", inventory) });
         }

@@ -9,7 +9,7 @@
 
 
 <div class="form-popup">
-        <form asp-action="AddOrEdit" class="form-container" >
+        <form asp-action="AddOrEdit" class="form-container" asp-route-id="@Model.ID" onsubmit="return jQueryAjaxPost(this);" autocomplete="off">
             <h4 id='add_edit'>ADD PRODUCT</h4>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
