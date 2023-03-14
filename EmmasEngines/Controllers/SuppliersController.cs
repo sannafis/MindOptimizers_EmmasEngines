@@ -194,7 +194,7 @@ namespace EmmasEngines.Controllers
                 }
 
                 ViewData["CityID"] = new SelectList(_context.Cities, "ID", "Name", supplier.CityID);
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Index", _context.Suppliers.ToList()) });
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "_ViewAll", _context.Suppliers.ToList()) });
             }
             ViewData["CityID"] = new SelectList(_context.Cities, "ID", "Name", supplier.CityID);
             return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEdit", supplier) });
