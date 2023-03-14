@@ -63,96 +63,12 @@
 
 		<div id="inventoryMain">
 			<div class=" divider2_desc_btn">
-				<div class="description">
-
-					<table class="table table-striped" id="inventoryTable">
-						<thead>
-							<tr class="bg-info">
-
-								<th>
-									@*@Html.DisplayNameFor(model => model.FirstName)*@
-									<input type="submit" name="actionButton" value="First Name" class="tableHeaders" />
-								</th>
-								<th>
-									@*@Html.DisplayNameFor(model => model.LastName)*@
-									<input type="submit" name="actionButton" value="Last Name" class="tableHeaders" />
-								</th>
-								<th>
-									@* @Html.DisplayNameFor(model => model.Address)*@
-									@*<input type="submit" disabled="disabled" value="Address" class="tableHeaders" />*@
-									Address
-								</th>
-								<th>
-									@*@Html.DisplayNameFor(model => model.City)*@
-									@*<input type="submit" disabled="disabled" value="City" class="tableHeaders" />*@
-									City
-								</th>
-								<th>
-									@*@Html.DisplayNameFor(model => model.City.ProvinceCode)*@
-									@*<input type="submit" disabled="disabled" value="Province" class="tableHeaders" />*@
-									Province
-								</th>
-								<th>
-									@*@Html.DisplayNameFor(model => model.Postal)*@
-									@*<input type="submit" disabled="disabled" value="Postal Code" class="tableHeaders" />*@
-									Postal
-								</th>
-								<th>
-									@*@Html.DisplayNameFor(model => model.Phone)*@
-									@*<input type="submit" disabled="disabled" value="Phone" class="tableHeaders" />*@
-									Phone
-								</th>
-
-								<th></th>
-							</tr>
-						</thead>
-						<tbody id="myTable">
-							@foreach (var item in Model)
-							{
-								<tr class="table-hover">
-								
-									<td>
-										@Html.DisplayFor(modelItem => item.FirstName)
-									</td>
-									<td>
-										@Html.DisplayFor(modelItem => item.LastName)
-									</td>
-									<td>
-										@Html.DisplayFor(modelItem => item.Address)
-									</td>
-									<td>
-										@Html.DisplayFor(modelItem => item.City.Name)
-									</td>
-									<td>
-										@Html.DisplayFor(modelItem => item.City.ProvinceCode)
-									</td>
-									<td>
-										@Html.DisplayFor(modelItem => item.Postal)
-									</td>
-									<td>
-										@Html.DisplayFor(modelItem => item.Phone)
-									</td>
-									<td>
-@*										<div class="btn">
-											<div class="btn_crud">
-												<button class="btn_crud_edit" asp-action="Edit" asp-route-id="@item.ID">Edit</button>
-											</div>
-											<div class="btn_crud">
-												<button class="btn_crud_edit" asp-action="Details" asp-route-id="@item.ID">Details</button>
-											</div>
-										</div>*@
-										@*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-										<a asp-action="Details" asp-route-id="@item.ID">Details</a> *@
-@*Removed delete button *@
-@*										<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
-									</td>
-								</tr>
-							}
-						</tbody>
-					</table>
+				<div class="description" id="view-all">
+					@await Html.PartialAsync("_ViewAll",Model)
 				</div>
 			</div>
 		</div>
+
 		<partial name="_PagingNavBar" />
 	</form>
 </main>
