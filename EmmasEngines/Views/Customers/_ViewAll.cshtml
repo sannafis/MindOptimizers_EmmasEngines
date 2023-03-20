@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<EmmasEngines.Models.Customer>
 
-<table class="table table-striped" id="inventoryTable">
+<table class="table table-striped" id="customerTable">
 	<thead>
 		<tr class="bg-info">
 
@@ -69,8 +69,8 @@
 				</td>
 				<td>
 					<div class="btn_crud">
-						<button class="btn_crud_add" type="button" tabindex="180" onclick="showInPopup('@Url.Action("AddOrEdit","Customers",new {id = item.ID},Context.Request.Scheme)','EDIT CUSTOMER')" id="btn_add_popup" aria-label="button for add items">
-							<i class="fa-solid fa-plus"></i>
+						<button class="btn_crud_add" type="button" tabindex="180" onclick="showInPopup('@Url.Action("AddOrEdit","Customers",new {id = item.ID},Context.Request.Scheme)','EDIT CUSTOMER')" id="btn_add_popup" aria-label="button for add customers">
+							<i class="fa-solid fa-pen"></i>
 						</button>
 
 					</div>	

@@ -169,7 +169,7 @@ namespace EmmasEngines.Controllers
             }
             else
             {
-                var customer = await _context.Inventories.FindAsync(id);
+                var customer = await _context.Customers.FindAsync(id);
                 if (customer == null)
                 {
                     return NotFound();
