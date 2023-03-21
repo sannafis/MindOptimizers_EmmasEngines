@@ -133,6 +133,83 @@ namespace EmmasEngines.Controllers
             ViewData["SupplierID"] = new SelectList(_context.Suppliers, "ID", "Address", orderRequest.SupplierID);
             return View(orderRequest);
         }
+
+
+        /*************************************************************************************************/
+        /*************************************************************************************************/
+        //AddOrEdit get and post controller to combine this two actions
+
+        // GET: OrderRequest/AddOrEdit
+        // GET: OrderRequest/AddOrEdit/5
+        public async Task<IActionResult> AddOrEdit(int id = 0)
+        {
+            if (id == 0)
+            {
+                ViewData["CustomerID"] = new SelectList(_context.Customers, "ID", "Address");
+                ViewData["SupplierID"] = new SelectList(_context.Suppliers, "ID", "Address");
+                return View(new OrderRequest());
+            }
+            else
+            {
+                var orderRequest = await _context.OrderRequests.FindAsync(id);
+                if (orderRequest == null)
+                {
+
+                    return NotFound();
+                }
+                ViewData["CustomerID"] = new SelectList(_context.Customers, "ID", "Address", orderRequest.CustomerID);
+                ViewData["SupplierID"] = new SelectList(_context.Suppliers, "ID", "Address", orderRequest.SupplierID);
+                return View(orderRequest);
+            }
+
+        }
+
+        // POST: OrderRequest/AddOrEdit
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddOrEdit(int id, [Bind("ID,Description,SentDate,ReceiveDate,ExternalOrderNum,CustomerID,SupplierID")] OrderRequest orderRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                if (id == 0)
+                {
+                    _context.Add(orderRequest);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    try
+                    {
+                        _context.Update(orderRequest);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!OrderRequestExists(orderRequest.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+
+                ViewData["CustomerID"] = new SelectList(_context.Customers, "ID", "Address", orderRequest.CustomerID);
+                ViewData["SupplierID"] = new SelectList(_context.Suppliers, "ID", "Address", orderRequest.SupplierID);
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "_ViewAll", _context.OrderRequests.ToList()) });
+            }
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "ID", "Address", orderRequest.CustomerID);
+            ViewData["SupplierID"] = new SelectList(_context.Suppliers, "ID", "Address", orderRequest.SupplierID);
+            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEdit", orderRequest) });
+        }
+
+        /*************************************************************************************************/
+        /*************************************************************************************************/
+
         //GET: OrderRequests/Details/1
         public async Task<IActionResult> Details(int? id)
         {

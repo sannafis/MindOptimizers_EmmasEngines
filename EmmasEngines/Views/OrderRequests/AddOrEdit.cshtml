@@ -1,0 +1,47 @@
+﻿@model EmmasEngines.Models.OrderRequest
+
+@{
+    ViewData["Title"] = "AddOrEdit";
+    Layout = null;
+}
+
+<div class="form-popup">
+
+        <form asp-action="AddOrEdit" class="form-container" asp-route-id="@Model.ID" onsubmit="return jQueryAjaxPost(this);" autocomplete="off">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+
+                <label asp-for="Description" class="margin-top-22"></label>
+                <input asp-for="Description" class="no-bottom-margin" />    
+                <span asp-validation-for="Description" class="text-danger"></span>
+
+                <label asp-for="SentDate" class="margin-top-22"></label>
+                <input asp-for="SentDate" class="no-bottom-margin" />
+                <span asp-validation-for="SentDate" class="text-danger"></span>
+
+                <label asp-for="ReceiveDate" class="margin-top-22"></label>
+                <input asp-for="ReceiveDate" class="no-bottom-margin" />
+                <span asp-validation-for="ReceiveDate" class="text-danger"></span>
+
+                <label asp-for="ExternalOrderNum" class="margin-top-22"></label>
+                <input asp-for="ExternalOrderNum" class="no-bottom-margin" />
+                <span asp-validation-for="ExternalOrderNum" class="text-danger"></span>
+
+                <label asp-for="CustomerID" class="margin-top-22"></label>
+        <select asp-for="CustomerID" class="no-bottom-margin" asp-items="ViewBag.CustomerID" id="dropdown" tabindex="261"></select>
+                <span asp-validation-for="CustomerID" class="text-danger"></span>
+
+                <label asp-for="SupplierID" class="margin-top-22"></label>
+                <select asp-for="SupplierID" class="no-bottom-margin" asp-items="ViewBag.SupplierID" id="dropdown" tabindex="261"></select>
+                <span asp-validation-for="SupplierID" class="text-danger"></span>
+
+        <button type="submit" value="submit" class="btn_submit" style="margin-top: 22px;">Submit</button>
+        <button type="button" value="Close" class="btn_cancel" onclick="closeModal()">Close</button>
+        </form>
+
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
