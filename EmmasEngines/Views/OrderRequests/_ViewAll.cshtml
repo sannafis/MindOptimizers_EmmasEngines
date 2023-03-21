@@ -1,0 +1,99 @@
+﻿@model IEnumerable<EmmasEngines.Models.OrderRequest>
+
+						<table class="table table-striped" id="inventoryTable">
+						<thead>
+							<tr class="bg-info">
+								<th>
+									<input type="submit" name="actionButton" value="ID" class="tableHeaders" />
+									@*@Html.DisplayNameFor(model => model.ID)*@
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.Description)
+								</th>
+								<th>
+									@*Html.DisplayNameFor(model => model.OrderRequestInventories.FirstOrDefault().Inventory.Name)*@
+									<input type="submit" name="actionButton" value="InventoryName" class="tableHeaders" />
+								</th>
+								<th>
+									<input type="submit" name="actionButton" value="SentDate" class="tableHeaders" />
+									@*@Html.DisplayNameFor(model => model.SentDate)*@
+								</th>
+								<th>
+									<input type="submit" name="actionButton" value="ReceiveDate" class="tableHeaders" />
+									@*@Html.DisplayNameFor(model => model.ReceiveDate)*@
+								</th>
+								<th>
+									<input type="submit" name="actionButton" value="ExternalOrderNum" class="tableHeaders" />
+									@*@Html.DisplayNameFor(model => model.ExternalOrderNum)*@
+								</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody id="myTable">
+							@foreach (var item in Model)
+							{
+								<tr class="table-hover">
+									<td>
+										@Html.DisplayFor(modelItem => item.ID)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.Description)
+									</td>
+									<td>
+										@if (item.OrderRequestInventories.Count() == 1){
+										@Html.DisplayFor(modelItem => item.OrderRequestInventories.FirstOrDefault().Inventory.Name)
+                                        }
+                                        else { 
+											@foreach (var inventoryItem in item.OrderRequestInventories)
+											{
+												@inventoryItem.Inventory.Name <br/>
+											}
+										}
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.SentDate)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.ReceiveDate)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.ExternalOrderNum)
+									</td>
+									<td>
+										<div class="btn">
+					<div class="btn_crud">
+							<button class="btn_crud_add" type="button" tabindex="180" onclick="showInPopup('@Url.Action("AddOrEdit","OrderRequests",new {id = item.ID},Context.Request.Scheme)','ADD ORDER REQUEST')" id="btn_add_popup" aria-label="button for add order request">
+							<i class="fa-solid fa-pen"></i>
+						</button>
+						<span class="btn_tooltip">Order Request</span>
+					</div>
+											<div class="btn_crud">
+												<button class="btn_crud_edit" asp-action="Details" asp-route-id="@item.ID">
+													<i class="fa fa-info"></i>
+												</button>
+												<span class="btn_tooltip">Details</span>
+											</div>
+											<div class="btn_crud">
+												<button type="submit" name="actionButton" value="Receive" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for receiving order">
+													<i class="fa fa-box"></i>
+												</button>
+												<span class="btn_tooltip">Receive Order</span>
+											</div>
+											<div class="btn_crud">
+												<button type="submit" name="actionButton" value="Receive" tabindex="190" class="btn_crud_edit" onclick="" aria-label="button for receiving order">
+													<i class="fa fa-share"></i>
+												</button>
+												<span class="btn_tooltip">Send Order</span>
+											</div>
+										</div>
+										@*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+									<a asp-action="Details" asp-route-id="@item.ID">Details</a>|
+									<a asp-action="Send" asp-route-id="@item.ID">Send Order</a>|
+									<a asp-action="Receive" asp-route-id="@item.ID">Receive Order</a>*@
+										@*Removed delete button *@
+										@*                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
