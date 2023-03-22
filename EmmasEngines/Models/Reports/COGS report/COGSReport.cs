@@ -7,6 +7,8 @@ namespace EmmasEngines.Models
     public class COGSReport
     {
         [Key, ForeignKey("Report")]
+        [Required(ErrorMessage = "Report ID is required.")]
+        [Range(minimum: 1, maximum: Int32.MaxValue, ErrorMessage = "Report ID is required")]
         public int ID { get; set; }
 
         public Report Report { get; set; }
@@ -38,5 +40,9 @@ namespace EmmasEngines.Models
         [Display(Name = "Profit Margin %")]
         [Required(ErrorMessage = "Profit Margin is required")]
         public double ProfitMargin { get; set; }
+
+        public ICollection<Inventory> Inventories { get; set; } = new HashSet<Inventory>();
+
+        public ICollection<Invoice> Invoices { get; set; } = new HashSet<Invoice>();
     }
 }

@@ -183,6 +183,52 @@ namespace EmmasEngines.Data
                 .WithOne(i => i.OrderRequest)
                 .HasForeignKey(i => i.OrderRequestID)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            /// -------- REPORTS -------- ///
+
+            // Many:many between COGSReport and Inventories
+            modelBuilder.Entity<COGSReport>()
+                .HasMany<Inventory>(s => s.Inventories)
+                .WithMany(c => c.COGSReports)
+                .UsingEntity(j => j.ToTable("COGSReportInventory"));
+
+            // Many:many between COGSReport and Invoices
+            modelBuilder.Entity<COGSReport>()
+                .HasMany<Invoice>(s => s.Invoices)
+                .WithMany(c => c.COGSReports)
+                .UsingEntity(j => j.ToTable("COGSReportInvoice"));
+
+            // Many:many between HourlyReport and Employees
+            modelBuilder.Entity<HourlyReport>()
+                .HasMany<Employee>(s => s.Employees)
+                .WithMany(c => c.HourlyReports)
+                .UsingEntity(j => j.ToTable("HourlyReportEmployee"));
+
+            //1:many between inventory and SalesReport_Inventories
+            modelBuilder.Entity<Inventory>()
+                .HasMany(p => p.SalesReportInventories)
+                .WithOne(i => i.Inventory)
+                .HasForeignKey(i => i.InventoryUPC)
+                .HasPrincipalKey(p => p.UPC);
+
+            //1:many between inventory and SalesReport_Inventories
+            modelBuilder.Entity<Inventory>()
+                .HasMany(p => p.SalesReportInventories)
+                .WithOne(i => i.Inventory)
+                .HasForeignKey(i => i.InventoryUPC)
+                .HasPrincipalKey(p => p.UPC);
+
+            //1:many between SalesReport and SalesReport_Inventories
+            modelBuilder.Entity<SalesReport>()
+                .HasMany(p => p.SalesReportInventories)
+                .WithOne(i => i.SalesReport)
+                .HasForeignKey(i => i.SalesReportID);
+
+            //1:many between SalesReport and SalesReport_Employee
+            modelBuilder.Entity<SalesReport>()
+                .HasMany(p => p.SalesReportEmployees)
+                .WithOne(i => i.SalesReport)
+                .HasForeignKey(i => i.SalesReportID);
         }
     }
 }

@@ -7,6 +7,8 @@ namespace EmmasEngines.Models
     public class SalesReport
     {
         [Key, ForeignKey("Report")]
+        [Required(ErrorMessage = "Report ID is required.")]
+        [Range(minimum: 1, maximum: Int32.MaxValue, ErrorMessage = "Report ID is required")]
         public int ID { get; set; }
 
         public Report Report { get; set; }
@@ -42,5 +44,7 @@ namespace EmmasEngines.Models
         [Required(ErrorMessage = "Total Tax is required")]
         public double TotalTax { get; set; }
 
+        public ICollection<SalesReportEmployee> SalesReportEmployees { get; set; } = new HashSet<SalesReportEmployee>();
+        public ICollection<SalesReportInventory> SalesReportInventories { get; set; } = new HashSet<SalesReportInventory>();
     }
 }

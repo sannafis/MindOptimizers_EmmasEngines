@@ -11,13 +11,43 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmmasEngines.Data.EmmasEnginesMigrations
 {
     [DbContext(typeof(EmmasEnginesContext))]
-    [Migration("20230313062023_Initial")]
+    [Migration("20230322162836_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.14");
+
+            modelBuilder.Entity("COGSReportInventory", b =>
+                {
+                    b.Property<int>("COGSReportsID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InventoriesID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("COGSReportsID", "InventoriesID");
+
+                    b.HasIndex("InventoriesID");
+
+                    b.ToTable("COGSReportInventory", (string)null);
+                });
+
+            modelBuilder.Entity("COGSReportInvoice", b =>
+                {
+                    b.Property<int>("COGSReportsID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InvoicesID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("COGSReportsID", "InvoicesID");
+
+                    b.HasIndex("InvoicesID");
+
+                    b.ToTable("COGSReportInvoice", (string)null);
+                });
 
             modelBuilder.Entity("EmmasEngines.Models.City", b =>
                 {
@@ -42,6 +72,37 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.HasIndex("ProvinceID");
 
                     b.ToTable("Cities");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.COGSReport", b =>
+                {
+                    b.Property<int>("ID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("COGS")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("EndCost")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("GrossProfit")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("ProfitMargin")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("PurchasedCost")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("SaleRevenue")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("StartCost")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("COGSReport");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Customer", b =>
@@ -140,6 +201,16 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .IsUnique();
 
                     b.ToTable("EmployeePositions");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.HourlyReport", b =>
+                {
+                    b.Property<int>("ID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("HourlyReport");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Inventory", b =>
@@ -410,6 +481,133 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.ToTable("Provinces");
                 });
 
+            modelBuilder.Entity("EmmasEngines.Models.Reports.Report", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Criteria")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateEnd")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateStart")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Report");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.SalesReport", b =>
+                {
+                    b.Property<int>("ID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("CashAmount")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("ChequeAmount")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("CreditAmount")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("DebitAmount")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("OtherTax")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("SalesTax")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("TotalTax")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("SalesReport");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.SalesReportEmployee", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("EmployeeID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Sales")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("SalesReportID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SalesReportInventoryID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("EmployeeID");
+
+                    b.HasIndex("SalesReportID");
+
+                    b.HasIndex("SalesReportInventoryID");
+
+                    b.ToTable("SalesReportEmployee");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.SalesReportInventory", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("InventoryUPC")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SalesReportID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SalesReportInventoryID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("InventoryUPC");
+
+                    b.HasIndex("SalesReportID");
+
+                    b.HasIndex("SalesReportInventoryID");
+
+                    b.ToTable("SalesReportInventory");
+                });
+
             modelBuilder.Entity("EmmasEngines.Models.Supplier", b =>
                 {
                     b.Property<int>("ID")
@@ -456,6 +654,51 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.ToTable("Suppliers");
                 });
 
+            modelBuilder.Entity("EmployeeHourlyReport", b =>
+                {
+                    b.Property<int>("EmployeesID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HourlyReportsID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("EmployeesID", "HourlyReportsID");
+
+                    b.HasIndex("HourlyReportsID");
+
+                    b.ToTable("HourlyReportEmployee", (string)null);
+                });
+
+            modelBuilder.Entity("COGSReportInventory", b =>
+                {
+                    b.HasOne("EmmasEngines.Models.COGSReport", null)
+                        .WithMany()
+                        .HasForeignKey("COGSReportsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EmmasEngines.Models.Inventory", null)
+                        .WithMany()
+                        .HasForeignKey("InventoriesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("COGSReportInvoice", b =>
+                {
+                    b.HasOne("EmmasEngines.Models.COGSReport", null)
+                        .WithMany()
+                        .HasForeignKey("COGSReportsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EmmasEngines.Models.Invoice", null)
+                        .WithMany()
+                        .HasForeignKey("InvoicesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("EmmasEngines.Models.City", b =>
                 {
                     b.HasOne("EmmasEngines.Models.Province", "Province")
@@ -464,6 +707,17 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Province");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.COGSReport", b =>
+                {
+                    b.HasOne("EmmasEngines.Models.Reports.Report", "Report")
+                        .WithOne("COGSReport")
+                        .HasForeignKey("EmmasEngines.Models.COGSReport", "ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Customer", b =>
@@ -500,6 +754,17 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("Employee");
 
                     b.Navigation("Position");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.HourlyReport", b =>
+                {
+                    b.HasOne("EmmasEngines.Models.Reports.Report", "Report")
+                        .WithOne("HourlyReport")
+                        .HasForeignKey("EmmasEngines.Models.HourlyReport", "ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Inventory", b =>
@@ -618,6 +883,64 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("Inventory");
                 });
 
+            modelBuilder.Entity("EmmasEngines.Models.SalesReport", b =>
+                {
+                    b.HasOne("EmmasEngines.Models.Reports.Report", "Report")
+                        .WithOne("SalesReport")
+                        .HasForeignKey("EmmasEngines.Models.SalesReport", "ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.SalesReportEmployee", b =>
+                {
+                    b.HasOne("EmmasEngines.Models.Employee", "Employee")
+                        .WithMany("SalesReportEmployees")
+                        .HasForeignKey("EmployeeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EmmasEngines.Models.SalesReport", "SalesReport")
+                        .WithMany("SalesReportEmployees")
+                        .HasForeignKey("SalesReportID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EmmasEngines.Models.SalesReportInventory", null)
+                        .WithMany("SalesReportEmployees")
+                        .HasForeignKey("SalesReportInventoryID");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("SalesReport");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.SalesReportInventory", b =>
+                {
+                    b.HasOne("EmmasEngines.Models.Inventory", "Inventory")
+                        .WithMany("SalesReportInventories")
+                        .HasForeignKey("InventoryUPC")
+                        .HasPrincipalKey("UPC")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EmmasEngines.Models.SalesReport", "SalesReport")
+                        .WithMany("SalesReportInventories")
+                        .HasForeignKey("SalesReportID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EmmasEngines.Models.SalesReportInventory", null)
+                        .WithMany("SalesReportInventories")
+                        .HasForeignKey("SalesReportInventoryID");
+
+                    b.Navigation("Inventory");
+
+                    b.Navigation("SalesReport");
+                });
+
             modelBuilder.Entity("EmmasEngines.Models.Supplier", b =>
                 {
                     b.HasOne("EmmasEngines.Models.City", "City")
@@ -635,9 +958,26 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("Province");
                 });
 
+            modelBuilder.Entity("EmployeeHourlyReport", b =>
+                {
+                    b.HasOne("EmmasEngines.Models.Employee", null)
+                        .WithMany()
+                        .HasForeignKey("EmployeesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EmmasEngines.Models.HourlyReport", null)
+                        .WithMany()
+                        .HasForeignKey("HourlyReportsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("EmmasEngines.Models.Employee", b =>
                 {
                     b.Navigation("EmployeePositions");
+
+                    b.Navigation("SalesReportEmployees");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Inventory", b =>
@@ -647,6 +987,8 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("OrderRequestInventories");
 
                     b.Navigation("Prices");
+
+                    b.Navigation("SalesReportInventories");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Invoice", b =>
@@ -674,6 +1016,29 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
             modelBuilder.Entity("EmmasEngines.Models.Province", b =>
                 {
                     b.Navigation("Cities");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.Reports.Report", b =>
+                {
+                    b.Navigation("COGSReport");
+
+                    b.Navigation("HourlyReport");
+
+                    b.Navigation("SalesReport");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.SalesReport", b =>
+                {
+                    b.Navigation("SalesReportEmployees");
+
+                    b.Navigation("SalesReportInventories");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.SalesReportInventory", b =>
+                {
+                    b.Navigation("SalesReportEmployees");
+
+                    b.Navigation("SalesReportInventories");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Supplier", b =>

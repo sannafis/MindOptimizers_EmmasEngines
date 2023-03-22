@@ -65,6 +65,24 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Report",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    DateStart = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    DateEnd = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Criteria = table.Column<string>(type: "TEXT", nullable: false),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Report", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EmployeePositions",
                 columns: table => new
                 {
@@ -107,6 +125,72 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         principalTable: "Provinces",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "COGSReport",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false),
+                    StartCost = table.Column<double>(type: "REAL", nullable: false),
+                    PurchasedCost = table.Column<double>(type: "REAL", nullable: false),
+                    EndCost = table.Column<double>(type: "REAL", nullable: false),
+                    COGS = table.Column<double>(type: "REAL", nullable: false),
+                    SaleRevenue = table.Column<double>(type: "REAL", nullable: false),
+                    GrossProfit = table.Column<double>(type: "REAL", nullable: false),
+                    ProfitMargin = table.Column<double>(type: "REAL", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_COGSReport", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_COGSReport_Report_ID",
+                        column: x => x.ID,
+                        principalTable: "Report",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HourlyReport",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HourlyReport", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_HourlyReport_Report_ID",
+                        column: x => x.ID,
+                        principalTable: "Report",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SalesReport",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CashAmount = table.Column<double>(type: "REAL", nullable: false),
+                    DebitAmount = table.Column<double>(type: "REAL", nullable: false),
+                    CreditAmount = table.Column<double>(type: "REAL", nullable: false),
+                    ChequeAmount = table.Column<double>(type: "REAL", nullable: false),
+                    Total = table.Column<double>(type: "REAL", nullable: false),
+                    SalesTax = table.Column<double>(type: "REAL", nullable: false),
+                    OtherTax = table.Column<double>(type: "REAL", nullable: false),
+                    TotalTax = table.Column<double>(type: "REAL", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SalesReport", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_SalesReport_Report_ID",
+                        column: x => x.ID,
+                        principalTable: "Report",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -167,6 +251,30 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         column: x => x.ProvinceID,
                         principalTable: "Provinces",
                         principalColumn: "ID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HourlyReportEmployee",
+                columns: table => new
+                {
+                    EmployeesID = table.Column<int>(type: "INTEGER", nullable: false),
+                    HourlyReportsID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HourlyReportEmployee", x => new { x.EmployeesID, x.HourlyReportsID });
+                    table.ForeignKey(
+                        name: "FK_HourlyReportEmployee_Employees_EmployeesID",
+                        column: x => x.EmployeesID,
+                        principalTable: "Employees",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HourlyReportEmployee_HourlyReport_HourlyReportsID",
+                        column: x => x.HourlyReportsID,
+                        principalTable: "HourlyReport",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -253,6 +361,30 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "COGSReportInvoice",
+                columns: table => new
+                {
+                    COGSReportsID = table.Column<int>(type: "INTEGER", nullable: false),
+                    InvoicesID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_COGSReportInvoice", x => new { x.COGSReportsID, x.InvoicesID });
+                    table.ForeignKey(
+                        name: "FK_COGSReportInvoice_COGSReport_COGSReportsID",
+                        column: x => x.COGSReportsID,
+                        principalTable: "COGSReport",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_COGSReportInvoice_Invoices_InvoicesID",
+                        column: x => x.InvoicesID,
+                        principalTable: "Invoices",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "InvoicePayments",
                 columns: table => new
                 {
@@ -274,6 +406,30 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         principalTable: "Payments",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "COGSReportInventory",
+                columns: table => new
+                {
+                    COGSReportsID = table.Column<int>(type: "INTEGER", nullable: false),
+                    InventoriesID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_COGSReportInventory", x => new { x.COGSReportsID, x.InventoriesID });
+                    table.ForeignKey(
+                        name: "FK_COGSReportInventory_COGSReport_COGSReportsID",
+                        column: x => x.COGSReportsID,
+                        principalTable: "COGSReport",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_COGSReportInventory_Inventories_InventoriesID",
+                        column: x => x.InventoriesID,
+                        principalTable: "Inventories",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -325,6 +481,40 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SalesReportInventory",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    InventoryUPC = table.Column<string>(type: "TEXT", nullable: false),
+                    Quantity = table.Column<int>(type: "INTEGER", nullable: false),
+                    Total = table.Column<double>(type: "REAL", nullable: false),
+                    SalesReportID = table.Column<int>(type: "INTEGER", nullable: false),
+                    SalesReportInventoryID = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SalesReportInventory", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_SalesReportInventory_Inventories_InventoryUPC",
+                        column: x => x.InventoryUPC,
+                        principalTable: "Inventories",
+                        principalColumn: "UPC",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SalesReportInventory_SalesReport_SalesReportID",
+                        column: x => x.SalesReportID,
+                        principalTable: "SalesReport",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SalesReportInventory_SalesReportInventory_SalesReportInventoryID",
+                        column: x => x.SalesReportInventoryID,
+                        principalTable: "SalesReportInventory",
+                        principalColumn: "ID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderRequestInventories",
                 columns: table => new
                 {
@@ -350,10 +540,53 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SalesReportEmployee",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    EmployeeID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Sales = table.Column<double>(type: "REAL", nullable: false),
+                    SalesReportID = table.Column<int>(type: "INTEGER", nullable: false),
+                    SalesReportInventoryID = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SalesReportEmployee", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_SalesReportEmployee_Employees_EmployeeID",
+                        column: x => x.EmployeeID,
+                        principalTable: "Employees",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SalesReportEmployee_SalesReport_SalesReportID",
+                        column: x => x.SalesReportID,
+                        principalTable: "SalesReport",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SalesReportEmployee_SalesReportInventory_SalesReportInventoryID",
+                        column: x => x.SalesReportInventoryID,
+                        principalTable: "SalesReportInventory",
+                        principalColumn: "ID");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Cities_ProvinceID",
                 table: "Cities",
                 column: "ProvinceID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_COGSReportInventory_InventoriesID",
+                table: "COGSReportInventory",
+                column: "InventoriesID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_COGSReportInvoice_InvoicesID",
+                table: "COGSReportInvoice",
+                column: "InvoicesID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_CityID",
@@ -381,6 +614,11 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 table: "Employees",
                 column: "Username",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HourlyReportEmployee_HourlyReportsID",
+                table: "HourlyReportEmployee",
+                column: "HourlyReportsID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Inventories_SupplierID",
@@ -476,6 +714,36 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_SalesReportEmployee_EmployeeID",
+                table: "SalesReportEmployee",
+                column: "EmployeeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SalesReportEmployee_SalesReportID",
+                table: "SalesReportEmployee",
+                column: "SalesReportID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SalesReportEmployee_SalesReportInventoryID",
+                table: "SalesReportEmployee",
+                column: "SalesReportInventoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SalesReportInventory_InventoryUPC",
+                table: "SalesReportInventory",
+                column: "InventoryUPC");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SalesReportInventory_SalesReportID",
+                table: "SalesReportInventory",
+                column: "SalesReportID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SalesReportInventory_SalesReportInventoryID",
+                table: "SalesReportInventory",
+                column: "SalesReportInventoryID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Suppliers_CityID",
                 table: "Suppliers",
                 column: "CityID");
@@ -489,7 +757,16 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "COGSReportInventory");
+
+            migrationBuilder.DropTable(
+                name: "COGSReportInvoice");
+
+            migrationBuilder.DropTable(
                 name: "EmployeePositions");
+
+            migrationBuilder.DropTable(
+                name: "HourlyReportEmployee");
 
             migrationBuilder.DropTable(
                 name: "InvoiceLines");
@@ -504,7 +781,16 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 name: "Prices");
 
             migrationBuilder.DropTable(
+                name: "SalesReportEmployee");
+
+            migrationBuilder.DropTable(
+                name: "COGSReport");
+
+            migrationBuilder.DropTable(
                 name: "Positions");
+
+            migrationBuilder.DropTable(
+                name: "HourlyReport");
 
             migrationBuilder.DropTable(
                 name: "Invoices");
@@ -516,7 +802,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 name: "OrderRequests");
 
             migrationBuilder.DropTable(
-                name: "Inventories");
+                name: "SalesReportInventory");
 
             migrationBuilder.DropTable(
                 name: "Employees");
@@ -525,7 +811,16 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 name: "Customers");
 
             migrationBuilder.DropTable(
+                name: "Inventories");
+
+            migrationBuilder.DropTable(
+                name: "SalesReport");
+
+            migrationBuilder.DropTable(
                 name: "Suppliers");
+
+            migrationBuilder.DropTable(
+                name: "Report");
 
             migrationBuilder.DropTable(
                 name: "Cities");

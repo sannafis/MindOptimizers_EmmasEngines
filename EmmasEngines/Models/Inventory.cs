@@ -85,5 +85,10 @@ namespace EmmasEngines.Models
         public ICollection<Price> Prices { get; set; } = new HashSet<Price>();
 
         public ICollection<InvoiceLine> InvoiceLines { get; set; } = new HashSet<InvoiceLine>();
+
+        public ICollection<COGSReport> COGSReports { get; set; } = new HashSet<COGSReport>();
+
+        public ICollection<SalesReportInventory> SalesReportInventories { get; set; } = new HashSet<SalesReportInventory>();
+
     }
 }

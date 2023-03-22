@@ -57,6 +57,8 @@ namespace EmmasEngines.Models
 
         public ICollection<InvoiceLine> InvoiceLines { get; set; } = new HashSet<InvoiceLine>();
 
+        public ICollection<COGSReport> COGSReports { get; set; } = new HashSet<COGSReport>();
+
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
@@ -65,6 +67,8 @@ namespace EmmasEngines.Models
                 yield return new ValidationResult("Date must be a valid date.", new[] { "Date" });
             }
         }
+
+        
 
     }
 }

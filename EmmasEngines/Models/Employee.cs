@@ -36,5 +36,9 @@ namespace EmmasEngines.Models
 
         public ICollection<EmployeePosition> EmployeePositions { get; set; } = new HashSet<EmployeePosition>();
 
+        public ICollection<SalesReportEmployee> SalesReportEmployees { get; set; } = new HashSet<SalesReportEmployee>();
+
+        public ICollection<HourlyReport> HourlyReports { get; set; } = new HashSet<HourlyReport>();
+
     }
 }
