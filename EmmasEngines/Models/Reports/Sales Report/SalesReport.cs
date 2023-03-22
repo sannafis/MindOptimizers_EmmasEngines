@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using EmmasEngines.Models.Reports;
 
 namespace EmmasEngines.Models
 {

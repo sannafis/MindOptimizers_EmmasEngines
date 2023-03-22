@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmmasEngines.Data.EmmasEnginesMigrations
 {
     [DbContext(typeof(EmmasEnginesContext))]
-    [Migration("20230322162836_Initial")]
+    [Migration("20230322232059_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -102,7 +102,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("COGSReport");
+                    b.ToTable("COGSReports");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Customer", b =>
@@ -210,7 +210,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("HourlyReport");
+                    b.ToTable("HourlyReports");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Inventory", b =>
@@ -481,7 +481,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.ToTable("Provinces");
                 });
 
-            modelBuilder.Entity("EmmasEngines.Models.Reports.Report", b =>
+            modelBuilder.Entity("EmmasEngines.Models.Report", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -509,7 +509,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Report");
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.SalesReport", b =>
@@ -543,7 +543,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("SalesReport");
+                    b.ToTable("SalesReports");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.SalesReportEmployee", b =>
@@ -572,7 +572,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.HasIndex("SalesReportInventoryID");
 
-                    b.ToTable("SalesReportEmployee");
+                    b.ToTable("SalesReportEmployees");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.SalesReportInventory", b =>
@@ -605,7 +605,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.HasIndex("SalesReportInventoryID");
 
-                    b.ToTable("SalesReportInventory");
+                    b.ToTable("SalesReportInventories");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.Supplier", b =>
@@ -711,7 +711,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
             modelBuilder.Entity("EmmasEngines.Models.COGSReport", b =>
                 {
-                    b.HasOne("EmmasEngines.Models.Reports.Report", "Report")
+                    b.HasOne("EmmasEngines.Models.Report", "Report")
                         .WithOne("COGSReport")
                         .HasForeignKey("EmmasEngines.Models.COGSReport", "ID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -758,7 +758,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
             modelBuilder.Entity("EmmasEngines.Models.HourlyReport", b =>
                 {
-                    b.HasOne("EmmasEngines.Models.Reports.Report", "Report")
+                    b.HasOne("EmmasEngines.Models.Report", "Report")
                         .WithOne("HourlyReport")
                         .HasForeignKey("EmmasEngines.Models.HourlyReport", "ID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -885,7 +885,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
             modelBuilder.Entity("EmmasEngines.Models.SalesReport", b =>
                 {
-                    b.HasOne("EmmasEngines.Models.Reports.Report", "Report")
+                    b.HasOne("EmmasEngines.Models.Report", "Report")
                         .WithOne("SalesReport")
                         .HasForeignKey("EmmasEngines.Models.SalesReport", "ID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1018,7 +1018,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("Cities");
                 });
 
-            modelBuilder.Entity("EmmasEngines.Models.Reports.Report", b =>
+            modelBuilder.Entity("EmmasEngines.Models.Report", b =>
                 {
                     b.Navigation("COGSReport");
 

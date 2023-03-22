@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.Drawing;
 
 namespace EmmasEngines.Data
 {
@@ -22,10 +23,11 @@ namespace EmmasEngines.Data
                 // random number gen
                 Random random = new Random();
 
+                #region Regular Tables
                 //Province 
                 if (!context.Provinces.Any())
                 {
-                    var provinces = new (string Code, string Name)[]{("AB", "Alberta"), ("BC", "British Columbia"), ("MB", "Manitoba"), ("NB", "New Brunswick"), ("NL", "Newfoundland & Labrador"), ("NT", "Northwest Territories"), ("NS", "Nova Scotia"), ("NU", "Nunavut"), ("ON", "Ontario"), ("PE", "Prince Edward Island"), ("QB", "Quebec"), ("SK", "Saskatchewan"), ("YT", "Yukon")};
+                    var provinces = new (string Code, string Name)[] { ("AB", "Alberta"), ("BC", "British Columbia"), ("MB", "Manitoba"), ("NB", "New Brunswick"), ("NL", "Newfoundland & Labrador"), ("NT", "Northwest Territories"), ("NS", "Nova Scotia"), ("NU", "Nunavut"), ("ON", "Ontario"), ("PE", "Prince Edward Island"), ("QB", "Quebec"), ("SK", "Saskatchewan"), ("YT", "Yukon") };
 
                     foreach (var p in provinces)
                     {
@@ -42,9 +44,9 @@ namespace EmmasEngines.Data
                 //City
                 if (!context.Cities.Any())
                 {
-                    string[] ontario = new string[] { "Toronto", "North York", "Scarbrough", "London", "Brampton", "Mississauga", "Ottawa", "Hamilton", "Etobicoke", "Barrie", "Belmont","Grimsby","Guelph","Kanata","Kitchener","Niagara Falls","Niagara-on-the-Lake", "Port Colborne","Sault Ste. Marie","Simcoe","St. Catharines","Thorold","Thunder Bay"};
+                    string[] ontario = new string[] { "Toronto", "North York", "Scarbrough", "London", "Brampton", "Mississauga", "Ottawa", "Hamilton", "Etobicoke", "Barrie", "Belmont", "Grimsby", "Guelph", "Kanata", "Kitchener", "Niagara Falls", "Niagara-on-the-Lake", "Port Colborne", "Sault Ste. Marie", "Simcoe", "St. Catharines", "Thorold", "Thunder Bay" };
                     string[] britishColumbia = new string[] { "Vancouver", "Victoria", "Surrey", "Richmond", "Kelowna", "Delta", "Coquitlam", "Burnaby", "Prince George", "Chilliwack" };
-                    string[] alberta = new string[] { "Edmonton", "Red Deer", "Grand Prarie", "St. Albert", "Airdrie", "Medicine Hat", "Calgary","Fort McMurray", "Lethbridge" };
+                    string[] alberta = new string[] { "Edmonton", "Red Deer", "Grand Prarie", "St. Albert", "Airdrie", "Medicine Hat", "Calgary", "Fort McMurray", "Lethbridge" };
                     string[] manitoba = new string[] { "Winnipeg", "Portage la Prarie", "Thompson", "Brandon", "Dauphin", "Steinbach", "Winkler", "St. Andrews", "Belair", "Oakburn" };
                     string[] newBrunswick = new string[] { "Saint John", "Fredericton", "Riverview", "Bathurst", "Edmundston", "Moncton", "Miramichi", "Dieppe", "Quispamsis", "Rothesay" };
                     string[] novaScotia = new string[] { "Halifax", "Sydney", "New Glasgow", "Truro", "Dartmouth", "Glace Bay", "Amherst" };
@@ -52,7 +54,7 @@ namespace EmmasEngines.Data
                     string[] newfoundland = new string[] { "St. John's", "Corner Brook", "Paradise", "Gander", "Stephenville", "Labrador City" };
                     string[] northwest = new string[] { "Yellowknife", "Fort Simpson", "Tulita", "Behchoko", "Ulukhaktok", "Norman Wells", "Aklavik" };
                     string[] pei = new string[] { "Charlottetown", "Stratford", "Mermaid", "Summerside", "Marshfield" };
-                    string[] saskatchewan = new string[] { "Regina", "Moose Jaw", "Swift Current", "Saskatoon", "Prince Albert", "Yorkton", "Weyburn", "Lloydminster", "Estevan"};
+                    string[] saskatchewan = new string[] { "Regina", "Moose Jaw", "Swift Current", "Saskatoon", "Prince Albert", "Yorkton", "Weyburn", "Lloydminster", "Estevan" };
                     string[] yukon = new string[] { "Whitehorse", "Marsh Lake", "Dawson", "Carcross", "Faro", "Mayo", "Destruction Bay", "Teslin" };
 
                     int[] provIDs = context.Provinces.Select(g => g.ID).ToArray();
@@ -60,7 +62,7 @@ namespace EmmasEngines.Data
 
                     foreach (var i in ontario)
                     {
-                        City city = new City(){ Name = i, ProvinceCode = "ON"};
+                        City city = new City() { Name = i, ProvinceCode = "ON" };
                         context.Cities.Add(city);
                     }
 
@@ -132,7 +134,7 @@ namespace EmmasEngines.Data
                     context.SaveChanges();
                 }
 
-                
+
 
                 int[] cityIDs = context.Cities.Select(x => x.ID).ToArray();
 
@@ -264,7 +266,7 @@ namespace EmmasEngines.Data
                             k = (k >= invUPCs.Count()) ? 0 : k;//Resets counter k to 0 if we have run out of inventory
                             Price o = new Price()
                             {
-                                Stock = random.Next(20,51),
+                                Stock = random.Next(20, 51),
                                 InventoryUPC = invUPCs[k],
                                 PurchasedCost = random.NextDouble() * (priceMax - priceMin) + priceMin,
                                 PurchasedDate = startDate.AddDays(-random.Next(30, 365))
@@ -405,10 +407,10 @@ namespace EmmasEngines.Data
                      }, new Position
                      {
                          Title = "Ordering"
-                     },new Position
+                     }, new Position
                      {
                          Title = "Sales"
-                     },new Position
+                     }, new Position
                      {
                          Title = "Admin"
                      });
@@ -449,17 +451,18 @@ namespace EmmasEngines.Data
                 {
                     DateTime start = new DateTime(2022, 1, 1);
                     int range = (new DateTime(2023, 1, 1) - start).Days;
-                    for (int i = 0; i < 10; i++) {
+                    for (int i = 0; i < 10; i++)
+                    {
                         DateTime sendDate = start.AddDays(random.Next(range));
-                         OrderRequest order = new OrderRequest()
-                         {
-                             Description = "Inventory Stock Order",
-                             SentDate = sendDate,
-                             ReceiveDate = (i%2 == 0? sendDate.AddDays(random.Next(10, 30)) : null), 
-                             ExternalOrderNum = (100 + i).ToString(),
-                             CustomerID = customerIDs[random.Next(customerIDs.Count())],
-                             SupplierID = suppIDs[random.Next(suppIDs.Count())]
-                         };
+                        OrderRequest order = new OrderRequest()
+                        {
+                            Description = "Inventory Stock Order",
+                            SentDate = sendDate,
+                            ReceiveDate = (i % 2 == 0 ? sendDate.AddDays(random.Next(10, 30)) : null),
+                            ExternalOrderNum = (100 + i).ToString(),
+                            CustomerID = customerIDs[random.Next(customerIDs.Count())],
+                            SupplierID = suppIDs[random.Next(suppIDs.Count())]
+                        };
                         context.OrderRequests.Add(order);
                     }
                     context.SaveChanges();
@@ -497,7 +500,7 @@ namespace EmmasEngines.Data
                 //Invoice 
                 if (!context.Invoices.Any())
                 {
-                    for(int i=0; i<10; i++)
+                    for (int i = 0; i < 10; i++)
                     {
                         Invoice invoice = new Invoice()
                         {
@@ -509,31 +512,31 @@ namespace EmmasEngines.Data
                         };
                         context.Invoices.Add(invoice);
                     }
-                    
+
                     context.SaveChanges();
-                }                
+                }
 
                 //Payment 
                 if (!context.Payments.Any())
                 {
-                        context.Payments.AddRange(
-                            new Payment
-                            {
-                                Type = "Cash",
-                                Description = "Cash Payment"
-                            }, new Payment
-                            {
-                                Type = "Debit",
-                                Description = "Debit Payment"
-                            }, new Payment
-                            {
-                                Type = "Credit",
-                                Description = "Credit Payment"
-                            }, new Payment
-                            {
-                                Type = "Cheque",
-                                Description = "Cheque Payment"
-                            });
+                    context.Payments.AddRange(
+                        new Payment
+                        {
+                            Type = "Cash",
+                            Description = "Cash Payment"
+                        }, new Payment
+                        {
+                            Type = "Debit",
+                            Description = "Debit Payment"
+                        }, new Payment
+                        {
+                            Type = "Credit",
+                            Description = "Credit Payment"
+                        }, new Payment
+                        {
+                            Type = "Cheque",
+                            Description = "Cheque Payment"
+                        });
 
                     context.SaveChanges();
                 }
@@ -544,7 +547,7 @@ namespace EmmasEngines.Data
                 //Invoice Payment 
                 if (!context.InvoicePayments.Any())
                 {
-                    foreach(int i in invoiceIDs)
+                    foreach (int i in invoiceIDs)
                     {
                         context.InvoicePayments.AddRange(
                             new InvoicePayment
@@ -580,6 +583,103 @@ namespace EmmasEngines.Data
                     }
                     context.SaveChanges();
                 }
+
+                #endregion
+
+                #region Reports
+                //Dummy Report Data
+
+                if (!context.SalesReports.Any())
+                {
+                    List<SalesReportInventory> srepInv = new List<SalesReportInventory>();
+                    foreach(string upc in inventoryUPCs)
+                    {
+                        SalesReportInventory s = new SalesReportInventory()
+                        {
+                            InventoryUPC = upc,
+                            Quantity = random.Next(1, 3),
+                            Total = random.NextDouble() * (1000.00 - 500.00) + 500.00,
+                            SalesReportID = 1
+                        };
+                        srepInv.Add(s);
+                    }
+                    Report report = new Report()
+                    {
+                        Description = "Monthly Sales Report",
+                        DateStart = DateTime.Parse("January 1, 2023"),
+                        DateEnd = DateTime.Parse("January 31, 2023"),
+                        Criteria = "Wendy Barlowe",
+                        DateCreated = DateTime.Now,
+                        Type = ReportType.Sales,
+                        SalesReport = new SalesReport()
+                        {
+                            CashAmount = 464.00,
+                            DebitAmount = 3037.50,
+                            CreditAmount = 4295.00,
+                            ChequeAmount = 212.00,
+                            Total = 8008.50,
+                            SalesTax = 1041.11,
+                            OtherTax = 0.00,
+                            TotalTax = 1041.11,
+                            SalesReportEmployees = new List<SalesReportEmployee>()
+                            {
+                                new SalesReportEmployee()
+                                {
+                                    EmployeeID = 3,
+                                    Sales = 4867.13,
+                                    SalesReportID = 1
+                                }
+                            },
+                            SalesReportInventories = srepInv
+                        }
+                    };
+                    context.Reports.Add(report);
+                    context.SaveChanges();
+                }
+
+                if (!context.COGSReports.Any())
+                {
+                    List<SalesReportInventory> srepInv = new List<SalesReportInventory>();
+                    foreach (string upc in inventoryUPCs)
+                    {
+                        SalesReportInventory s = new SalesReportInventory()
+                        {
+                            InventoryUPC = upc,
+                            Quantity = random.Next(1, 3),
+                            Total = random.NextDouble() * (1000.00 - 500.00) + 500.00,
+                            SalesReportID = 1
+                        };
+                        srepInv.Add(s);
+                    }
+
+
+                    Report report = new Report()
+                    {
+                        Description = "Monthly COGS Report - Mower Blades",
+                        DateStart = DateTime.Parse("January 1, 2023"),
+                        DateEnd = DateTime.Parse("January 31, 2023"),
+                        Criteria = "Mower Blade",
+                        DateCreated = DateTime.Now,
+                        Type = ReportType.COGS,
+                        COGSReport = new COGSReport()
+                        {
+                            StartCost = 19735.25,
+                            PurchasedCost = 2225.67,
+                            EndCost = 15970.42,
+                            COGS = 6008.50,
+                            GrossProfit = 2000.00,
+                            ProfitMargin = 24.97,
+                            Inventories = context.Inventories.Where(i=>i.UPC == "060-5910-0").ToList(),
+                            Invoices = context.Invoices.Where(i=>i.InvoiceLines.Select(l=>l.InventoryUPC).Equals("060-5910-0") 
+                                && i.Date >= new DateTime(2023,1,1) 
+                                && i.Date <= new DateTime(2023, 1, 31)).ToList()  
+                        }
+                    };
+                    context.Reports.Add(report);
+                    context.SaveChanges();
+                }
+
+                #endregion
 
             }
             catch (Exception ex)

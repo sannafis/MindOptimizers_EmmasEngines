@@ -1,4 +1,4 @@
-﻿using EmmasEngines.Models.Reports;
+﻿using EmmasEngines.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 

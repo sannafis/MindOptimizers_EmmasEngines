@@ -32,6 +32,14 @@ namespace EmmasEngines.Data
         public DbSet<OrderRequest> OrderRequests { get; set; }
         public DbSet<OrderRequestInventory> OrderRequestInventories { get; set; }
 
+        public DbSet<Report> Reports { get; set; }
+        public DbSet<SalesReport> SalesReports { get; set; }
+        public DbSet<SalesReportEmployee> SalesReportEmployees { get; set; }
+        public DbSet<SalesReportInventory> SalesReportInventories { get; set; }
+        public DbSet<HourlyReport> HourlyReports { get; set; }
+        public DbSet<COGSReport> COGSReports { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Add a unique index to the Inventory UPC

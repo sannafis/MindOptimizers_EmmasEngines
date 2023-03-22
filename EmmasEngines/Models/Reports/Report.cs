@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
-namespace EmmasEngines.Models.Reports
+namespace EmmasEngines.Models
 {
     public enum ReportType
     {
