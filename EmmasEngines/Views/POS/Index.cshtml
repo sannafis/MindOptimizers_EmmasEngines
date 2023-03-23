@@ -209,7 +209,7 @@
 							foreach (Inventory item in cart)
 							{
 								var invoiceLine = invoiceLines.FirstOrDefault(line => line.InventoryUPC == item.UPC);
-																														@*Log invoice lines to console*@
+																																		@*Log invoice lines to console*@
 								foreach (InvoiceLine line in invoiceLines)
 								{
 									Console.WriteLine("InvoiceLine");
@@ -222,20 +222,20 @@
 								var quantity = invoiceLine != null ? invoiceLine.Quantity : 0;
 								var price = invoiceLine != null ? invoiceLine.SalePrice : 0;
 								
-																																			<tr class="table-hover">
-																																				<td>
-																																					@Html.DisplayFor(modelItem => item.Name)
-																																				</td>
-																																				<td>
-																																					@price
-																																				</td>
-																																				<td>
-																																					@quantity
-																																				</td>
-																																				<td>
-																																					<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
-																																				</td>
-																																			</tr>
+																																							<tr class="table-hover">
+																																								<td>
+																																									@Html.DisplayFor(modelItem => item.Name)
+																																								</td>
+																																								<td>
+																																									@price
+																																								</td>
+																																								<td>
+																																									@quantity
+																																								</td>
+																																								<td>
+																																									<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
+																																								</td>
+																																							</tr>
 								
 							}
 						}
@@ -243,7 +243,9 @@
 
 				</tbody>
 			</table>
+			
 			</div>
+
 		<div class="pay_amount" id="cartSummaryData">
 				@*Subtotal, Tax, Total, Paid, Change*@
 				@*Using Summary, returning json result of these properties, display in an unordered list*@
@@ -269,40 +271,40 @@
 
 							}
 						}
-																								<table>
-																									<thead>
-																										<tr>
-																											<th>Item</th>
-																											<th>Value</th>
-																										</tr>
-																									</thead>
-																									<tbody>
-																										<tr>
-																											<td>Subtotal</td>
-																											<td id="subtotal">@subtotal.ToString("C")</td>
-																										</tr>
-																										<tr>
-																											<td>Tax</td>
-																											<td id="tax">@tax.ToString("C")</td>
-																										</tr>
-																										<tr>
-																											<td>Total</td>
-																											<td id="total">@total.ToString("C")</td>
-																										</tr>
-																										<tr>
-																											<td>Paid</td>
-																											<td id="paid">@paid.ToString("C")</td>
-																										</tr>
-																										<tr>
-																											<td>Remainder</td>
-																											<td id="remainder">@change.ToString("C")</td>
-																										</tr>
-																										<tr>
-																											<td>Change</td>
-																											<td id="change">@change.ToString("C")</td>
-																										</tr>
-																									</tbody>
-																								</table>
+																												<table>
+																													<thead>
+																														<tr>
+																															<th>Item</th>
+																															<th>Value</th>
+																														</tr>
+																													</thead>
+																													<tbody>
+																														<tr>
+																															<td>Subtotal</td>
+																															<td id="subtotal">@subtotal.ToString("C")</td>
+																														</tr>
+																														<tr>
+																															<td>Tax</td>
+																															<td id="tax">@tax.ToString("C")</td>
+																														</tr>
+																														<tr>
+																															<td>Total</td>
+																															<td id="total">@total.ToString("C")</td>
+																														</tr>
+																														<tr>
+																															<td>Paid</td>
+																															<td id="paid">@paid.ToString("C")</td>
+																														</tr>
+																														<tr>
+																															<td>Remainder</td>
+																															<td id="remainder">@change.ToString("C")</td>
+																														</tr>
+																														<tr>
+																															<td>Change</td>
+																															<td id="change">@change.ToString("C")</td>
+																														</tr>
+																													</tbody>
+																												</table>
 					}
 				</ul>
 			</div>
@@ -313,6 +315,8 @@
 				@*Use the "Pay" function to update the payment data *@
 				@*Use the "Pay" function to clear the cart and the summary data *@
 				@*Use the "ClearCart" function to clear the cart and the summary data *@
+
+		
 				<form id="paymentForm" method="post" action="@Url.Action("Create", "Invoices")">
 					<label class="control-label" style="font-weight:bold">Select Payment Details...</label>
 			<div id="chkContainer" class="outer-payment-container">
@@ -340,18 +344,26 @@
 			<button name="actionButton" value="Pay" type="submit" class="btn btn-primary checkout-margin btnCheckout" onclick="submitForm(event)">Pay</button>
 
 					
-					<div id="invoice-buttons">
-				<button name="actionButton" id="view-invoice-btn" class="btn btn-primary checkout-margin btnCheckout" style="display:none; width:auto">View Invoice</button>
-					</div>
-
+					
 				</form>
+
+
+
 			</div>
 	<div class="checkout">
-	@using (Html.BeginForm("ClearCart", "POS", FormMethod.Post))
-	{
-		<button name="actionButton" class="btn btn-primary checkout-margin btnClear" type="submit">Clear Cart</button>
-	}
+		@using (Html.BeginForm("ClearCart", "POS", FormMethod.Post))
+		{
+			<button name="actionButton" id="clearCart" value="Clear" class="btn btn-primary btnClear" type="submit" style="">Clear Cart</button>
+		}
+
+		<div id="invoice-buttons">
+			<button name="actionButton" id="view-invoice-btn" class="btn btn-primary checkout-margin btnCheckout" style="display:none; width:auto">View Invoice</button>
+			@*<button name="downloadPdfButton" id="download-pdf-btn" class="btn btn-primary checkout-margin btnCheckout" style="display:none;width:auto" onclick="downloadPdf()">Download PDF</button>*@
+
+		</div>
 	</div>
+
+	
 	
 </main>
 
@@ -359,6 +371,7 @@
 
 <script>
 	console.log("Javascript loaded...")
+
 	$(function () {
 		$('form').submit(function (event) {
 			var form = $(this);
@@ -392,7 +405,7 @@
 	function viewCustomerDetails(custID) {
 		window.location.href = "/Customers/Details/" + custID;
 	}
-
+	
 	function processPayment() {
 		const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
 		const total = parseFloat(document.getElementById('total').textContent.replace(/[^\d.-]/g, ''));
@@ -453,16 +466,18 @@
 			alert("Please make sure there is at least one item in your cart. Correct this error by adding items from the inventory to the cart with the 'add to cart' button");
 			return false;
 		}
+		var customerID = $('#CustomerID').val(); // get the customer ID from the hidden input field
+		if (customerID == null) {
+			alert("Please select a customer.")
+			return false;
+		}
 		if(!processPayment())
 		{
 			return false;
 		}
 		var form = $('#paymentForm');
 		var url = form.attr('action');
-		var customerID = $('#CustomerID').val(); // get the customer ID from the hidden input field
-		if(customerID == null){
-			customerID = 1
-		}
+		
 		var date = new Date().toISOString().substr(0, 10); // get today's date
 		console.log("date: " + date);
 
@@ -508,11 +523,19 @@
 						.attr('onclick', 'window.location.href = \'/Invoices/Details/' + result.id + '\'')
 						.addClass('btn btn-primary')
 						.text('Invoice Details');
+					//Create a button to download the invoice as a pdf
+					var downloadButton = $('<button>')
+						.attr('type', 'button')
+						.attr('onclick', 'window.location.href = \'/Invoices/DownloadPDF/' + result.id + '\'')
+						.addClass('btn btn-primary')
+						.text('Download as PDF');
 
 					$('#invoice-buttons').empty().append(invoiceButton);
+					$('#invoice-buttons').append(downloadButton);
 					
 					payButton.prop('disabled', true);
-					clearButton.prop('disabled', true);
+					// Disable the Clear Cart button
+					$('#clearCart').prop('disabled', true);
 
 				} else {
 					alert("payment failed");

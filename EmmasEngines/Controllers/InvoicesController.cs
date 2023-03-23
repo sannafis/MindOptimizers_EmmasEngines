@@ -9,6 +9,12 @@ using EmmasEngines.Data;
 using EmmasEngines.Models;
 using System.Diagnostics;
 
+//for PDF
+using iText.Html2pdf;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using System.IO;
+
 namespace EmmasEngines.Controllers
 {
     public class InvoicesController : Controller
@@ -88,8 +94,8 @@ namespace EmmasEngines.Controllers
                 Int32.TryParse(HttpContext.Session.GetString("CustomerID"), out int customerID);
                 if (customerID == 0)
                 {
-                    //return BadRequest("Customer must be selected!");
-                    customerID = 1;
+                    return BadRequest("Customer must be selected!");
+                    //customerID = 1;
                 }
                 var invoiceToAdd = new Invoice
                 {
@@ -166,6 +172,87 @@ namespace EmmasEngines.Controllers
             }
 
             return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors) });
+        }
+
+        //Generate Invoice HTML for PDF
+        private string GenerateInvoiceHtml(Invoice invoice)
+        {
+            // Generate the HTML string based on your desired template.
+            // Replace placeholders with actual values from the invoice object.
+            // You can use any string templating library, like Razor, to achieve this.
+            // For simplicity, I'm using string interpolation in this example.
+
+            // Note: You should create a proper HTML structure with the doctype,
+            // head, and body tags. I've omitted them here for brevity.
+
+            // Replace the placeholders in the HTML string with actual data.
+            string itemsHtml = "";
+            foreach (var line in invoice.InvoiceLines)
+            {
+                itemsHtml += $"<tr><td>{line.Inventory.Name}</td><td>${line.SalePrice}</td><td>{line.Quantity}</td><td>${line.Quantity * line.SalePrice}</td></tr>";
+            }
+
+            string htmlContent = $@"
+        <h1>Emma's Small Engine</h1>
+        <h2>INVOICE</h2>
+        <p>Invoice No. #{invoice.ID}</p>
+        ...
+        <table>
+            <thead>
+                <tr>
+                    <th>Item Description</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {itemsHtml}
+            </tbody>
+        </table>
+        ...
+        <p>Sub Total: ${invoice.Subtotal}</p>
+        ...
+    ";
+
+            return htmlContent;
+        }
+
+        //Download as PDF
+        public async Task<IActionResult> DownloadPdf(int id)
+        {
+            // Fetch the invoice data
+            var invoice = await _context.Invoices
+                                        .Include(i => i.Customer)
+                                        .Include(i => i.Employee)
+                                        .Include(i => i.InvoiceLines)
+                                            .ThenInclude(il => il.Inventory)
+                                        .FirstOrDefaultAsync(i => i.ID == id);
+            if (invoice == null)
+            {
+                return NotFound();
+            }
+
+            // Generate the HTML content for the PDF
+            var htmlContent = GenerateInvoiceHtml(invoice);
+
+            // Convert the HTML to a PDF
+            byte[] pdfBytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var pdfWriter = new PdfWriter(memoryStream))
+                {
+                    var converterProperties = new ConverterProperties();
+                    HtmlConverter.ConvertToPdf(htmlContent, pdfWriter, converterProperties);
+                }
+
+                pdfBytes = memoryStream.ToArray();
+            }
+            //Set the content-disposition header to inline
+            Response.Headers["Content-Disposition"] = $"inline; filename=Invoice_{id}.pdf";
+
+            // Return the PDF as a file
+            return File(pdfBytes, "application/pdf", $"Invoice_{id}.pdf");
         }
 
 
