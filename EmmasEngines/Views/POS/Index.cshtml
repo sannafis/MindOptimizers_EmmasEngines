@@ -33,10 +33,12 @@
 		</datalist>
 
 		<form id="search-form" action="@Url.Action("SearchCustomer")" method="post">
-			<input type="text" class="customer-list " name="SearchString" placeholder="Search by name or phone. Eg. 'John' or '1234'" list="customerNames" />
+			<input id="inputCustomer" type="text" class="customer-list " name="SearchString" placeholder="Search by name or phone. Eg. 'John' or '1234'" list="customerNames" />
 			@**@
-			<button type="submit" class="btnCustView" name="actionButton" value="FilterCustomer"><i class="fa fa-search" aria-hidden="true"></i> - Search</button>
 
+			<button type="submit" class="btnCustView" name="actionButton" value="FilterCustomer">
+				<i class="fa fa-search" aria-hidden="true"></i> - Search
+			</button>
 		</form>
 	</div>
 		<div id="customer-details" class="customer-details">
@@ -357,9 +359,8 @@
 		}
 
 		<div id="invoice-buttons">
-			<button name="actionButton" id="view-invoice-btn" class="btn btn-primary checkout-margin btnCheckout" style="display:none; width:auto">View Invoice</button>
-			@*<button name="downloadPdfButton" id="download-pdf-btn" class="btn btn-primary checkout-margin btnCheckout" style="display:none;width:auto" onclick="downloadPdf()">Download PDF</button>*@
-
+			@*IMPORTANT - KEEP THIS DIV!!!*@
+			@*Invoice buttons (View Invoice, Download as PDF) are added here after succesful payment.*@
 		</div>
 	</div>
 
@@ -380,6 +381,8 @@
 			var filterButton = form.find('button[name="actionButton"]');
 
 			if (filterButton.length && filterButton.val() === "FilterCustomer") {
+				@*Reset inputCustomer input field*@
+					$('#inputCustomer').val('');
 				event.preventDefault();
 				$.ajax({
 					url: url,
@@ -394,7 +397,7 @@
 		});
 	});
 
-	var customerDetails = sessionStorage.getItem('customerDetails');
+	//var customerDetails = sessionStorage.getItem('customerDetails');
 	if (customerDetails !== null) {
 		$('#customer-details').html(customerDetails);
 	}
