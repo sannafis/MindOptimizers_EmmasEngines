@@ -15,7 +15,8 @@ namespace EmmasEngines.Data
 
             try
             {
-                //context.Database.EnsureDeleted();
+                //Delete the database if you need to apply a new Migration -Ker
+                context.Database.EnsureDeleted();
                 //Create the database if it does not exist
                 context.Database.Migrate();
 
