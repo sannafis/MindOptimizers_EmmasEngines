@@ -77,6 +77,20 @@ namespace EmmasEngines.Controllers
             }
         }
 
+        //Clear customer selection, return partial view with no customer
+        [HttpPost]
+        public PartialViewResult ClearCustomer()
+        {
+            session = HttpContext.Session;
+            session.Remove("CustomerID");
+            if (TempData.ContainsKey("CustomerDetails"))
+            {
+                TempData.Remove("CustomerDetails");
+            }
+            return PartialView("_CustomerDetails", null);
+        }
+
+
 
 
         public async Task<IActionResult> Index(string SearchString, int? pageSizeID, int? page, string actionButton)
