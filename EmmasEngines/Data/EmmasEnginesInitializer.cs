@@ -398,6 +398,32 @@ namespace EmmasEngines.Data
                     context.SaveChanges();
                 }
 
+                int[] empIDs = context.Employees.Select(e=>e.ID).ToArray();
+
+                //Employee Login
+                if (!context.EmployeeLogins.Any())
+                {
+                    DateTime startTime = DateTime.Now;
+
+                    foreach(int emp in empIDs)
+                    {
+                        for(int i=0; i < 10; i++)
+                        {
+                            DateTime inTime = startTime.AddHours(-random.Next(24, 8760));
+                            EmployeeLogin login = new EmployeeLogin()
+                            {
+                                SignIn = inTime,
+                                SignOut = inTime.AddHours(8),
+                                EmployeeID = emp
+                            };
+
+                            context.EmployeeLogins.Add(login);
+                            context.SaveChanges();
+                        }
+                    }
+                    context.SaveChanges();
+                }
+
                 //Position 
                 if (!context.Positions.Any())
                 {

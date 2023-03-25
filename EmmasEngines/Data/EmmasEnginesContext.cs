@@ -26,6 +26,7 @@ namespace EmmasEngines.Data
         public DbSet<InvoiceLine> InvoiceLines { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<EmployeeLogin> EmployeeLogins { get; set; }
         public DbSet<EmployeePosition> EmployeePositions { get; set; }
 
 
