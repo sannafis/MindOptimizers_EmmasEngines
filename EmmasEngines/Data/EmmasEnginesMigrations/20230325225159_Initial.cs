@@ -83,6 +83,27 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EmployeeLogins",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    SignIn = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    SignOut = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EmployeeID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeLogins", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_EmployeeLogins_Employees_EmployeeID",
+                        column: x => x.EmployeeID,
+                        principalTable: "Employees",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EmployeePositions",
                 columns: table => new
                 {
@@ -599,6 +620,11 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 column: "ProvinceID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmployeeLogins_EmployeeID",
+                table: "EmployeeLogins",
+                column: "EmployeeID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EmployeePositions_EmployeeID_PositionTitle",
                 table: "EmployeePositions",
                 columns: new[] { "EmployeeID", "PositionTitle" },
@@ -761,6 +787,9 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
             migrationBuilder.DropTable(
                 name: "COGSReportInvoice");
+
+            migrationBuilder.DropTable(
+                name: "EmployeeLogins");
 
             migrationBuilder.DropTable(
                 name: "EmployeePositions");

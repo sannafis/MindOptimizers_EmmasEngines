@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using EmmasEngines.Data;
 using EmmasEngines.Models;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
 
 //for PDF
 using iText.Html2pdf;
@@ -18,7 +17,6 @@ using System.IO;
 
 namespace EmmasEngines.Controllers
 {
-    [Authorize(Roles = "Admin,Supervisor")]
     public class InvoicesController : Controller
     {
         private readonly EmmasEnginesContext _context;
@@ -132,7 +130,7 @@ namespace EmmasEngines.Controllers
                     invoiceToAdd.InvoiceLines.Add(invoiceLineToAdd);
                     _context.InvoiceLines.Add(invoiceLineToAdd);
                 }
-                if(invoiceLines.Count == 0)
+                if (invoiceLines.Count == 0)
                 {
                     var invoiceLineToAdd = new InvoiceLine
                     {
@@ -157,7 +155,7 @@ namespace EmmasEngines.Controllers
                         Invoice = invoiceToAdd,
                         InvoiceID = invoiceToAdd.ID
                     };
-                    
+
                     invoiceToAdd.InvoicePayments.Add(invoicePaymentToAdd);// Add the invoice payment to the invoice
                     _context.InvoicePayments.Add(invoicePaymentToAdd);// Add the invoice payment to the context
                 }
@@ -347,14 +345,14 @@ namespace EmmasEngines.Controllers
             {
                 _context.Invoices.Remove(invoice);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool InvoiceExists(int id)
         {
-          return _context.Invoices.Any(e => e.ID == id);
+            return _context.Invoices.Any(e => e.ID == id);
         }
     }
 }

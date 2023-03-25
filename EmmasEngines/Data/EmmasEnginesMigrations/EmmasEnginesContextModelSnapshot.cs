@@ -15,7 +15,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.14");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.15");
 
             modelBuilder.Entity("COGSReportInventory", b =>
                 {
@@ -181,6 +181,28 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                         .IsUnique();
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("EmmasEngines.Models.EmployeeLogin", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("EmployeeID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("SignIn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("SignOut")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("EmployeeID");
+
+                    b.ToTable("EmployeeLogins");
                 });
 
             modelBuilder.Entity("EmmasEngines.Models.EmployeePosition", b =>
@@ -735,6 +757,17 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                     b.Navigation("Province");
                 });
 
+            modelBuilder.Entity("EmmasEngines.Models.EmployeeLogin", b =>
+                {
+                    b.HasOne("EmmasEngines.Models.Employee", "Employee")
+                        .WithMany("EmployeeLogins")
+                        .HasForeignKey("EmployeeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("EmmasEngines.Models.EmployeePosition", b =>
                 {
                     b.HasOne("EmmasEngines.Models.Employee", "Employee")
@@ -973,6 +1006,8 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
             modelBuilder.Entity("EmmasEngines.Models.Employee", b =>
                 {
+                    b.Navigation("EmployeeLogins");
+
                     b.Navigation("EmployeePositions");
 
                     b.Navigation("SalesReportEmployees");
