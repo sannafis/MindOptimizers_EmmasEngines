@@ -206,39 +206,43 @@
 					@{
 						var cart = (List<Inventory>)HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<Inventory>>("cart");
 						var invoiceLines = (List<InvoiceLine>)HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<InvoiceLine>>("invoiceLines");
-						if (cart != null)
+						if (invoiceLines != null)
 						{
-							foreach (Inventory item in cart)
-							{
-								var invoiceLine = invoiceLines.FirstOrDefault(line => line.InventoryUPC == item.UPC);
-																																		@*Log invoice lines to console*@
-								foreach (InvoiceLine line in invoiceLines)
+								foreach (Inventory item in cart)
 								{
-									Console.WriteLine("InvoiceLine");
-									Console.WriteLine("UPC: " + line.InventoryUPC);
-									Console.WriteLine("SalePrice: " +line.SalePrice);
-									Console.WriteLine("Quantity: " +line.Quantity);
-									Console.WriteLine("InvoiceID: " +line.InvoiceID);
+									var invoiceLine = invoiceLines.FirstOrDefault(line => line.InventoryUPC == item.UPC);
+								
+									@*Log invoice lines to console*@
+									@if (invoiceLine != null && invoiceLine.Quantity != 0){
+									foreach (InvoiceLine line in invoiceLines)
+									{
+										Console.WriteLine("InvoiceLine");
+										Console.WriteLine("UPC: " + line.InventoryUPC);
+										Console.WriteLine("SalePrice: " +line.SalePrice);
+										Console.WriteLine("Quantity: " +line.Quantity);
+										Console.WriteLine("InvoiceID: " +line.InvoiceID);
 									
+									}
+									var quantity = invoiceLine != null ? invoiceLine.Quantity : 0;
+									var price = invoiceLine != null ? invoiceLine.SalePrice : 0;
+								
+																																									<tr class="table-hover" id="row_@item.UPC">
+																																										<td>
+																																											@Html.DisplayFor(modelItem => item.Name)
+																																										</td>
+																																										<td>
+																																											@price
+																																										</td>
+																																										<td>
+																																											<input type="number" id="quantity_@item.UPC" class="quantity-input" value="@quantity" min="0" onchange="updateQuantity('@item.UPC', this.value)" autocomplete="off" />
+
+																																										</td>
+																																										<td>
+																																											<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
+																																										</td>
+																																									</tr>
+								
 								}
-								var quantity = invoiceLine != null ? invoiceLine.Quantity : 0;
-								var price = invoiceLine != null ? invoiceLine.SalePrice : 0;
-								
-																																							<tr class="table-hover">
-																																								<td>
-																																									@Html.DisplayFor(modelItem => item.Name)
-																																								</td>
-																																								<td>
-																																									@price
-																																								</td>
-																																								<td>
-																																									@quantity
-																																								</td>
-																																								<td>
-																																									<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
-																																								</td>
-																																							</tr>
-								
 							}
 						}
 					}
@@ -273,40 +277,40 @@
 
 							}
 						}
-																												<table>
-																													<thead>
-																														<tr>
-																															<th>Item</th>
-																															<th>Value</th>
-																														</tr>
-																													</thead>
-																													<tbody>
-																														<tr>
-																															<td>Subtotal</td>
-																															<td id="subtotal">@subtotal.ToString("C")</td>
-																														</tr>
-																														<tr>
-																															<td>Tax</td>
-																															<td id="tax">@tax.ToString("C")</td>
-																														</tr>
-																														<tr>
-																															<td>Total</td>
-																															<td id="total">@total.ToString("C")</td>
-																														</tr>
-																														<tr>
-																															<td>Paid</td>
-																															<td id="paid">@paid.ToString("C")</td>
-																														</tr>
-																														<tr>
-																															<td>Remainder</td>
-																															<td id="remainder">@change.ToString("C")</td>
-																														</tr>
-																														<tr>
-																															<td>Change</td>
-																															<td id="change">@change.ToString("C")</td>
-																														</tr>
-																													</tbody>
-																												</table>
+																													<table>
+																														<thead>
+																															<tr>
+																																<th>Item</th>
+																																<th>Value</th>
+																															</tr>
+																														</thead>
+																														<tbody>
+																															<tr>
+																																<td>Subtotal</td>
+																																<td id="subtotal">@subtotal.ToString("C")</td>
+																															</tr>
+																															<tr>
+																																<td>Tax</td>
+																																<td id="tax">@tax.ToString("C")</td>
+																															</tr>
+																															<tr>
+																																<td>Total</td>
+																																<td id="total">@total.ToString("C")</td>
+																															</tr>
+																															<tr>
+																																<td>Paid</td>
+																																<td id="paid">@paid.ToString("C")</td>
+																															</tr>
+																															<tr>
+																																<td>Remainder</td>
+																																<td id="remainder">@change.ToString("C")</td>
+																															</tr>
+																															<tr>
+																																<td>Change</td>
+																																<td id="change">@change.ToString("C")</td>
+																															</tr>
+																														</tbody>
+																													</table>
 					}
 				</ul>
 			</div>
@@ -455,6 +459,54 @@
 			}
 		}
 	}
+
+	function updateQuantity(upc, newQuantity) {
+    $.ajax({
+        type: "POST",
+        url: "/POS/UpdateQuantity",
+        data: { "upc": upc, "newQuantity": newQuantity },
+        dataType: "json",
+        success: function (response) {
+            if (response.success) {
+                console.log(response.message);
+                // If the new quantity is 0, remove the row from the table
+                if (parseInt(newQuantity) == 0) {
+                    var row = document.getElementById("row_" + upc);
+                    row.remove();
+                    console.log("row removed");
+                } else {
+                    // If the new quantity is not 0, update the quantity input
+                    var quantityInput = document.getElementById("quantity_" + upc);
+                    quantityInput.value = newQuantity;
+                }
+                // Update the summary values
+                document.getElementById("subtotal").innerHTML = "$" + response.subtotal.toFixed(2);
+				document.getElementById("tax").innerHTML = "$" + response.tax.toFixed(2);
+				document.getElementById("total").innerHTML = "$" + response.total.toFixed(2);
+
+            }
+			else {
+				//error from controller.
+                console.log(response.message);
+				alert(response.message);
+				// set the quantity back to the original value
+				var quantityInput = document.getElementById("quantity_" + upc);
+				quantityInput.value = response.oldQuantity;
+				console.log("og quantity: " + response.oldQuantity)
+				
+				
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus, errorThrown);
+        }
+    });
+}
+
+
+
+
+
 
 
 	function submitForm(e) {
