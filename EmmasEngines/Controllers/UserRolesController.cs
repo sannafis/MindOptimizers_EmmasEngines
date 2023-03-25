@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EmmasEngines.Controllers
 {
-    //[Authorize(Roles = "Security")]
+    [Authorize(Roles = "Security")]
     public class UserRolesController : Controller
     {
         private readonly ApplicationDbContext _context;

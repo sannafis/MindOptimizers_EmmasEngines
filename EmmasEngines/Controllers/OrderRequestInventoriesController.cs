@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmmasEngines.Data;
 using EmmasEngines.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmmasEngines.Controllers
 {
+    [Authorize(Roles = "Admin,Supervisor")]
     public class OrderRequestInventoriesController : Controller
     {
         private readonly EmmasEnginesContext _context;

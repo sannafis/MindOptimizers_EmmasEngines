@@ -9,9 +9,11 @@ using EmmasEngines.Data;
 using EmmasEngines.Models;
 using EmmasEngines.Utilities;
 using NuGet.Protocol;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmmasEngines.Controllers
 {
+    [Authorize(Roles = "Admin,Supervisor")]
     public class InventoriesController : Controller
     {
         private readonly EmmasEnginesContext _context;

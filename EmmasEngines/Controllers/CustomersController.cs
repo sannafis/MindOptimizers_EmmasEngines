@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using EmmasEngines.Data;
 using EmmasEngines.Models;
 using EmmasEngines.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmmasEngines.Controllers
 {
+    [Authorize(Roles = "Admin,Supervisor")]
     public class CustomersController : Controller
     {
         private readonly EmmasEnginesContext _context;

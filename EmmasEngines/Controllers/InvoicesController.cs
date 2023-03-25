@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EmmasEngines.Data;
 using EmmasEngines.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 //for PDF
 using iText.Html2pdf;
@@ -17,6 +18,7 @@ using System.IO;
 
 namespace EmmasEngines.Controllers
 {
+    [Authorize(Roles = "Admin,Supervisor")]
     public class InvoicesController : Controller
     {
         private readonly EmmasEnginesContext _context;
