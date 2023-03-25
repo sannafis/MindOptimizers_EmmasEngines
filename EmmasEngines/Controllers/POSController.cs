@@ -7,11 +7,9 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Authorization;
 
 namespace EmmasEngines.Controllers
 {
-    //[Authorize(Roles = "Admin,Supervisor")]
     public class POSController : Controller
     {
         private readonly EmmasEnginesContext _context;
@@ -35,7 +33,7 @@ namespace EmmasEngines.Controllers
                                   select i;
 
                 ViewData["Filtering"] = "show";
-                
+
                 return Json(inventories.ToList().FirstOrDefault());
             }
             else
@@ -50,7 +48,7 @@ namespace EmmasEngines.Controllers
             Console.WriteLine("SearchString: " + SearchString);
             ViewData["Filtering"] = "";
             session = HttpContext.Session;
-            
+
             if (!String.IsNullOrEmpty(SearchString))
             {
                 var customers = from c in _context.Customers
@@ -131,7 +129,7 @@ namespace EmmasEngines.Controllers
 
             int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "POS");
             ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
-            
+
 
             var pagedData = await PaginatedList<Inventory>.CreateAsync(inventories.AsNoTracking(), page ?? 1, pageSize);
 
@@ -148,7 +146,7 @@ namespace EmmasEngines.Controllers
             if (existingLine != null && existingLine.Quantity > 1)
             {
                 // If the item is already in the cart, increment the quantity of the existing line
-                existingLine.Quantity--;
+                existingLine.Quantity = 0;
                 Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
             }
             else
@@ -199,6 +197,94 @@ namespace EmmasEngines.Controllers
             return RedirectToAction("Index", "POS");
         }
 
+        [HttpPost]
+        public ActionResult UpdateQuantity(string upc, int newQuantity)
+        {
+            var session = HttpContext.Session;
+            List<InvoiceLine> invoiceLines = Utilities.SessionExtensions.GetObjectFromJson<List<InvoiceLine>>(session, "invoiceLines");
+            var existingLine = invoiceLines.FirstOrDefault(l => l.InventoryUPC == upc);
+            var inventoryItem = _context.Inventories
+                .Include(i => i.Prices)
+                .Where(u => u.UPC == upc)
+                .FirstOrDefault();// get inventory item by upc
+            //get TotalStock of by UPC...
+
+            //get the original quantity before updating
+            double originalQuantity = 0;
+            if (existingLine != null)
+            {
+                originalQuantity = existingLine.Quantity;//set original quantity to the quantity before changing
+            }
+
+
+            if (existingLine != null && inventoryItem != null)
+            {
+                if (inventoryItem.TotalStock < newQuantity)//check if the stock is more or equal to the newQuantity, if its more return error
+                {
+                    return Json(new { success = false, oldQuantity = originalQuantity, message = "Not enough stock available. Set quantity to a lower value to continue. Stock available: " + inventoryItem.TotalStock });
+                }
+                // If the new quantity is 0, remove the item from the cart
+                if (newQuantity == 0)
+                {
+                    RemoveFromCart(upc);
+                    // Remove the existing line from the invoiceLines list
+                    invoiceLines.Remove(existingLine);
+                    Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
+                }
+                else
+                {
+
+                    // If the item is already in the cart, set the quantity of the existing line
+                    existingLine.Quantity = newQuantity;
+                    Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
+                    //update cart
+                    List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
+                    int index = isExist(upc);
+                    cart[index].Quantity = newQuantity.ToString();
+                    Utilities.SessionExtensions.SetObjectAsJson(session, "cart", cart);
+                }
+
+            }
+            else
+            {
+                // If the item is not in the cart, add a new line
+                List<Inventory> cart = Utilities.SessionExtensions.GetObjectFromJson<List<Inventory>>(session, "cart");
+                var newItem = cart.FirstOrDefault(item => item.UPC == upc);
+
+                if (newItem != null)
+                {
+                    InvoiceLine newLine = new InvoiceLine
+                    {
+                        InventoryUPC = newItem.UPC,
+                        SalePrice = newItem.MarkupPrice, // markupprice
+                        Quantity = newQuantity,
+                        InvoiceID = 0 // Set InvoiceID as needed
+                    };
+
+                    invoiceLines.Add(newLine);
+                    Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
+                }
+            }
+
+            // Calculate the new summary values
+            double subtotal = invoiceLines.Sum(item => item.Quantity * item.SalePrice);
+            double tax = subtotal * 0.13;
+            double total = subtotal + tax;
+
+
+            return Json(new
+            {
+                success = true,
+                message = "Quantity updated successfully.",
+                subtotal = subtotal,
+                tax = tax,
+                total = total,
+                oldQuantity = originalQuantity
+            });
+        }
+
+
+
         //called when items are added to the cart
         public ActionResult Buy(string UPC)
         {
@@ -206,7 +292,7 @@ namespace EmmasEngines.Controllers
                 .Where(i => i.UPC == UPC)
                 .Include(p => p.Prices)
                 .FirstOrDefault();
-            
+
 
             if (inventory == null)
             {
@@ -255,7 +341,7 @@ namespace EmmasEngines.Controllers
                     });
                 }
 
-                
+
 
                 Utilities.SessionExtensions.SetObjectAsJson(session, "invoiceLines", invoiceLines);
                 AddInventoryItemToCart(UPC);
@@ -282,7 +368,7 @@ namespace EmmasEngines.Controllers
                 List<Inventory> cart = new()
                 {
                     inventories.FirstOrDefault()
-                    
+
                 };
 
 
