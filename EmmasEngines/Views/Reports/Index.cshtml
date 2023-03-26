@@ -66,25 +66,17 @@
                                 <label for="endDate">End Date:</label>
                                 <input type="date" class="form-control" id="endDate" name="endDate" required>
                             </div>
-
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-primary">Create Report</button>
-                            </div>
                         </section>
 
                         <section id="reportSearch">
-                            <h2><label id="searchHeader" class="control-label">Search Reports: </label></h2>
-
-
+                            
                             <div class="btn">
-
                                 <button type="submit" class="btn_crud_add">
-                                    <i class="fa-solid fa-plus"></i> Save
-                                </button>
-                                <button type="button" class="btn_crud_add">
-                                    <i class="fa-solid fa-print"></i> Save and Print
+                                    <i class="fa-solid fa-print"></i> Save
                                 </button>
                             </div>
+
+                            <h2><label id="searchHeader" class="control-label">Search Reports: </label></h2>
                         </section>
 
 
@@ -93,7 +85,7 @@
 
         
 
-            <div id="inventoryMain">
+            <div id="salesReportsMain">
                 <div class="divider2_desc_btn">
                     <div class="description" id="view-all">
                         <!-- Display the saved reports table here -->
@@ -108,13 +100,13 @@
                                 </tr>
                             </thead>
                             <tbody id = "savedReportsTable">
-                                @if (Model.SavedSalesReports == null || !Model.SavedSalesReports.Any())
+                                @if (Model.SalesReportVM.SavedSalesReports == null || !Model.SalesReportVM.SavedSalesReports.Any())
 							    {
 								    <tr>
 									    <td colspan="5">No saved reports</td>
 								    </tr>
 							    }else{
-                                        @foreach (var report in Model.SavedSalesReports)
+                                        @foreach (var report in Model.SalesReportVM.SavedSalesReports)
                                     {
                                         <tr>
                                             <td>@report.Description</td>
@@ -131,6 +123,24 @@
                             
                             </tbody>
                         </table>
+
+                        <div class="d-flex justify-content-center">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                                        <a class="page-link" href="/Reports?page=@(Model.PageIndex - 1)">Previous</a>
+                                    </li>
+                                    @for (int i = 1; i <= Model.TotalPages; i++)
+                                    {
+                                        <li class="page-item @(Model.PageIndex == i ? "active" : "")"><a class="page-link" href="/Reports?page=@i">@i</a></li>
+                                    }
+                                    <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
+                                        <a class="page-link" href="/Reports?page=@(Model.PageIndex + 1)">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -185,17 +195,24 @@
                 if (data.success) {
                     alert("report saved");
                     var report = data.report;
-                    var row = '<tr>' +
-                        '<td>' + report.Description + '</td>' +
-                        '<td>' + report.DateStart + '</td>' +
-                        '<td>' + report.DateEnd + '</td>' +
-                        '<td>' + report.Employee + '</td>' +
-                        '<td>' +
-                        '<a asp-controller="Reports" asp-action="View" asp-route-id="' + report.ID + '" class="btn btn-primary">View</a> ' +
-                        '<a asp-controller="Reports" asp-action="Delete" asp-route-id="' + report.ID + '" class="btn btn-danger">Remove</a>' +
-                        '</td>' +
-                        '</tr>';
-                    $('#savedReportsTable tbody').append(row);
+                    console.log("Report Object: " + JSON.stringify(report));
+                    //Get report name from input field
+                    var reportName = $("#reportName").val();
+
+
+                // Construct row to add to the table
+                var row = '<tr>' +
+                    '<td>' + reportName + '</td>' +
+                    '<td>' + report.dateStart + '</td>' +
+                    '<td>' + report.dateEnd + '</td>' +
+                    '<td>' + report.criteria + '</td>' +
+                    '<td>' +
+                    '<a asp-controller="Reports" asp-action="View" asp-route-id="' + report.id + '" class="btn btn-primary">View</a> ' +
+                    '<a asp-controller="Reports" asp-action="Delete" asp-route-id="' + report.id + '" class="btn btn-danger">Remove</a>' +
+                    '</td>' +
+                    '</tr>';
+                    // Append row to table
+                    $('#savedReportsTable').append(row);
                 } else {
                     // Display an error message
                     alert("Error: " + data.message);

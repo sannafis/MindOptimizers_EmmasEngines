@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using EmmasEngines.ViewModels;
+using iText.Kernel.Geom;
+using System.Drawing.Printing;
 
 namespace EmmasEngines.Controllers
 {
@@ -22,24 +24,43 @@ namespace EmmasEngines.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page, int? pageSize)
         {
+            //set default values for page and page size
+            page ??= 1;
+            if (int.TryParse(Request.Query["pageSize"], out int parsedPageSize))
+            {
+                pageSize = parsedPageSize;
+            }
+            pageSize = pageSize == 0 ? PageSizeHelper.SetPageSize(HttpContext, null, "Reports") : pageSize;
+
+
+            // Get paginated list of saved sales reports
+            var savedReports = await PaginatedList<SalesReport>.CreateAsync(_context.SalesReports.AsQueryable(), page ?? 1, pageSize ?? 5);
+            // get report list of saved sales 
+            var savedSalesReports = await PaginatedList<Report>.CreateAsync(_context.Reports.Where(i => i.Type == ReportType.Sales), page ?? 1, pageSize ?? 5);
+
+
+
+            // Create a view model to pass to the view
             var viewModel = new ReportsVM
             {
+                SavedSalesReports = savedReports,
                 SalesReportVM = new SalesReportVM
                 {
-                    Employees = await _context.Employees.ToListAsync(),
-                    SavedSalesReports = await _context.Reports.Where(r => r.Type == ReportType.Sales).ToListAsync(),
-                    NewReport = new NewSalesReport()
+                    SavedSalesReports = savedSalesReports,
+                    Employees = await _context.Employees.ToListAsync()
                 },
-                Employees = await _context.Employees.ToListAsync()
-                //Add in COGS and hourly here...
+                PageIndex = savedReports.PageIndex,
+                PageSize = savedReports.Count,
+                TotalPages = savedReports.TotalPages
             };
+
 
             return View(viewModel);
         }
 
-
+        
         //Sales Report
         public async Task<IActionResult> Sales()
         {
@@ -50,11 +71,13 @@ namespace EmmasEngines.Controllers
                 NewReport = new NewSalesReport()
             };
 
+            
+
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSaleReport([FromForm] NewSalesReport newReport)
+        public async Task<IActionResult> CreateSaleReport([FromForm] NewSalesReport newReport, int? page, int? pageSize)
         {
             if (!ModelState.IsValid)
             {
@@ -63,6 +86,9 @@ namespace EmmasEngines.Controllers
 
             try
             {
+                // Check the input parameters for null values
+                page ??= 1;
+                pageSize ??= 5;
                 // Generate the report data (payment type summary, tax summary, employee summary, sales summary, appreciation)
                 // based on the selected employee(s) and date range
                 var salesData = _context.Invoices
@@ -162,29 +188,39 @@ namespace EmmasEngines.Controllers
                         salesReport.SalesReportEmployees.Add(salesReportEmployee);
                     }
                 }
-                
+
 
                 // Save the sales report to the database
                 _context.SalesReports.Add(salesReport);
 
                 //Add the sales report to the reports database
-                _context.Reports.Add(new Report
+                Report reportToAdd = new Report
                 {
-                    Description = "Sales Report",
+                    Description = newReport.ReportName,
                     DateStart = newReport.StartDate,
                     DateEnd = newReport.EndDate,
-                    Criteria = newReport.AllEmployees ? "All Employees" : $"Employee: {newReport.EmployeeId}",
+                    Criteria = newReport.AllEmployees ? "All Employees" : $"{_context.Employees.FirstOrDefault(e => e.ID == newReport.EmployeeId)?.FirstName} {_context.Employees.FirstOrDefault(e => e.ID == newReport.EmployeeId)?.LastName}",
                     Type = 0,
                     DateCreated = DateTime.Now,
                     SalesReport = salesReport
-                });
+                };
 
-                
-                
-                
+
+                _context.Reports.Add(reportToAdd);
+                var savedSalesReports = await PaginatedList<SalesReport>.CreateAsync(_context.SalesReports, page ?? 1, pageSize ?? 5);
+
+
+
+                var reportsVM = new ReportsVM
+                {
+                    SavedSalesReports = savedSalesReports,
+                    PageSize = pageSize.Value,
+                    PageIndex = page.Value,
+                };
+
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true });
+                return Json(new { success = true, report = reportToAdd, reportsVM = reportsVM});
             }
             catch (Exception ex)
             {

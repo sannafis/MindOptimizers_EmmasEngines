@@ -1,4 +1,5 @@
 ﻿using EmmasEngines.Models;
+using EmmasEngines.Utilities;
 
 namespace EmmasEngines.ViewModels
 {
@@ -7,7 +8,7 @@ namespace EmmasEngines.ViewModels
         public List<SalesReport> SavedReports { get; set; }
         public List<Employee> Employees { get; set; }
         public NewSalesReport NewReport { get; set; }
-        public List<Report> SavedSalesReports { get; internal set; }
+        public PaginatedList<Report> SavedSalesReports { get; internal set; }
     }
     public class NewSalesReport
     {
