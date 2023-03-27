@@ -114,7 +114,7 @@
                                             <td>@report.DateEnd.ToShortDateString()</td>
                                             <td>@report.Criteria</td>
                                             <td>
-                                                <a asp-controller="Reports" asp-action="View" asp-route-id="@report.ID" class="btn btn-primary">View</a>
+                                                <a asp-controller="Reports" asp-action="GenerateSalesReportPDF" asp-route-id="@report.ID" class="btn btn-primary">Save as PDF</a>
                                                 <a asp-controller="Reports" asp-action="Delete" asp-route-id="@report.ID" class="btn btn-danger">Remove</a>
                                             </td>
                                         </tr>
