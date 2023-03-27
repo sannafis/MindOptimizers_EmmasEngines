@@ -24,6 +24,7 @@ using Path = System.IO.Path;
 
 namespace EmmasEngines.Controllers
 {
+    [Authorize(Roles = "Admin,Supervisor, Staff")]
     public class ReportsController : Controller
     {
         //add db context

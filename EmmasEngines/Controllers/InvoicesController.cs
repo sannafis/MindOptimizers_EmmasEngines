@@ -14,9 +14,11 @@ using iText.Html2pdf;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmmasEngines.Controllers
 {
+    [Authorize(Roles = "Admin,Supervisor, Staff")]
     public class InvoicesController : Controller
     {
         private readonly EmmasEnginesContext _context;
