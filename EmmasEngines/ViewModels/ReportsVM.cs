@@ -22,6 +22,9 @@ namespace EmmasEngines.ViewModels
 
         // Hourly Reports
         public List<HourlyReport> SavedHourlyReports { get; set; }
+        public NewHourlyReport NewHourlyReport { get; set; }
+        public HourlyReportVM HourlyReportVM { get; set; }
+
         public NewSalesReport NewSalesReport { get; internal set; }
     }
 }

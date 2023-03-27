@@ -40,6 +40,9 @@ namespace EmmasEngines.Controllers
             // get report list of saved sales 
             var savedSalesReports = await PaginatedList<Report>.CreateAsync(_context.Reports.Where(i => i.Type == ReportType.Sales), page ?? 1, pageSize ?? 5);
 
+            // Get paginated list of hourly reports
+            var hourlyReports = await PaginatedList<HourlyReport>.CreateAsync(_context.HourlyReports.AsQueryable(), page ?? 1, pageSize ?? 5);
+            var savedHourlyReports = await PaginatedList<Report>.CreateAsync(_context.Reports.Where(i => i.Type == ReportType.Hourly), page ?? 1, pageSize ?? 5);
 
 
             // Create a view model to pass to the view
@@ -49,6 +52,12 @@ namespace EmmasEngines.Controllers
                 SalesReportVM = new SalesReportVM
                 {
                     SavedSalesReports = savedSalesReports,
+                    Employees = await _context.Employees.ToListAsync()
+                },
+                SavedHourlyReports = hourlyReports,
+                HourlyReportVM = new HourlyReportVM
+                {
+                    SavedHourlyReports = savedHourlyReports,
                     Employees = await _context.Employees.ToListAsync()
                 },
                 PageIndex = savedReports.PageIndex,

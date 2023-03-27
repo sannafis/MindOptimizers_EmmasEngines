@@ -22,7 +22,7 @@ namespace EmmasEngines.Models
         [Required(ErrorMessage = "Purchased Cost is required")]
         public double PurchasedCost { get; set; } // This value is inventory sold(?????)
 
-        [Display(Name = "Materals (End)")]
+        [Display(Name = "Materials (End)")]
         [Required(ErrorMessage = "End Cost is required")]
         public double EndCost { get; set; } // This value is StartCost - PurchasedCost
 
