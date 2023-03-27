@@ -840,8 +840,6 @@ Gabriel's CSS END ****************/
 
 .tableHeaders {
     background: none;
-    border: 2px solid var(--color-white);
-    border-radius: 5px;
     color: var(--color-white);
     font-weight: var(--weight-bold)
 }
