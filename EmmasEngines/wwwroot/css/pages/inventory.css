@@ -4,28 +4,29 @@ Gabriel's Css Secionts
 ************************************/
 /** Reports CSS **/
 .line-header-div {
-    display: flex; 
+    display: flex;
     width: 100%;
 }
 
 .hidden {
-    display: none !important;;
+    display: none !important;
+    ;
 }
 
 .subTotalUnderLineFull {
-    width:11%; 
-    text-align: right; 
+    width: 11%;
+    text-align: right;
     border-bottom: 1px solid black;
 }
 
 .line-header-div > p {
-    font-weight: bold!important; 
+    font-weight: bold !important;
     padding: .7rem 0;
 }
 
 .line-item-div {
-    display: flex; 
-    width: 100%; 
+    display: flex;
+    width: 100%;
     justify-content: space-between;
 }
 
@@ -45,15 +46,15 @@ table {
     color: #212529;
 }
 
-.table td, .table th {
-    padding: 0.8rem;
-    vertical-align: top;
-    border-top: 1px solid #dee2e6;
-}
+    .table td, .table th {
+        padding: 0.8rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
 
-.table th {
-    text-align: left!important;
-}
+    .table th {
+        text-align: left !important;
+    }
 
 th {
     color: #fff;
@@ -74,15 +75,15 @@ tr {
     background-color: rgba(0, 0, 0, 0.05);
 }
 
-.table-hover:hover, .table-striped tbody tr:nth-of-type(2n+1):hover{
-    background-color: rgb(171, 130, 65, .3);
-}
+    .table-hover:hover, .table-striped tbody tr:nth-of-type(2n+1):hover {
+        background-color: rgb(171, 130, 65, .3);
+    }
 
-.table-hover:focus, .table-striped tbody tr:nth-of-type(2n+1):focus{
-    background-color: rgb(171, 130, 65, .5);
-}
+    .table-hover:focus, .table-striped tbody tr:nth-of-type(2n+1):focus {
+        background-color: rgb(171, 130, 65, .5);
+    }
 
-.action-button{
+.action-button {
     text-align: center;
 }
 
@@ -90,10 +91,10 @@ tr {
     transition: .5s;
 }
 
-.bg-info > th:hover {
-    transform: scale(1.1);
-    -webkit-transform: scale(1.1);
-}
+    .bg-info > th:hover {
+        transform: scale(1.1);
+        -webkit-transform: scale(1.1);
+    }
 
 #pricesMain {
     width: 100%;
@@ -103,37 +104,37 @@ tr {
     justify-content: space-between;
 }
 /** Paging CSS **/
-#pagination-wrapper, #pagination-wrapper-sales, #pagination-wrapper-cogs, #pagination-wrapper-hourly{
+#pagination-wrapper, #pagination-wrapper-sales, #pagination-wrapper-cogs, #pagination-wrapper-hourly {
     text-align: center;
 }
 
 .bg-info {
-    background-color:#3D4856!important;
-   /* background-color:#4D4637!important;*/
+    background-color: #3D4856 !important;
+    /* background-color:#4D4637!important;*/
 }
 
 button:not(:disabled) {
     cursor: pointer;
 }
 
-.btn-group-sm >.btn, .btn-sm {
+.btn-group-sm > .btn, .btn-sm {
     padding: 0.25rem 0.5rem;
     font-size: .875rem;
     line-height: 1.5;
     border-radius: 0.2rem;
     margin: 0px;
-    margin-top: 13px!important;
-    margin-left: 1px!important;
+    margin-top: 13px !important;
+    margin-left: 1px !important;
     transition: .5s;
-    width: 3.5rem!important;
+    width: 3.5rem !important;
 }
 
-.btn-group-sm >.btn, .btn-sm:hover {
-    transform: scale(1.2);
-    -webkit-transform: scale(1.2);
-}
+    .btn-group-sm > .btn, .btn-sm:hover {
+        transform: scale(1.2);
+        -webkit-transform: scale(1.2);
+    }
 
-.no-click{
+.no-click {
     pointer-events: none;
 }
 
@@ -145,7 +146,7 @@ button:not(:disabled) {
     border-color: #3D4856;
 }
 
-#pagination-wrapper .btn, #pagination-wrapper-sales .btn, #pagination-wrapper-cogs .btn, #pagination-wrapper-hourly .btn{
+#pagination-wrapper .btn, #pagination-wrapper-sales .btn, #pagination-wrapper-cogs .btn, #pagination-wrapper-hourly .btn {
     display: inline-block;
     flex-direction: none;
     justify-content: center;
@@ -154,12 +155,12 @@ button:not(:disabled) {
 }
 
 /* Border CSS */
-.white-outline{
+.white-outline {
     outline: white;
 }
 
 :focus-visible {
-    outline: 4px solid var(--color-orange) ;
+    outline: 4px solid var(--color-orange);
 }
 
 .price {
@@ -172,14 +173,17 @@ button:not(:disabled) {
 ::-webkit-input-placeholder {
     font-style: italic;
 }
+
 :-moz-placeholder {
     font-style: italic;
 }
+
 ::-moz-placeholder {
     font-style: italic;
 }
+
 :-ms-input-placeholder {
-    font-style: italic; 
+    font-style: italic;
 }
 
 /* Form */
@@ -192,11 +196,11 @@ button:not(:disabled) {
     width: 100%;
 }
 
-.label-space{
+.label-space {
     margin-bottom: 10px;
 }
 
-.floating-placeholder{
+.floating-placeholder {
     font-size: 12px;
     margin-top: 0px;
     margin-left: 13px;
@@ -206,7 +210,7 @@ button:not(:disabled) {
     text-align: left;
 }
 
-.floating-search-placeholder{
+.floating-search-placeholder {
     font-size: 12px;
     margin-top: 0px;
     color: grey;
@@ -216,27 +220,32 @@ button:not(:disabled) {
     font-style: italic;
 }
 
-main[role="main"]{
-    padding-left:100px;
+main[role="main"] {
+    padding-left: 100px;
+}
+
+.login-sect {
+    bottom: -100px;
 }
 
 @media (max-width: 2800px) {
-    .floating-search-placeholder{
+    .floating-search-placeholder {
         left: 7.4%;
     }
 }
 
 @media (max-width: 2560px) {
-    .floating-search-placeholder{
+    .floating-search-placeholder {
         left: 9.4%;
     }
+
     main[role="main"] {
         padding-left: 120px;
     }
 }
 
 @media (max-width: 2240px) {
-    .floating-search-placeholder{
+    .floating-search-placeholder {
         left: 10%;
     }
 
@@ -246,41 +255,46 @@ main[role="main"]{
 }
 
 @media (max-width: 2000px) {
-    .floating-search-placeholder{
+    .floating-search-placeholder {
         left: 10.75%;
     }
 }
 
 @media (max-width: 1680px) {
-    .floating-search-placeholder{
+    .floating-search-placeholder {
         left: 11.8%;
     }
 
     main[role="main"] {
         padding-left: 160px;
     }
+
+    .login-sect {
+        bottom: -60px;
+    }
+
 }
 
 @media (max-width: 1528px) {
-    .floating-search-placeholder{
+    .floating-search-placeholder {
         left: 12.9%;
     }
 }
 
 @media (max-width: 1440px) {
-    .floating-search-placeholder{
+    .floating-search-placeholder {
         left: 13.6%;
     }
 }
 
 @media (max-width: 1345px) {
-    .floating-search-placeholder{
+    .floating-search-placeholder {
         left: 13%;
     }
 }
 
 @media (max-width: 1366px) {
-    .floating-search-placeholder{
+    .floating-search-placeholder {
         left: 14.8%;
     }
 
@@ -290,55 +304,56 @@ main[role="main"]{
 }
 
 @media (max-width: 1024px) {
-    .floating-search-placeholder{
+    .floating-search-placeholder {
         left: 19%;
     }
 }
 
 @media (max-width: 900px) {
-    .floating-search-placeholder{
+    .floating-search-placeholder {
         left: 2.8%;
     }
 }
 
 @media (max-width: 768px) {
-    .floating-search-placeholder{
+    .floating-search-placeholder {
         left: 25%;
     }
 }
-.margin-top-22{
-    margin-top: 22px!important;
+
+.margin-top-22 {
+    margin-top: 22px !important;
     display: block;
 }
 
 .no-bottom-margin {
-    margin-bottom: 0px!important;
+    margin-bottom: 0px !important;
 }
 
-.quantity-container{
-    display:flex;
-    width:30px;
+.quantity-container {
+    display: flex;
+    width: 30px;
     justify-content: center;
- }
-
-.quantity-container input[type=number]::-webkit-inner-spin-button,
-.quantity-container input[type=number]::-webkit-outer-spin-button{
-    -webkit-appearance:none;
 }
 
-.quantity-container input[type=number] {
-    -moz-appearance: textfield;
-}
+    .quantity-container input[type=number]::-webkit-inner-spin-button,
+    .quantity-container input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+    }
+
+    .quantity-container input[type=number] {
+        -moz-appearance: textfield;
+    }
 
 .nmbQuantity {
     width: 30px;
 }
 
-.quantity-container > button{
+.quantity-container > button {
     font-size: 13px;
     margin: 0;
     padding: 0 3px 0 3px;
- }
+}
 
 .show_items {
     position: relative;
@@ -346,9 +361,14 @@ main[role="main"]{
 }
 
 .sticky-th {
-    position: sticky; top: 0;
+    position: sticky;
+    top: 0;
 }
-::-webkit-scrollbar{height: 100%; width: 100%;}
+
+::-webkit-scrollbar {
+    height: 100%;
+    width: 100%;
+}
 
 #customer-list {
     width: 100%;
@@ -360,9 +380,10 @@ Gabriel's CSS END ****************/
     /*width: auto;
     justify-content: space-between;*/
     width: 100vw;
-    height:100vh;
+    height: 100vh;
     background-color: var(--color-background);
 }
+
 .inventory_header {
     width: 15%;
     height: 100%;
@@ -376,43 +397,50 @@ Gabriel's CSS END ****************/
     transition: width 0.2s;
     flex-shrink: 0;
 }
-.nav--collapsed{
-    width:var(--nav--icon-width);
+
+.nav--collapsed {
+    width: var(--nav--icon-width);
 }
-.nav--collapsed .links_name {
-    display: none;
-}
+
+    .nav--collapsed .links_name {
+        display: none;
+    }
+
 .nav__border {
-    position:absolute;
-    left:100%;
-    top:0;
+    position: absolute;
+    left: 100%;
+    top: 0;
     width: var(--nav-border-width);
     height: inherit;
     background-color: var(--color-black);
     transition: background-color 0.2s;
-    cursor:ew-resize;
+    cursor: ew-resize;
 }
-.nav__border:hover {
-    background-color: #cccccc;;
-}
+
+    .nav__border:hover {
+        background-color: #cccccc;
+        ;
+    }
+
 .sidenav {
     height: 100%;
-    
 }
+
 .log_content {
     display: flex;
     align-items: flex-end;
-    
 }
-.log_content a:first-child {
-    padding-right: 0;
-    flex-shrink: 0;
-}
-.log_content a:nth-child(2) {
-    font-size: 28px;
-    font-weight: 600;
-    padding-left: 0;
-}
+
+    .log_content a:first-child {
+        padding-right: 0;
+        flex-shrink: 0;
+    }
+
+    .log_content a:nth-child(2) {
+        font-size: 28px;
+        font-weight: 600;
+        padding-left: 0;
+    }
 /*.fa-bars {
     position: absolute;
     left: 90%;
@@ -436,14 +464,16 @@ Gabriel's CSS END ****************/
     position: relative;
     list-style-type: none;
 }
-#pageLinks ul li a{
-    transition: all 0.4s ease;
-}
+
+    #pageLinks ul li a {
+        transition: all 0.4s ease;
+    }
 
 .sidenav img {
     width: 80px;
     height: 80px;
 }
+
 .log_content a:first-child {
     height: 90px;
 }
@@ -458,13 +488,14 @@ Gabriel's CSS END ****************/
     outline: none;
 }*/
 
-.logout a{
+.logout a {
     padding: 16px;
     opacity: 0.8;
     border-radius: var(--size--border--radius);
     border: none;
     outline: none;
 }
+
 .inventory_header .active {
     width: 80px;
 }
@@ -480,6 +511,7 @@ Gabriel's CSS END ****************/
     outline: none;
     line-height: 30px;
 }
+
 .logout {
     padding: 10px 10px 10px 30px;
     /*opacity: 0.8;*/
@@ -488,53 +520,59 @@ Gabriel's CSS END ****************/
     outline: none;
     line-height: 30px;
 }
-#pageLinks li i, .logout i {
-    margin-right: 15px;
-}
-#pageLinks a:hover,
-.logout a:hover{
-    background-color: var(--color-dark-grey);
-    border-radius: 10px;
-    animation: buttonBigger 1s ease-in-out;
-}
+
+    #pageLinks li i, .logout i {
+        margin-right: 15px;
+    }
+
+    #pageLinks a:hover,
+    .logout a:hover {
+        background-color: var(--color-dark-grey);
+        border-radius: 10px;
+        animation: buttonBigger 1s ease-in-out;
+    }
 
 .rights {
     color: var(--color-white);
     font-size: var(--font-micro);
     opacity: 0.8;
 }
+
 #pageLinks li, .logout {
     position: relative;
-    
 }
-#pageLinks li .tooltip,
-.logout .tooltip{
-    position: absolute;
-    left: 80px;
-    top: 0;
-    transform: translateY(-50%);
-    border-radius: var(--size--border--radius);
-    height: 35px;
-    width: 122px;
-    background: var(--color-white);
-    color: var(--color-black);
-    line-height: 35px;
-    text-align: center;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    transition: 0s;
-    opacity: 0;
-    pointer-events: none;
-    display: none;
-}
-.logout .tooltip{
-    left: 125px;
-}
+
+    #pageLinks li .tooltip,
+    .logout .tooltip {
+        position: absolute;
+        left: 80px;
+        top: 0;
+        transform: translateY(-50%);
+        border-radius: var(--size--border--radius);
+        height: 35px;
+        width: 122px;
+        background: var(--color-white);
+        color: var(--color-black);
+        line-height: 35px;
+        text-align: center;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        transition: 0s;
+        opacity: 0;
+        pointer-events: none;
+        display: none;
+    }
+
+    .logout .tooltip {
+        left: 125px;
+    }
+
 .inventory_header.active #pageLinks li .tooltip,
-.inventory_header.active .logout .tooltip{
+.inventory_header.active .logout .tooltip {
     display: block;
 }
+
 #pageLinks li:hover .tooltip,
-.logout:hover .tooltip{
+.logout:hover .tooltip {
     transition: all 0.5s ease;
     top: 50%;
     opacity: 1;
@@ -543,12 +581,14 @@ Gabriel's CSS END ****************/
 #inventorySideRight {
     display: none;
 }
+
 #inventorySearch {
     width: 96%;
     display: flex;
     justify-content: flex-start;
 }
-#searchHeader{
+
+#searchHeader {
     display: flex;
     align-items: flex-end;
     width: 12%;
@@ -556,17 +596,20 @@ Gabriel's CSS END ****************/
     font-size: large;
     font-weight: var(--weight-semi-bold);
 }
+
 #SearchString {
     display: flex;
     justify-content: flex-start;
     align-items: center
 }
+
 #inventoryMain {
     width: 100%;
     margin-right: 15px;
     display: flex;
     justify-content: space-between;
 }
+
 #searchOption {
     color: var(--color-black);
     border: 3px solid var(--color-dark-grey);
@@ -574,6 +617,7 @@ Gabriel's CSS END ****************/
     height: 30px;
     margin-top: 15px;
 }
+
 #SearchString {
     display: flex;
     justify-content: flex-start;
@@ -584,15 +628,18 @@ Gabriel's CSS END ****************/
     margin: 15px 0;
     border-radius: 3px;
 }
+
 .divider2_desc_btn {
     width: 100%;
 }
+
 .row {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
 }
+
 .column {
     width: 25%;
     height: 38px;
@@ -603,18 +650,21 @@ Gabriel's CSS END ****************/
     font-size: var(--font-regular);
     border-style: none;
 }
+
 .divider_desc_btn {
     display: flex;
     width: 100%;
 }
+
 .description {
     width: 100%;
     justify-content: space-between;
     background-color: var(--color-white);
     align-items: flex-start;
     scrollbar-color: var(--color-purple-grey);
-    box-shadow: 10px 10px 10px  #e1e0e0;
+    box-shadow: 10px 10px 10px #e1e0e0;
 }
+
 .desc {
     width: 25%;
     height: 38px;
@@ -626,17 +676,19 @@ Gabriel's CSS END ****************/
     font-size: var(--font-regular);
     background-color: var(--color-white);
 }
-.btn {
 
+.btn {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     margin-left: 15px;
     margin-bottom: 15px;
 }
-.btn_crud{
+
+.btn_crud {
     width: 100%;
 }
+
 .btn_crud_add, .btn_crud_edit, .btn_crud_remove {
     width: 90%;
     height: 30px;
@@ -645,9 +697,10 @@ Gabriel's CSS END ****************/
     border-radius: var(--size--border--radius);
     font-size: var(--font-regular);
     font-weight: var(--weight-bold);
-    color:var(--color-white);
+    color: var(--color-white);
     margin-left: 5px;
 }
+
 .btn_request {
     width: 100%;
     height: 30px;
@@ -657,76 +710,86 @@ Gabriel's CSS END ****************/
     margin-left: 5px;
     margin-right: 5px;
 }
-.btn .btn_crud{
+
+.btn .btn_crud {
     position: relative;
 }
-.btn .btn_crud .btn_tooltip {
-    position: absolute;
-    right: 80px;
-    bottom: 0;
-    transform: translateX(50%);
-    border-radius: var(--size--border--radius);
-    height: 35px;
-    width: 122px;
-    background: var(--color-white);
-    color: var(--color-black);
-    line-height: 35px;
-    text-align: center;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    transition: 0s;
-    opacity: 1;
-    pointer-events: none;
-    display: none;
-    
-}
-.btn .btn_crud:hover .btn_tooltip{
-    transition: all 1s ease;
-    bottom: 40px;
-    opacity: 1;
-    display: block;
-}
+
+    .btn .btn_crud .btn_tooltip {
+        position: absolute;
+        right: 80px;
+        bottom: 0;
+        transform: translateX(50%);
+        border-radius: var(--size--border--radius);
+        height: 35px;
+        width: 122px;
+        background: var(--color-white);
+        color: var(--color-black);
+        line-height: 35px;
+        text-align: center;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        transition: 0s;
+        opacity: 1;
+        pointer-events: none;
+        display: none;
+    }
+
+    .btn .btn_crud:hover .btn_tooltip {
+        transition: all 1s ease;
+        bottom: 40px;
+        opacity: 1;
+        display: block;
+    }
+
 .bg_popup {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
     position: absolute;
-    top:0; 
+    top: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     display: none;
 }
+
 .bg_popup_edit {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
     position: absolute;
-    top:0; 
+    top: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     display: none;
 }
+
 .form-popup {
     background-color: var(--color-white);
     border-radius: 6px;
     text-align: center;
 }
+
 @keyframes buttonBigger {
     10% {
         transform: none;
     }
+
     50% {
         transform: scale(1.1);
     }
+
     100% {
         transform: none;
     }
 }
+
 .btn_request:hover i {
     animation: buttonBigger 1s ease-in-out;
     color: #006E62;
 }
+
 .btn_crud_add:hover i, .btn_crud_edit:hover i {
     animation: buttonBigger 1s ease-in-out;
     color: #FD8B7C;
@@ -742,6 +805,7 @@ Gabriel's CSS END ****************/
     color: var(--color-balck);
     border-radius: 50%;
 }
+
 .help_tooltip {
     width: 25rem;
     position: fixed;
@@ -757,14 +821,17 @@ Gabriel's CSS END ****************/
     display: none;
     opacity: 1;
 }
+
 .help_tooltip_moreline {
     right: 140px;
 }
-.help:hover .help_tooltip{
+
+.help:hover .help_tooltip {
     transition: all 1s ease;
     opacity: 1;
     display: block;
 }
+
 .no_pointer_fornow {
     pointer-events: none;
 }
@@ -785,10 +852,10 @@ Gabriel's CSS END ****************/
     font-weight: var(--weight-bold)
 }
 
-.next-page:hover  {
-    border: 1px solid#3d4856;
-    color: #3d4856;
-}
+    .next-page:hover {
+        border: 1px solid#3d4856;
+        color: #3d4856;
+    }
 
 .btn_request:hover i {
     animation: buttonBigger 1s ease-in-out;
@@ -817,21 +884,7 @@ Gabriel's CSS END ****************/
     width: 80px;
 }
 
-.main-content {
-    display:flex;
-
-}
-
-.left-side{
-    flex:3;
-}
-
-.cart {
-    flex:1;
-}
-
-
-main{
-    width:auto;
+main {
+    width: auto;
 }
 

@@ -53,8 +53,8 @@ body {
     width: 100vw;
     height: 100vh;
     background-color: var(--color-background);
-    
 }
+
 main {
     width: 95%;
     display: flex;
@@ -131,13 +131,10 @@ ul {
     .sidenav {
         padding-top: 15px;
     }
-
-
 }
 
 
 .home_header {
-
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -178,7 +175,6 @@ ul {
     width: 100%;
     padding-left: 10%
 }
-
 
 
 .department {
@@ -264,13 +260,13 @@ ul {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-
         opacity: 0.8;
         border-radius: var(--size--border--radius);
         border: none;
         outline: none;
         line-height: 30px;
     }
+
         #pageLinks li i, .logout i {
             margin-right: 15px;
         }
@@ -309,6 +305,7 @@ ul {
         .logout .tooltip {
             left: 125px;
         }
+
 .inventory_header.active #pageLinks li .tooltip,
 .inventory_header.active .logout .tooltip {
     display: block;
@@ -375,18 +372,51 @@ ul {
     opacity: 0.8;
 }
 
-    .form-container .btn_submit {
-        background-color: #caa007;
+.form-container .btn_submit {
+    background-color: #caa007;
+}
+
+.form-container .btn_clear {
+    background-color: #caa007;
+}
+/* Add a red background color to the cancel button */
+.form-container .btn_cancel {
+    background-color: #3d4856;
+}
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+    opacity: 1;
+}
+
+.login-sect .nav-item a {
+    font-size: 20px;
+}
+
+.login-sect .nav-item, .login-sect button {
+    display: inline;
+    text-align: center;
+    font-size: 20px;
+}
+
+.login-sect .nav-item, .login-sect button {
+    color: #e2a62e;
+}
+
+    .login-sect button:hover {
+        color: #e2a62e;
+        animation: buttonBigger 1s ease-in-out;
+        border: 2px solid #e2a62e;
+        border-radius: 10px;
+        padding-right: 15px;
+        padding-left: 15px;
     }
 
-    .form-container .btn_clear {
-        background-color: #caa007;
+    .login-sect .nav-item a span {
+        display: inline;
+        font-size: inherit;
+        color: #e2a62e;
     }
-    /* Add a red background color to the cancel button */
-    .form-container .btn_cancel {
-        background-color: #3d4856;
-    }
-    /* Add some hover effects to buttons */
-    .form-container .btn:hover, .open-button:hover {
-        opacity: 1;
+
+    .login-sect .nav-item a:hover span {
+        color: var(--color-white);
     }
