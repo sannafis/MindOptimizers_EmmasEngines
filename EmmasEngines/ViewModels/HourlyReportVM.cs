@@ -3,14 +3,14 @@ using EmmasEngines.Utilities;
 
 namespace EmmasEngines.ViewModels
 {
-    public class SalesReportVM
+    public class HourlyReportVM
     {
-        public List<SalesReport> SavedReports { get; set; }
+        public List<HourlyReport> SavedReports { get; set; }
         public List<Employee> Employees { get; set; }
-        public NewSalesReport NewReport { get; set; }
-        public PaginatedList<Report> SavedSalesReports { get; internal set; }
+        public NewHourlyReport NewReport { get; set; }
+        public PaginatedList<Report> SavedHourlyReports { get; internal set; }
     }
-    public class NewSalesReport
+    public class NewHourlyReport
     {
         public string ReportName { get; set; }
         public int? EmployeeId { get; set; }

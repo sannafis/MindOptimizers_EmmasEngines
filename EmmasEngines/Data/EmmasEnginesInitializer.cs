@@ -1,5 +1,6 @@
 ﻿using EmmasEngines.Models;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
@@ -616,10 +617,10 @@ namespace EmmasEngines.Data
                 #region Reports
                 //Dummy Report Data
 
-                if (!context.SalesReports.Any())
+                if (!context.Reports.Any())
                 {
                     List<SalesReportInventory> srepInv = new List<SalesReportInventory>();
-                    foreach(string upc in inventoryUPCs)
+                    foreach (string upc in inventoryUPCs)
                     {
                         SalesReportInventory s = new SalesReportInventory()
                         {
@@ -630,7 +631,7 @@ namespace EmmasEngines.Data
                         };
                         srepInv.Add(s);
                     }
-                    Report report = new Report()
+                    Report salesreport = new Report()
                     {
                         Description = "Monthly Sales Report",
                         DateStart = DateTime.Parse("January 1, 2023"),
@@ -660,27 +661,10 @@ namespace EmmasEngines.Data
                             SalesReportInventories = srepInv
                         }
                     };
-                    context.Reports.Add(report);
+                    context.Reports.Add(salesreport);
                     context.SaveChanges();
-                }
 
-                if (!context.COGSReports.Any())
-                {
-                    List<SalesReportInventory> srepInv = new List<SalesReportInventory>();
-                    foreach (string upc in inventoryUPCs)
-                    {
-                        SalesReportInventory s = new SalesReportInventory()
-                        {
-                            InventoryUPC = upc,
-                            Quantity = random.Next(1, 3),
-                            Total = random.NextDouble() * (1000.00 - 500.00) + 500.00,
-                            SalesReportID = 1
-                        };
-                        srepInv.Add(s);
-                    }
-
-
-                    Report report = new Report()
+                    Report cogsReport = new Report()
                     {
                         Description = "Monthly COGS Report - Mower Blades",
                         DateStart = DateTime.Parse("January 1, 2023"),
@@ -696,13 +680,31 @@ namespace EmmasEngines.Data
                             COGS = 6008.50,
                             GrossProfit = 2000.00,
                             ProfitMargin = 24.97,
-                            Inventories = context.Inventories.Where(i=>i.UPC == "060-5910-0").ToList(),
-                            Invoices = context.Invoices.Where(i=>i.InvoiceLines.Select(l=>l.InventoryUPC).Equals("060-5910-0") 
-                                && i.Date >= new DateTime(2023,1,1) 
-                                && i.Date <= new DateTime(2023, 1, 31)).ToList()  
+                            Inventories = context.Inventories.Where(i => i.UPC == "060-5910-0").DefaultIfEmpty().ToList(),
+                            Invoices = context.Invoices.Where(i => i.InvoiceLines.Any(a => a.InventoryUPC == "060-5910-0")).DefaultIfEmpty().ToList(),
+                            //Invoices = context.Invoices.Where(i => i.InvoiceLines.Select(l => l.InventoryUPC).Equals("060-5910-0")
+                            //    && i.Date >= new DateTime(2023, 1, 1)
+                            //    && i.Date <= new DateTime(2023, 1, 31)).DefaultIfEmpty().ToList(),
+                            SaleRevenue = 8008.50
                         }
                     };
-                    context.Reports.Add(report);
+                    context.Reports.Add(cogsReport);
+                    context.SaveChanges();
+
+                    Report hourlyReport = new Report()
+                    {
+                        Description = "Wendy Hourly Report",
+                        DateStart = DateTime.Parse("January 1, 2023"),
+                        DateEnd = DateTime.Parse("January 31, 2023"),
+                        Criteria = "Wendy Barlowe",
+                        DateCreated = DateTime.Now,
+                        Type = ReportType.Hourly,
+                        HourlyReport = new HourlyReport()
+                        {
+                            Employees = context.Employees.Where(e => e.FirstName.Equals("Wendy")).DefaultIfEmpty().ToList()
+                        }
+                    };
+                    context.Reports.Add(hourlyReport);
                     context.SaveChanges();
                 }
 
