@@ -13,7 +13,6 @@ namespace EmmasEngines.Models
 
         public Report Report { get; set; }
 
-
         [Display(Name = "Material (Start)")]
         [Required(ErrorMessage = "Start Cost is required")]
         public double StartCost { get; set; } // This is the value of all inventory(from criteria) - get from price table???
@@ -22,7 +21,7 @@ namespace EmmasEngines.Models
         [Required(ErrorMessage = "Purchased Cost is required")]
         public double PurchasedCost { get; set; } // This value is inventory sold(?????)
 
-        [Display(Name = "Materals (End)")]
+        [Display(Name = "Materials (End)")]
         [Required(ErrorMessage = "End Cost is required")]
         public double EndCost { get; set; } // This value is StartCost - PurchasedCost
 
@@ -40,7 +39,7 @@ namespace EmmasEngines.Models
 
         [Display(Name = "Profit Margin %")]
         [Required(ErrorMessage = "Profit Margin is required")]
-        public double ProfitMargin { get; set; }
+        public double ProfitMargin { get; set; } // (Gross Profit/Net Sales) * 100
 
         public ICollection<Inventory> Inventories { get; set; } = new HashSet<Inventory>();
 

@@ -11,6 +11,16 @@ using Microsoft.AspNetCore.Authorization;
 using EmmasEngines.ViewModels;
 using iText.Kernel.Geom;
 using System.Drawing.Printing;
+using iText.Kernel.Font;
+using iText.Kernel.Pdf;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using iText.Layout;
+using System.IO;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Table = iText.Layout.Element.Table;
+using Microsoft.Extensions.Hosting;
+using Path = System.IO.Path;
 
 namespace EmmasEngines.Controllers
 {
@@ -18,10 +28,12 @@ namespace EmmasEngines.Controllers
     {
         //add db context
         private readonly EmmasEnginesContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public ReportsController(EmmasEnginesContext context)
+        public ReportsController(EmmasEnginesContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         public async Task<IActionResult> Index(int? page, int? pageSize)
@@ -40,8 +52,17 @@ namespace EmmasEngines.Controllers
             // get report list of saved sales 
             var savedSalesReports = await PaginatedList<Report>.CreateAsync(_context.Reports.Where(i => i.Type == ReportType.Sales), page ?? 1, pageSize ?? 5);
 
+            // Get paginated list of hourly reports
+            var hourlyReports = await PaginatedList<HourlyReport>.CreateAsync(_context.HourlyReports.AsQueryable(), page ?? 1, pageSize ?? 5);
+            var savedHourlyReports = await PaginatedList<Report>.CreateAsync(_context.Reports.Where(i => i.Type == ReportType.Hourly), page ?? 1, pageSize ?? 5);
 
+            //Get paginated list of COGS reports
+            /*
+            var COGSReports = await PaginatedList<COGSReport>.CreateAsync(_context.COGSReports.AsQueryable(), page ?? 1, pageSize ?? 5);
+            var savedCOGSReports = await PaginatedList<Report>.CreateAsync(_context.Reports.Where(i => i.Type == ReportType.COGS), page ?? 1, pageSize ?? 5);
+            */
 
+            
             // Create a view model to pass to the view
             var viewModel = new ReportsVM
             {
@@ -51,6 +72,19 @@ namespace EmmasEngines.Controllers
                     SavedSalesReports = savedSalesReports,
                     Employees = await _context.Employees.ToListAsync()
                 },
+                SavedHourlyReports = hourlyReports,
+                HourlyReportVM = new HourlyReportVM
+                {
+                    SavedHourlyReports = savedHourlyReports,
+                    Employees = await _context.Employees.ToListAsync()
+                },
+                /*SavedCOGSReports = savedCOGSReports,
+                COGSReportsVM = new COGSReportVM
+                {
+                    SavedCOGSReports = savedCOGSReports,
+                    Inventories = await _context.Inventories.ToListAsync(),
+                    Invoices = await _context.Invoices.ToListAsync()
+                },*/
                 PageIndex = savedReports.PageIndex,
                 PageSize = savedReports.Count,
                 TotalPages = savedReports.TotalPages
@@ -60,7 +94,7 @@ namespace EmmasEngines.Controllers
             return View(viewModel);
         }
 
-        
+
         //Sales Report
         public async Task<IActionResult> Sales()
         {
@@ -71,12 +105,27 @@ namespace EmmasEngines.Controllers
                 NewReport = new NewSalesReport()
             };
 
-            
+
 
             return View(viewModel);
         }
+        /*
+        //COGS Report
+        public async Task<IActionResult> COGS()
+        {
+            var viewModel = new COGSReportVM
+            {
+                SavedReports = await _context.COGSReports.Include(sr => sr.COGSReportInventories).ThenInclude(sre => sre.Inventory).ToListAsync(),
+                Inventories = await _context.Inventories.ToListAsync(),
+                Invoices = await _context.Invoices.ToListAsync(),
+                NewReport = new NewCOGSReport()
+            };
 
-        [HttpPost]
+            return View(viewModel);
+        }
+        */
+
+            [HttpPost]
         public async Task<IActionResult> CreateSaleReport([FromForm] NewSalesReport newReport, int? page, int? pageSize)
         {
             if (!ModelState.IsValid)
@@ -99,7 +148,7 @@ namespace EmmasEngines.Controllers
                     .ThenInclude(s => s.Inventory)
                     .Where(s => newReport.StartDate <= s.Date && s.Date <= newReport.EndDate)
                     .AsQueryable();
-                
+
                 if (!newReport.AllEmployees && newReport.EmployeeId.HasValue)
                 {
                     salesData = salesData.Where(s => s.Employee.ID == newReport.EmployeeId.Value);
@@ -133,7 +182,7 @@ namespace EmmasEngines.Controllers
                         EmployeeID = g.Key,
                         Sales = g.Sum(s => s.Subtotal)
                     }).ToList();
-                
+
                 // Calculate the sales summary
                 var salesSummary = salesDataList.GroupBy(s => s.InvoiceLines.FirstOrDefault().Inventory.UPC)
                     .Select(g => new
@@ -143,7 +192,7 @@ namespace EmmasEngines.Controllers
                         Quantity = g.Count(),
                         Total = g.Sum(s => s.Subtotal)
                     }).ToList();
-                
+
                 // Calculate the appreciation
                 var appreciation = salesDataList
                     .Select(s => s.Appreciation)
@@ -220,7 +269,7 @@ namespace EmmasEngines.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true, report = reportToAdd, reportsVM = reportsVM});
+                return Json(new { success = true, report = reportToAdd, reportsVM = reportsVM });
             }
             catch (Exception ex)
             {
@@ -230,9 +279,158 @@ namespace EmmasEngines.Controllers
                 return Json(new { success = false, message = "An error occurred while saving the report. Exception Message: " + ex.Message });
             }
         }
+        public async Task<IActionResult> GenerateSalesReportPDF(int id)
+        {
+            // Retrieve the report details from the database using the reportId parameter
+            var report = await _context.Reports
+                        .Include(r => r.SalesReport)
+                        .ThenInclude(sr => sr.SalesReportEmployees)
+                        .ThenInclude(sre => sre.Employee)
+                        .FirstOrDefaultAsync(r => r.ID == id);
+            // Check if the report is null and return a proper response
+            if (report == null)
+            {
+                return NotFound($"Report with ID {id} not found.");
+            }
 
 
+            // Create the PDF document
+            using (var memoryStream = new MemoryStream())
+            {
+                var writer = new PdfWriter(memoryStream);
+                var pdf = new PdfDocument(writer);
+                var document = new Document(pdf);
 
+                // Set up the PDF formatting and styles
+                var titleFontSize = 18f;
+                var subtitleFontSize = 14f;
+                var textFontSize = 12f;
+                var titleFont = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
+                var subtitleFont = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
+                var textFont = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
+
+                // Add the content (text, tables, etc.) to the PDF document
+                document.Add(new Paragraph("Emma's Small Engine")
+                    .SetFont(titleFont)
+                    .SetFontSize(titleFontSize)
+                    .SetTextAlignment(TextAlignment.CENTER));
+
+                document.Add(new Paragraph("End of Day Report")
+                    .SetFont(subtitleFont)
+                    .SetFontSize(subtitleFontSize)
+                    .SetTextAlignment(TextAlignment.CENTER));
+
+                document.Add(new Paragraph($"Report Date: {report.DateCreated.ToString("MM/dd/yyyy")}")
+                    .SetFont(textFont)
+                    .SetFontSize(textFontSize)
+                    .SetTextAlignment(TextAlignment.CENTER));
+
+                // Payment Type Summary
+                var paymentTypeSummaryTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                paymentTypeSummaryTable.SetWidth(UnitValue.CreatePercentValue(100));
+                paymentTypeSummaryTable.AddHeaderCell(new Cell().Add(new Paragraph("Payment Type").SetFont(subtitleFont).SetFontSize(subtitleFontSize)));
+                paymentTypeSummaryTable.AddHeaderCell(new Cell().Add(new Paragraph("Amount").SetFont(subtitleFont).SetFontSize(subtitleFontSize)));
+                paymentTypeSummaryTable.AddCell(new Cell().Add(new Paragraph("Cash").SetFont(textFont).SetFontSize(textFontSize)));
+                paymentTypeSummaryTable.AddCell(new Cell().Add(new Paragraph(report.SalesReport.CashAmount.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+                paymentTypeSummaryTable.AddCell(new Cell().Add(new Paragraph("Debit").SetFont(textFont).SetFontSize(textFontSize)));
+                paymentTypeSummaryTable.AddCell(new Cell().Add(new Paragraph(report.SalesReport.DebitAmount.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+                paymentTypeSummaryTable.AddCell(new Cell().Add(new Paragraph("Credit").SetFont(textFont).SetFontSize(textFontSize)));
+                paymentTypeSummaryTable.AddCell(new Cell().Add(new Paragraph(report.SalesReport.CreditAmount.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+                paymentTypeSummaryTable.AddCell(new Cell().Add(new Paragraph("Check").SetFont(textFont).SetFontSize(textFontSize)));
+                paymentTypeSummaryTable.AddCell(new Cell().Add(new Paragraph(report.SalesReport.ChequeAmount.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+                paymentTypeSummaryTable.AddCell(new Cell().Add(new Paragraph("Total").SetFont(textFont).SetFontSize(textFontSize)));
+                paymentTypeSummaryTable.AddCell(new Cell().Add(new Paragraph(report.SalesReport.Total.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+
+                document.Add(paymentTypeSummaryTable);
+
+                // Tax Summary
+                var taxSummaryTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                taxSummaryTable.SetWidth(UnitValue.CreatePercentValue(100));
+                taxSummaryTable.AddHeaderCell(new Cell().Add(new Paragraph("Tax Type").SetFont(subtitleFont).SetFontSize(subtitleFontSize)));
+                taxSummaryTable.AddHeaderCell(new Cell().Add(new Paragraph("Amount").SetFont(subtitleFont).SetFontSize(subtitleFontSize)));
+                //Sales Tax
+                taxSummaryTable.AddCell(new Cell().Add(new Paragraph("Sales Tax").SetFont(textFont).SetFontSize(textFontSize)));
+                taxSummaryTable.AddCell(new Cell().Add(new Paragraph(report.SalesReport.SalesTax.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+                //Other Tax
+                taxSummaryTable.AddCell(new Cell().Add(new Paragraph("Other Tax").SetFont(textFont).SetFontSize(textFontSize)));
+                taxSummaryTable.AddCell(new Cell().Add(new Paragraph(report.SalesReport.OtherTax.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+                //Total Tax
+                taxSummaryTable.AddCell(new Cell().Add(new Paragraph("Total Tax").SetFont(textFont).SetFontSize(textFontSize)));
+                taxSummaryTable.AddCell(new Cell().Add(new Paragraph(report.SalesReport.TotalTax.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+
+                document.Add(taxSummaryTable);
+
+                // Employee Summary (employees, total sales)
+                var employeeSummaryTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                employeeSummaryTable.SetWidth(UnitValue.CreatePercentValue(100));
+                employeeSummaryTable.AddHeaderCell(new Cell().Add(new Paragraph("Employee").SetFont(subtitleFont).SetFontSize(subtitleFontSize)));
+                employeeSummaryTable.AddHeaderCell(new Cell().Add(new Paragraph("Sales").SetFont(subtitleFont).SetFontSize(subtitleFontSize)));
+
+                foreach (var employee in report.SalesReport.SalesReportEmployees)
+                {
+                    employeeSummaryTable.AddCell(new Cell().Add(new Paragraph(employee.Employee.FullName).SetFont(textFont).SetFontSize(textFontSize)));
+                    employeeSummaryTable.AddCell(new Cell().Add(new Paragraph(employee.Sales.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+                }
+
+                employeeSummaryTable.AddCell(new Cell().Add(new Paragraph("Total").SetFont(textFont).SetFontSize(textFontSize)));
+                employeeSummaryTable.AddCell(new Cell().Add(new Paragraph(report.SalesReport.Total.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+
+                document.Add(employeeSummaryTable);
+
+                // Sales Summary (items, total sales, quantity, price)
+                var salesSummaryTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                salesSummaryTable.SetWidth(UnitValue.CreatePercentValue(100));
+                salesSummaryTable.AddHeaderCell(new Cell().Add(new Paragraph("Item").SetFont(subtitleFont).SetFontSize(subtitleFontSize)));
+                salesSummaryTable.AddHeaderCell(new Cell().Add(new Paragraph("Quantity").SetFont(subtitleFont).SetFontSize(subtitleFontSize)));
+                salesSummaryTable.AddHeaderCell(new Cell().Add(new Paragraph("Price").SetFont(subtitleFont).SetFontSize(subtitleFontSize)));
+                salesSummaryTable.AddHeaderCell(new Cell().Add(new Paragraph("Sales").SetFont(subtitleFont).SetFontSize(subtitleFontSize)));
+
+                foreach (var item in report.SalesReport.SalesReportInventories)
+                {
+                    salesSummaryTable.AddCell(new Cell().Add(new Paragraph(item.Inventory.Name).SetFont(textFont).SetFontSize(textFontSize)));
+                    salesSummaryTable.AddCell(new Cell().Add(new Paragraph(item.Quantity.ToString()).SetFont(textFont).SetFontSize(textFontSize)));
+                    salesSummaryTable.AddCell(new Cell().Add(new Paragraph(item.Inventory.MarkupPrice.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+                    salesSummaryTable.AddCell(new Cell().Add(new Paragraph(item.Total.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+                }
+
+                document.Add(salesSummaryTable);
+
+                // Appreciation (appreciation earned (2% sales), appreciation earned to date)
+                var appreciationSummaryTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                appreciationSummaryTable.SetWidth(UnitValue.CreatePercentValue(100));
+                appreciationSummaryTable.AddHeaderCell(new Cell().Add(new Paragraph("Appreciation").SetFont(subtitleFont).SetFontSize(subtitleFontSize)));
+                appreciationSummaryTable.AddHeaderCell(new Cell().Add(new Paragraph("Amount").SetFont(subtitleFont).SetFontSize(subtitleFontSize)));
+                //Appreciation Earned
+                appreciationSummaryTable.AddCell(new Cell().Add(new Paragraph("Appreciation Earned").SetFont(textFont).SetFontSize(textFontSize)));
+                // Calculate appreciation earned (2% of sales)
+                var appreciationEarned = report.SalesReport.Total * 0.02;
+                appreciationSummaryTable.AddCell(new Cell().Add(new Paragraph(appreciationEarned.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+                //Appreciation Earned to Date
+                appreciationSummaryTable.AddCell(new Cell().Add(new Paragraph("Appreciation Earned to Date").SetFont(textFont).SetFontSize(textFontSize)));
+                // Calculate appreciation earned to date (2% of sales + appreciation earned to date)
+                // TODO: Get appreciation earned to date from database
+                var appreciationEarnedToDate = appreciationEarned + 0;
+                appreciationSummaryTable.AddCell(new Cell().Add(new Paragraph(appreciationEarnedToDate.ToString("C")).SetFont(textFont).SetFontSize(textFontSize)));
+
+                document.Add(appreciationSummaryTable);
+
+                // Footer (Report generated by {employee name} on {date})
+                var footerTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                footerTable.SetWidth(UnitValue.CreatePercentValue(100));
+                footerTable.AddCell(new Cell().Add(new Paragraph($"Report generated by Emma Ham on {report.DateCreated}").SetFont(textFont).SetFontSize(textFontSize)));
+
+                document.Add(footerTable);
+                
+
+                // Close the document
+                document.Close();
+
+                // Return the PDF as a byte array
+                var pdfByteArray = memoryStream.ToArray();
+                return File(pdfByteArray, "application/pdf", $"Report_{id}.pdf");
+            }
+        }
 
     }
 }
+
