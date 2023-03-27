@@ -24,6 +24,7 @@ using Path = System.IO.Path;
 
 namespace EmmasEngines.Controllers
 {
+    [Authorize(Roles = "Admin,Supervisor, Staff")]
     public class ReportsController : Controller
     {
         //add db context
@@ -56,7 +57,13 @@ namespace EmmasEngines.Controllers
             var hourlyReports = await PaginatedList<HourlyReport>.CreateAsync(_context.HourlyReports.AsQueryable(), page ?? 1, pageSize ?? 5);
             var savedHourlyReports = await PaginatedList<Report>.CreateAsync(_context.Reports.Where(i => i.Type == ReportType.Hourly), page ?? 1, pageSize ?? 5);
 
+            //Get paginated list of COGS reports
+            /*
+            var COGSReports = await PaginatedList<COGSReport>.CreateAsync(_context.COGSReports.AsQueryable(), page ?? 1, pageSize ?? 5);
+            var savedCOGSReports = await PaginatedList<Report>.CreateAsync(_context.Reports.Where(i => i.Type == ReportType.COGS), page ?? 1, pageSize ?? 5);
+            */
 
+            
             // Create a view model to pass to the view
             var viewModel = new ReportsVM
             {
@@ -72,6 +79,13 @@ namespace EmmasEngines.Controllers
                     SavedHourlyReports = savedHourlyReports,
                     Employees = await _context.Employees.ToListAsync()
                 },
+                /*SavedCOGSReports = savedCOGSReports,
+                COGSReportsVM = new COGSReportVM
+                {
+                    SavedCOGSReports = savedCOGSReports,
+                    Inventories = await _context.Inventories.ToListAsync(),
+                    Invoices = await _context.Invoices.ToListAsync()
+                },*/
                 PageIndex = savedReports.PageIndex,
                 PageSize = savedReports.Count,
                 TotalPages = savedReports.TotalPages
@@ -97,8 +111,23 @@ namespace EmmasEngines.Controllers
 
             return View(viewModel);
         }
+        /*
+        //COGS Report
+        public async Task<IActionResult> COGS()
+        {
+            var viewModel = new COGSReportVM
+            {
+                SavedReports = await _context.COGSReports.Include(sr => sr.COGSReportInventories).ThenInclude(sre => sre.Inventory).ToListAsync(),
+                Inventories = await _context.Inventories.ToListAsync(),
+                Invoices = await _context.Invoices.ToListAsync(),
+                NewReport = new NewCOGSReport()
+            };
 
-        [HttpPost]
+            return View(viewModel);
+        }
+        */
+
+            [HttpPost]
         public async Task<IActionResult> CreateSaleReport([FromForm] NewSalesReport newReport, int? page, int? pageSize)
         {
             if (!ModelState.IsValid)
