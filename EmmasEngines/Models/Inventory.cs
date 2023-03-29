@@ -12,7 +12,7 @@ namespace EmmasEngines.Models
 
         [Required(ErrorMessage = "UPC is required.")]
         [RegularExpression("^[0-9]{3}-[0-9]{4}-[0-9]{1}", ErrorMessage = "Please match the required format: ###-####-#")]
-        [StringLength(11)]
+        [StringLength(10)]
         public string UPC { get; set; }
 
         [Required(ErrorMessage = "Name is required.")]

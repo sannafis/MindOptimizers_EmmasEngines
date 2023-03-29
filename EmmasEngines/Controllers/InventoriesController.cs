@@ -196,6 +196,10 @@ namespace EmmasEngines.Controllers
         {
             if (id==0)
             {
+                List<int> upcs = await _context.Inventories.Select(i => Int32.Parse(i.UPC.Replace("-", string.Empty))).ToListAsync();
+
+                ViewBag.upcList = upcs;
+
                 return View(new Inventory());
             }
             else

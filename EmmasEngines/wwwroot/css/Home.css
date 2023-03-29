@@ -536,11 +536,14 @@ ul {
         font-size: 13px;
     }
 
-.btn-autofill{
+.btn.btn-autofill{
     background-color:lightsteelblue;
-    color:dimgrey;
+    color:white;
+    text-align:center;
+    display:initial;
 }
-.btn-autofill:focus{
-    border:none;
+
+.btn.btn-autofill:hover {
+    color: dimgrey;
 }
 
