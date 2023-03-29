@@ -248,7 +248,7 @@ main[role="main"] {
     }
 
     main[role="main"] {
-        padding-left: 140px;
+        padding-left: 160px;
     }
 }
 
@@ -261,10 +261,6 @@ main[role="main"] {
 @media (max-width: 1680px) {
     .floating-search-placeholder {
         left: 11.8%;
-    }
-
-    main[role="main"] {
-        padding-left: 160px;
     }
 
     .login-sect {
@@ -305,6 +301,7 @@ main[role="main"] {
     .floating-search-placeholder {
         left: 19%;
     }
+
 }
 
 @media (max-width: 900px) {
