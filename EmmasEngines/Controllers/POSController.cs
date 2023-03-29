@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EmmasEngines.Controllers
 {
-    [Authorize(Roles = "Admin,Supervisor, Staff")]
+    [Authorize(Roles = "Admin, Order/Purchase")]
     public class POSController : Controller
     {
         private readonly EmmasEnginesContext _context;

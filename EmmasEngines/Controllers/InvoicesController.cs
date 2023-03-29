@@ -19,7 +19,7 @@ using EmmasEngines.Utilities;
 
 namespace EmmasEngines.Controllers
 {
-    [Authorize(Roles = "Admin,Supervisor, Staff")]
+    [Authorize(Roles = "Admin, Order/Purchase")]
     public class InvoicesController : Controller
     {
         private readonly EmmasEnginesContext _context;
