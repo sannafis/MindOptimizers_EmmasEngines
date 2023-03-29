@@ -7,41 +7,67 @@
 
 <div class="form-popup">
 
-        <form asp-action="AddOrEdit" class="form-container" asp-route-id="@Model.ID" onsubmit="return jQueryAjaxPost(this);" autocomplete="off">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
+    <form asp-action="AddOrEdit" class="form-container" asp-route-id="@Model.ID" onsubmit="return jQueryAjaxPost(this);" autocomplete="off">
+        @{
+            if (Model.ID == 0)
+            {//new product
+                <h4 id='add_edit'>ADD SUPPLIER</h4>
+                <button type="button" id="autofill" class="btn btn-autofill">Auto Fill</button>
+            }
+            else
+            {
+                <h4 id='add_edit'>EDIT SUPPLIER</h4>
+            }
+        }
 
-                <label asp-for="Name" class="margin-top-22"></label>
-                <input asp-for="Name" class="no-bottom-margin" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ID" />
 
-                <label asp-for="Phone" class="margin-top-22"></label>
-                <input asp-for="Phone" class="no-bottom-margin" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
+        <label asp-for="Name" class="margin-top-22"></label>
+        <input asp-for="Name" id="name" class="no-bottom-margin" />
+        <span asp-validation-for="Name" class="text-danger"></span>
 
-                <label asp-for="Email" class="margin-top-22"></label>
-                <input asp-for="Email" class="no-bottom-margin" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+        <label asp-for="Phone" class="margin-top-22"></label>
+        <input asp-for="Phone" id="phone" class="no-bottom-margin" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
 
-                <label asp-for="Address" class="margin-top-22"></label>
-                <input asp-for="Address" class="no-bottom-margin" />
-                <span asp-validation-for="Address" class="text-danger"></span>
+        <label asp-for="Email" class="margin-top-22"></label>
+        <input asp-for="Email" id="email" class="no-bottom-margin" />
+        <span asp-validation-for="Email" class="text-danger"></span>
 
+        <label asp-for="Address" class="margin-top-22"></label>
+        <input asp-for="Address" id="address" class="no-bottom-margin" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+        <div class="row">
+            <div class="col">
                 <label asp-for="Postal" class="margin-top-22"></label>
-                <input asp-for="Postal" class="no-bottom-margin" />
+                <input asp-for="Postal" id="postal" class="no-bottom-margin" />
                 <span asp-validation-for="Postal" class="text-danger"></span>
-
+            </div>
+            <div class="col">
                 <label asp-for="CityID" class="margin-top-22"></label>
-        <select asp-for="CityID" class="no-bottom-margin" asp-items="ViewBag.CityID" id="dropdown" tabindex="261"></select>
+                <select asp-for="CityID" class="no-bottom-margin" asp-items="ViewBag.CityID" id="dropdown" tabindex="261"></select>
                 <span asp-validation-for="CityID" class="text-danger"></span>
-
+            </div>
+        </div>
         <button type="submit" value="submit" class="btn_submit" style="margin-top: 22px;">Submit</button>
         <button type="button" value="Close" class="btn_cancel" onclick="closeModal()">Close</button>
-        </form>
- </div>
+    </form>
+</div>
 
-    
+<script>
+    $("#autofill").click(function () {
+
+        $("#name").val("Example Supplier");
+        $("#email").val(`supplier@email.com`);
+        $("#phone").val("905-000-0000");
+        $("#address").val("123 Example Street");
+        $("#postal").val(`O2V 0H1`);
+    });
+</script>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
