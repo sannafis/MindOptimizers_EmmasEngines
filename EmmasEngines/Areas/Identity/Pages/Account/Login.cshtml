@@ -14,8 +14,10 @@
             <h1 class="login-header__title">Welcome to Emma's Small Engine</h1>
             <p class="login-header__text">Log in with your company email or employee number.</p>
         </section>
+        
         <form id="login-form" method="post">
-
+            
+            <button type="button" class="btn btn-autofill" id="autofill" style="justify-content:center">Admin AutoFill</button>
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" id="username" placeholder="Email or employee number" />
@@ -52,6 +54,13 @@
     </div>
 
 </div>
+
+<script>
+    $("#autofill").click(function () {
+        $("#username").val("admin@outlook.com");
+        $("#password").val("Pa55w@rd");
+    });
+</script>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

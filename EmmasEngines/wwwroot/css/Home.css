@@ -536,3 +536,10 @@ ul {
         font-size: 13px;
     }
 
+.btn-autofill{
+    background-color:lightsteelblue;
+    color:dimgrey;
+}
+.btn-autofill:focus{
+    border:none;
+}
