@@ -3,13 +3,6 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-<style>
-    th, dt, a {
-        color: black;
-    }
-</style>
-
 <section id="pageName">
     <h1>INVOICES</h1>
 </section>
@@ -22,24 +15,24 @@
 <table class="table table-striped" id="inventoryTable">
     <thead>
         <tr class="bg-info">
-            <th class="tableHeaders">
+            <th class="">
                 @Html.DisplayNameFor(model => model.Date)
             </th>
-            <th class="tableHeaders">
+            <th class="">
                 @Html.DisplayNameFor(model => model.Appreciation)
             </th>
-            <th class="tableHeaders">
+            <th class="">
                 @Html.DisplayNameFor(model => model.Description)
             </th>
-            <th class="tableHeaders">
+            <th class="">
                 @Html.DisplayNameFor(model => model.Customer)
             </th>
-            <th class="tableHeaders">
+            <th class="">
                 @Html.DisplayNameFor(model => model.Employee)
             </th>
-            <th class="tableHeaders">Invoice Lines Count</th>
-            <th class="tableHeaders">Payment Count</th>
-            <th class="tableHeaders"></th>
+            <th class="">Invoice Lines Count</th>
+            <th class="">Payment Count</th>
+            <th class=""></th>
         </tr>
     </thead>
     <tbody id="myTable">
