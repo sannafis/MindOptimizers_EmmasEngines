@@ -1,6 +1,6 @@
 ﻿namespace EmmasEngines.ViewModels
 {
-	public class IEmailConfiguration
+	public interface IEmailConfiguration
 	{
         string SmtpServer { get; }
         int SmtpPort { get; }

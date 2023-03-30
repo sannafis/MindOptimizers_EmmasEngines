@@ -1,6 +1,9 @@
 using System.Text.Json.Serialization;
 using EmmasEngines.Data;
+using EmmasEngines.Utilities;
+using EmmasEngines.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,6 +54,14 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
     options.SlidingExpiration = true;
 });
+
+//For email service configuration
+builder.Services.AddSingleton<IEmailConfiguration>(builder.Configuration
+    .GetSection("EmailConfiguration").Get<EmailConfiguration>());
+
+//For the Identity System
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 
 builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 {
