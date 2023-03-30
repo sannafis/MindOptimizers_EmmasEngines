@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace EmmasEngines.Areas.Identity.Pages.Account
 {
-    [Authorize(Roles = "Admin")]
     public class ResetPasswordModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
