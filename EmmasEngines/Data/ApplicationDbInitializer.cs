@@ -39,17 +39,35 @@ namespace EmmasEngines.Data
                 {
                     IdentityUser user = new IdentityUser
                     {
-                        UserName = "EmmaH@outlook.com",
+                        UserName = "EmmaH",
                         Email = "EmmaH@outlook.com"
                     };
 
-                    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
+                    IdentityResult result = userManager.CreateAsync(user, "123456789").Result;
 
                     if (result.Succeeded)
                     {
                         userManager.AddToRoleAsync(user, "Admin").Wait();
                     }
                 }
+
+                //Admin
+                if (userManager.FindByEmailAsync("EmilyA@outlook.com").Result == null)
+                {
+                    IdentityUser user = new IdentityUser
+                    {
+                        UserName = "EmilyA",
+                        Email = "EmilyA@outlook.com"
+                    };
+
+                    IdentityResult result = userManager.CreateAsync(user, "123456789").Result;
+
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(user, "Admin").Wait();
+                    }
+                }
+
                 //Admin
                 if (userManager.FindByEmailAsync("admin@outlook.com").Result == null)
                 {
@@ -75,11 +93,11 @@ namespace EmmasEngines.Data
                 {
                     IdentityUser user = new IdentityUser
                     {
-                        UserName = "samK@outlook.com",
+                        UserName = "samK",
                         Email = "samK@outlook.com"
                     };
 
-                    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
+                    IdentityResult result = userManager.CreateAsync(user, "123456789").Result;
 
                     if (result.Succeeded)
                     {
@@ -92,11 +110,11 @@ namespace EmmasEngines.Data
                 {
                     IdentityUser user = new IdentityUser
                     {
-                        UserName = "wendyB@outlook.com",
+                        UserName = "wendyB",
                         Email = "wendyB@outlook.com"
                     };
 
-                    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
+                    IdentityResult result = userManager.CreateAsync(user, "123456789").Result;
 
                     if (result.Succeeded)
                     {
@@ -108,11 +126,11 @@ namespace EmmasEngines.Data
                 {
                     IdentityUser user = new IdentityUser
                     {
-                        UserName = "williamT@outlook.com",
+                        UserName = "williamT",
                         Email = "williamT@outlook.com"
                     };
 
-                    IdentityResult result = userManager.CreateAsync(user, "Pa55w@rd").Result;
+                    IdentityResult result = userManager.CreateAsync(user, "123456789").Result;
 
                     if (result.Succeeded)
                     {
