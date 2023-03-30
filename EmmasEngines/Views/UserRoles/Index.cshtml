@@ -18,7 +18,7 @@
                 <th class="tableHeaders">
             @Html.DisplayNameFor(model => model.UserRoles)
         </th>
-                <th class="tableHeaders"    ></th>
+                <th class="tableHeaders"></th>
     </tr>
 
     @foreach (var item in Model)
@@ -36,11 +36,7 @@
                 }
             </td>
             <td>
-
-                            <button class="btn_crud_add" type="button">@Html.ActionLink("Edit", "Edit", new { id = item.Id })</button>
-                                
-
-
+                            <button class="btn_crud_add" type="button">@Html.ActionLink("Edit", "Edit", new { id = item.Id })</button>           
             </td>
         </tr>
     }

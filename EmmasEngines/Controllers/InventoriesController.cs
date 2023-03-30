@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EmmasEngines.Controllers
 {
-    [Authorize(Roles = "Admin,Supervisor")]
+    [Authorize(Roles = "Admin, Sales")]
     public class InventoriesController : Controller
     {
         private readonly EmmasEnginesContext _context;
