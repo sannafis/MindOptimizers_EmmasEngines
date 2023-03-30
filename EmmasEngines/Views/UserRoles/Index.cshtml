@@ -18,7 +18,9 @@
                 <th class="tableHeaders">
             @Html.DisplayNameFor(model => model.UserRoles)
         </th>
-                <th class="tableHeaders"></th>
+        <th class="tableHeaders">
+        <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Register">Add User</a>
+         </th>
     </tr>
 
     @foreach (var item in Model)

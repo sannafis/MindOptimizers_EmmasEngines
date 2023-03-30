@@ -370,31 +370,31 @@ namespace EmmasEngines.Data
                          FirstName = "Emma",
                          LastName = "Henderson",
                          Username = "EmmaH",
-                         Password = "123456789"
+                         Password = "Pa55w@rd"
                      }, new Employee
                      {
                          FirstName = "Sam",
                          LastName = "Khan",
                          Username = "samk",
-                         Password = "123456789"
+                         Password = "Pa55w@rd"
                      }, new Employee
                      {
                          FirstName = "Wendy",
                          LastName = "Barlowe",
                          Username = "WendyB",
-                         Password = "123456789"
+                         Password = "Pa55w@rd"
                      }, new Employee
                      {
                          FirstName = "William",
                          LastName = "Tanner",
                          Username = "WilliamT",
-                         Password = "123456789"
+                         Password = "Pa55w@rd"
                      }, new Employee
                      {
                          FirstName = "Emily",
                          LastName = "Anderson",
                          Username = "EmilyA",
-                         Password = "123456789"
+                         Password = "Pa55w@rd"
                      });
                     context.SaveChanges();
                 }
