@@ -10,7 +10,7 @@
     <form asp-action="AddOrEdit" class="form-container" asp-route-id="@Model.ID" onsubmit="return jQueryAjaxPost(this);" autocomplete="off">
         @{
             if (Model.ID == 0)
-            {//new product
+            {//new supplier
                 <h4 id='add_edit'>ADD SUPPLIER</h4>
                 <button type="button" id="autofill" class="btn btn-autofill">Auto Fill</button>
             }
