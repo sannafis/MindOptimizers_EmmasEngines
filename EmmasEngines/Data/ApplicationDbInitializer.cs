@@ -87,7 +87,6 @@ namespace EmmasEngines.Data
                 }
 
                 //Staff
-
                 //Order/Purchase
                 if (userManager.FindByEmailAsync("samK@outlook.com").Result == null)
                 {

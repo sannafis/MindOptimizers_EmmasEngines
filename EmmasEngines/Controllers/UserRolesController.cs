@@ -39,31 +39,6 @@ namespace EmmasEngines.Controllers
             return View(users);
         }
 
-
-        //// GET: Roles/Create
-        //public IActionResult Create()
-        //{
-        //    ViewData["CityID"] = new SelectList(_context.Cities, "ID", "Name");
-        //    return View();
-        //}
-
-        //// POST: Suppliers/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("ID,Name,Phone,Email,Address,Postal,CityID")] Supplier supplier)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(supplier);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["CityID"] = new SelectList(_context.Cities, "ID", "Name", supplier.CityID);
-        //    return View(supplier);
-        //}
-
         [Authorize(Roles = "Admin")]
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(string id)
