@@ -1,0 +1,78 @@
+﻿@using EmmasEngines.Models
+@model EmmasEngines.ViewModels.SalesReportDetailsVM
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = "Sales Report Details";
+}
+<style>
+    th {color:black;}
+    h3 {font-size:20px; font-weight:bold;}
+</style>
+
+<main>
+    <h1>Sales Report Details</h1>
+
+    <h3>Payment Type Summary</h3>
+    <p>Cash: @Model.SalesReport.CashAmount</p>
+    <p>Debit: @Model.SalesReport.DebitAmount</p>
+    <p>Credit: @Model.SalesReport.CreditAmount</p>
+    <p>Cheque: @Model.SalesReport.ChequeAmount</p>
+    <p>Total Payments: @Model.SalesReport.Total</p>
+
+    <h3>Tax Summary</h3>
+    <p>Sales Tax: @Model.SalesReport.SalesTax</p>
+    <p>Other Taxes: @Model.SalesReport.OtherTax</p>
+    <p>Total Taxes: @Model.SalesReport.TotalTax</p>
+
+    <h3>Employee Sales Summary</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Sales</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in Model.SalesReportEmployees)
+            {
+                <tr>
+                    <td>@employee.Employee.FullName</td>
+                    <td>@employee.Sales</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <h3>Product Sales Summary</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var inventory in Model.SalesReportInventories)
+            {
+                <tr>
+                    <td>@inventory.Inventory.Name</td>
+                    <td>@inventory.Inventory.MarkupPrice</td>
+                    <td>@inventory.Quantity</td>
+                    <td>@inventory.Total</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Appreciation</h3>
+    <p>Appreciation Earned: @Model.AppreciationEarned</p>
+    <p>Appreciation Earned to Date: @Model.AppreciationEarnedToDate</p>
+
+    @*Buttons for: Print PDF, Return to Reports Index*@
+    <div class="btn-group">
+		<a class="btn btn-primary" href="@Url.Action("GenerateSalesReportPDF", "Reports", new { id = Model.SalesReport.ID })">Print PDF</a>
+        <a class="btn btn-primary" href="@Url.Action("Index", "Reports")">Return to Reports</a>
+	</div>
+</main>

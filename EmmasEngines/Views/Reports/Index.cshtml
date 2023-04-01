@@ -117,7 +117,7 @@
                                             <td>@report.DateEnd.ToShortDateString()</td>
                                             <td>@report.Criteria</td>
                                             <td>
-                                                <a asp-controller="Reports" asp-action="GenerateSalesReportPDF" asp-route-id="@report.ID" class="btn btn-primary">Save as PDF</a>
+                                                <a asp-controller="Reports" asp-action="SalesReportDetails" asp-route-id="@report.ID" class="btn btn-primary">View</a>
                                                 <a asp-controller="Reports" asp-action="Delete" asp-route-id="@report.ID" class="btn btn-danger">Remove</a>
                                             </td>
                                         </tr>
@@ -297,7 +297,7 @@
         $.post("/Reports/CreateSaleReport", formData, function (data) {
             // Handle the response (e.g., update the saved reports table)
             if (data.success) {
-                alert("report saved");
+                alert("Report Saved!");
                 var report = data.report;
                 console.log("Report Object: " + JSON.stringify(report));
                 //Get report name from input field
@@ -311,7 +311,7 @@
                     '<td>' + report.dateEnd + '</td>' +
                     '<td>' + report.criteria + '</td>' +
                     '<td>' +
-                    '<a asp-controller="Reports" asp-action="View" asp-route-id="' + report.id + '" class="btn btn-primary">View</a> ' +
+                    '<a asp-controller="Reports" asp-action="SalesReportDetails" asp-route-id="' + report.id + '" class="btn btn-primary">View</a> ' +
                     '<a asp-controller="Reports" asp-action="Delete" asp-route-id="' + report.id + '" class="btn btn-danger">Remove</a>' +
                     '</td>' +
                     '</tr>';
