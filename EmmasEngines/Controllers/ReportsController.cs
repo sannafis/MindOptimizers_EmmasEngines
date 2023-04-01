@@ -23,6 +23,8 @@ using Microsoft.Extensions.Hosting;
 using Path = System.IO.Path;
 using iText.Kernel.Colors;
 using iText.Layout.Borders;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace EmmasEngines.Controllers
 {
@@ -129,7 +131,7 @@ namespace EmmasEngines.Controllers
         }
         */
 
-            [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> CreateSaleReport([FromForm] NewSalesReport newReport, int? page, int? pageSize)
         {
             if (!ModelState.IsValid)
@@ -153,9 +155,13 @@ namespace EmmasEngines.Controllers
                     .Where(s => newReport.StartDate <= s.Date && s.Date <= newReport.EndDate)
                     .AsQueryable();
 
-                if (!newReport.AllEmployees && newReport.EmployeeId.HasValue)
+                if (newReport.EmployeeId.HasValue)
                 {
                     salesData = salesData.Where(s => s.Employee.ID == newReport.EmployeeId.Value);
+                }
+                else
+                {
+                    newReport.AllEmployees = true;
                 }
 
                 var salesDataList = await salesData.ToListAsync();
@@ -171,13 +177,11 @@ namespace EmmasEngines.Controllers
 
                 // Calculate the tax summary (%13 of subottoal) provide a totaled value, and a field for other taxes incase we add them later
                 // the key is tax type not payment type
-                var taxSummary = salesDataList.GroupBy(s => s.InvoicePayments.FirstOrDefault().Payment.Type)
-                    .Select(g => new
-                    {
-                        PaymentType = g.Key,
-                        Amount = g.Sum(s => s.Subtotal * .13),
-                        Count = g.Count()
-                    }).ToList();
+                var taxSummary = new
+                {
+                    SalesTax = salesDataList.Sum(s => s.Subtotal * 0.13),
+                    OtherTaxes = 0 // You can add other taxes here when needed
+                };
 
                 // Calculate the employee summary
                 var employeeSummary = salesDataList.GroupBy(s => s.Employee.ID)
@@ -187,15 +191,9 @@ namespace EmmasEngines.Controllers
                         Sales = g.Sum(s => s.Subtotal)
                     }).ToList();
 
-                // Calculate the sales summary
-                var salesSummary = salesDataList.GroupBy(s => s.InvoiceLines.FirstOrDefault().Inventory.UPC)
-                    .Select(g => new
-                    {
-                        InventoryUPC = g.Key,
-                        Price = g.First().InvoiceLines.FirstOrDefault().Inventory.MarkupPrice,
-                        Quantity = g.Count(),
-                        Total = g.Sum(s => s.Subtotal)
-                    }).ToList();
+                // Calculate the sales summary and add to SalesReportInventory
+                
+                
 
                 // Calculate the appreciation
                 var appreciation = salesDataList
@@ -205,17 +203,69 @@ namespace EmmasEngines.Controllers
                     .Select(s => s.Appreciation)
                     .Aggregate((a, b) => a + b);
 
+
+                
+
+
+                // Calculate the sales summary
+                var salesSummary = salesDataList
+                    .SelectMany(s => s.InvoiceLines)
+                    .GroupBy(il => il.Inventory.UPC)
+                    .Select(g => new
+                    {
+                        InventoryUPC = g.Key,
+                        Quantity = g.Sum(il => il.Quantity),
+                        Total = g.Sum(il => il.Quantity * il.SalePrice)
+                    }).ToList();
+
+                //Add the sales report to the reports database
+                Report reportToAdd = new Report
+                {
+                    Description = newReport.ReportName,
+                    DateStart = newReport.StartDate,
+                    DateEnd = newReport.EndDate,
+                    Criteria = newReport.AllEmployees ? "All Employees" : $"{_context.Employees.FirstOrDefault(e => e.ID == newReport.EmployeeId)?.FirstName} {_context.Employees.FirstOrDefault(e => e.ID == newReport.EmployeeId)?.LastName}",
+                    Type = 0,
+                    DateCreated = DateTime.Now
+                };
+
+                _context.Reports.Add(reportToAdd);
+                await _context.SaveChangesAsync();
+
                 // Create the SalesReport object
                 var salesReport = new SalesReport
                 {
+                    ID = reportToAdd.ID,
                     CashAmount = paymentTypeSummary.FirstOrDefault(pt => pt.PaymentType == "Cash")?.Amount ?? 0,
                     DebitAmount = paymentTypeSummary.FirstOrDefault(pt => pt.PaymentType == "Debit")?.Amount ?? 0,
                     CreditAmount = paymentTypeSummary.FirstOrDefault(pt => pt.PaymentType == "Credit")?.Amount ?? 0,
                     ChequeAmount = paymentTypeSummary.FirstOrDefault(pt => pt.PaymentType == "Cheque")?.Amount ?? 0,
                     Total = salesDataList.Sum(s => s.Subtotal),
-                    //todo add tax
+                    SalesTax = taxSummary.SalesTax,
+                    OtherTax = taxSummary.OtherTaxes,
+                    TotalTax = taxSummary.SalesTax + taxSummary.OtherTaxes
                 };
+                
+                // Add the sales summary to SalesReportInventory
+                foreach (var summary in salesSummary)
+                {
+                    var inventory = await _context.Inventories.FirstOrDefaultAsync(i => i.UPC == summary.InventoryUPC);
 
+                    var salesReportInventory = new SalesReportInventory
+                    {
+                        InventoryUPC = summary.InventoryUPC,
+                        Inventory = inventory,
+                        Quantity = summary.Quantity,
+                        Total = summary.Total,
+                        SalesReportID = salesReport.ID,
+                        SalesReport = salesReport
+                    };
+                    salesReport.SalesReportInventories.Add(salesReportInventory);
+                }
+
+                // Save the SalesReportInventory objects to the database
+                await _context.SaveChangesAsync();
+                
 
                 // If an employee is selected, create a SalesReportEmployee object for the sales report
                 if (newReport.EmployeeId.HasValue)
@@ -242,28 +292,11 @@ namespace EmmasEngines.Controllers
                     }
                 }
 
-
                 // Save the sales report to the database
                 _context.SalesReports.Add(salesReport);
+                await _context.SaveChangesAsync();
 
-                //Add the sales report to the reports database
-                Report reportToAdd = new Report
-                {
-                    Description = newReport.ReportName,
-                    DateStart = newReport.StartDate,
-                    DateEnd = newReport.EndDate,
-                    Criteria = newReport.AllEmployees ? "All Employees" : $"{_context.Employees.FirstOrDefault(e => e.ID == newReport.EmployeeId)?.FirstName} {_context.Employees.FirstOrDefault(e => e.ID == newReport.EmployeeId)?.LastName}",
-                    Type = 0,
-                    DateCreated = DateTime.Now,
-                    SalesReport = salesReport
-                };
-
-
-                _context.Reports.Add(reportToAdd);
                 var savedSalesReports = await PaginatedList<SalesReport>.CreateAsync(_context.SalesReports, page ?? 1, pageSize ?? 5);
-
-
-
                 var reportsVM = new ReportsVM
                 {
                     SavedSalesReports = savedSalesReports,
@@ -272,17 +305,81 @@ namespace EmmasEngines.Controllers
                 };
 
                 await _context.SaveChangesAsync();
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve
+                };
 
-                return Json(new { success = true, report = reportToAdd, reportsVM = reportsVM });
+
+                return new JsonResult(new { success = true, report = reportToAdd }, options);
+            }
+            catch (DbUpdateException ex)
+            {
+                var message = "Database update error: " + ex.InnerException?.Message ?? ex.Message;
+
+                // Log the exception
+                //_logger.LogError(ex, message);
+
+                return Json(new { success = false, message = message });
             }
             catch (Exception ex)
             {
                 // Log the exception
                 // _logger.LogError(ex, "Error creating a new sales report");
 
-                return Json(new { success = false, message = "An error occurred while saving the report. Exception Message: " + ex.Message });
+                return Json(new { success = false, message = $"An error occurred while saving the report. Exception Message: {ex.Message}", stackTrace = ex.StackTrace });
             }
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var report = await _context.Reports.FindAsync(id);
+
+                if (report == null)
+                {
+                    return NotFound();
+                }
+
+                // Find the corresponding SalesReport entity
+                var salesReport = await _context.SalesReports.FirstOrDefaultAsync(sr => sr.ID == id);
+
+                if (salesReport != null)
+                {
+                    // Delete all the SalesReportInventories associated with the SalesReport
+                    _context.SalesReportInventories.RemoveRange(salesReport.SalesReportInventories);
+
+                    // Delete all the SalesReportEmployees associated with the SalesReport
+                    _context.SalesReportEmployees.RemoveRange(salesReport.SalesReportEmployees);
+
+                    // Delete the SalesReport entity
+                    _context.SalesReports.Remove(salesReport);
+                }
+
+                // Delete the Report entity
+                _context.Reports.Remove(report);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex)
+            {
+                var message = "Database update error: " + ex.InnerException?.Message ?? ex.Message;
+                //_logger.LogError(ex, message);
+
+                return Json(new { success = false, message = message });
+            }
+            catch (Exception ex)
+            {
+                // _logger.LogError(ex, "Error deleting the report");
+
+                return Json(new { success = false, message = $"An error occurred while deleting the report. Exception Message: {ex.Message}", stackTrace = ex.StackTrace });
+            }
+        }
+
 
         public async Task<IActionResult> SalesReportDetails(int id)
         {
