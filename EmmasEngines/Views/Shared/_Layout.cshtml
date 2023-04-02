@@ -18,48 +18,176 @@
 <body class = "home_body">
     <header class="home_header">
 
-        <nav class="sidenav">
-            <div class="">
+         @{
+            //if (User.Identity.IsAuthenticated!)
+            //{
 
-                <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/imgs/eseLogo.png" alt="Emma's small engines golden cog wheel company logo."></a>
-            </div>
+            //    <nav class="sidenav" style="visibility:hidden">
+            //        <div class="">
+
+            //            <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/imgs/eseLogo.png" alt="Emma's small engines golden cog wheel company logo."></a>
+            //        </div>
 
 
-            <div class="">
-                    <ul id="pageLinks">
-                        <li class="">
-                        <a class="" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i>Home</a>
-                        </li>
-                        <li class="">
-                        <a class="" asp-area="" asp-controller="Inventories" asp-action="Index"><i class="fa-solid fa-warehouse"></i>Inventory</a>
-                        </li>
-                        <li class="">
-                        <a class="" asp-area="" asp-controller="Suppliers" asp-action="Index"><i class="fa-solid fa-handshake"></i>Suppliers</a>
-                        </li>
-                        <li class="">
-                        <a class="" asp-area="" asp-controller="Customers" asp-action="Index"><i class="fa-solid fa-users"></i>Customers</a>
-                        </li>
-                        <li class="">
-                        <a class="" asp-area="" asp-controller="OrderRequests" asp-action="Index"><i class="fa-solid fa-screwdriver-wrench"></i>Order Requests</a>
-                        </li>
-                        <li class="">
-                        <a class="" asp-area="" asp-controller="POS" asp-action="Index"><i class="fa-solid fa-credit-card"></i>POS</a>
-                        </li>
-                        <li class="">
-                        <a class="" asp-area="" asp-controller="Invoices" asp-action="Index"><i class="fa-solid fa-file-invoice"></i>Invoices</a>
-                        </li>
-                        <li class="">
-                        <a class="" asp-area="" asp-controller="UserRoles" asp-action="Index"><i class="fa-solid fa-gear"></i>Manage Roles</a>
-                        </li>
-                        <li class="">
-                        <a class="" asp-area="" asp-controller="Reports" asp-action="Index"><i class="fa-solid fa-chart-pie"></i>Analytics</a>
-                        </li>
-                    </ul>
-                    
-                    <partial name="_LoginPartial" />
-                </div>
-            
-        </nav>
+            //        <div class="">
+            //            <ul id="pageLinks">
+            //                <li class="">
+            //                    <a class="" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i>Home</a>
+            //                </li>
+            //                <li class="">
+            //                    <a class="" asp-area="" asp-controller="Inventories" asp-action="Index"><i class="fa-solid fa-warehouse"></i>Inventory</a>
+            //                </li>
+            //                <li class="">
+            //                    <a class="" asp-area="" asp-controller="Suppliers" asp-action="Index"><i class="fa-solid fa-handshake"></i>Suppliers</a>
+            //                </li>
+            //                <li class="">
+            //                    <a class="" asp-area="" asp-controller="Customers" asp-action="Index"><i class="fa-solid fa-users"></i>Customers</a>
+            //                </li>
+            //                <li class="">
+            //                    <a class="" asp-area="" asp-controller="OrderRequests" asp-action="Index"><i class="fa-solid fa-screwdriver-wrench"></i>Order Requests</a>
+            //                </li>
+            //                <li class="">
+            //                    <a class="" asp-area="" asp-controller="POS" asp-action="Index"><i class="fa-solid fa-credit-card"></i>POS</a>
+            //                </li>
+            //                <li class="">
+            //                    <a class="" asp-area="" asp-controller="Invoices" asp-action="Index"><i class="fa-solid fa-file-invoice"></i>Invoices</a>
+            //                </li>
+            //                <li class="">
+            //                    <a class="" asp-area="" asp-controller="UserRoles" asp-action="Index"><i class="fa-solid fa-gear"></i>Manage Roles</a>
+            //                </li>
+            //                <li class="">
+            //                    <a class="" asp-area="" asp-controller="Reports" asp-action="Index"><i class="fa-solid fa-chart-pie"></i>Analytics</a>
+            //                </li>
+            //            </ul>
+
+            //            <partial name="_LoginPartial" />
+            //        </div>
+
+            //    </nav>
+            //}
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))//Check wether the user is in that role
+                {
+
+                    <nav class="sidenav" style="visibility:visible">
+                        <div class="">
+                           <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/imgs/eseLogo.png" alt="Emma's small engines golden cog wheel company logo."></a>
+                        </div>
+
+
+                        <div class="">
+                            <ul id="pageLinks">
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i>Home</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="Inventories" asp-action="Index"><i class="fa-solid fa-warehouse"></i>Inventory</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="Suppliers" asp-action="Index"><i class="fa-solid fa-handshake"></i>Suppliers</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="Customers" asp-action="Index"><i class="fa-solid fa-users"></i>Customers</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="OrderRequests" asp-action="Index"><i class="fa-solid fa-screwdriver-wrench"></i>Order Requests</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="POS" asp-action="Index"><i class="fa-solid fa-credit-card"></i>POS</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="Invoices" asp-action="Index"><i class="fa-solid fa-file-invoice"></i>Invoices</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="UserRoles" asp-action="Index"><i class="fa-solid fa-gear"></i>Manage Roles</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="Reports" asp-action="Index"><i class="fa-solid fa-chart-pie"></i>Analytics</a>
+                                </li>
+                            </ul>
+
+                            <partial name="_LoginPartial" />
+                        </div>
+
+                    </nav>
+                }
+                else if (User.IsInRole("Sales"))//Check wether the user is in that role
+                {
+                    <nav class="sidenav" style="visibility:visible">
+                        <div class="">
+                            <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/imgs/eseLogo.png" alt="Emma's small engines golden cog wheel company logo."></a>
+                        </div>
+
+
+                        <div class="">
+                            <ul id="pageLinks">
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i>Home</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="Inventories" asp-action="Index"><i class="fa-solid fa-warehouse"></i>Inventory</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="Suppliers" asp-action="Index"><i class="fa-solid fa-handshake"></i>Suppliers</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="Customers" asp-action="Index"><i class="fa-solid fa-users"></i>Customers</a>
+                                </li>
+                            </ul>
+
+                            <partial name="_LoginPartial" />
+                        </div>
+
+                    </nav>
+                }
+                else if (User.IsInRole("Order/Purchase"))//Check wether the user is in that role
+                {
+                    <nav class="sidenav" style="visibility:visible">
+                        <div class="">
+                            <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/imgs/eseLogo.png" alt="Emma's small engines golden cog wheel company logo."></a>
+                        </div>
+
+
+                        <div class="">
+                            <ul id="pageLinks">
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i>Home</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="OrderRequests" asp-action="Index"><i class="fa-solid fa-screwdriver-wrench"></i>Order Requests</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="POS" asp-action="Index"><i class="fa-solid fa-credit-card"></i>POS</a>
+                                </li>
+                                <li class="">
+                                    <a class="" asp-area="" asp-controller="Invoices" asp-action="Index"><i class="fa-solid fa-file-invoice"></i>Invoices</a>
+                                </li>
+                            </ul>
+
+                            <partial name="_LoginPartial" />
+                        </div>
+
+                    </nav>
+                }else{
+                    <nav class="sidenav" style="visibility:visible">
+                        <div class="">
+                            <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/imgs/eseLogo.png" alt="Emma's small engines golden cog wheel company logo."></a>
+                        </div>
+                        <div>
+                            <partial name="_LoginPartial" />
+                        </div>
+
+                    </nav>
+                }
+                        
+            }
+
+         }
+
+
+
+
     </header>
 @*    <div class="container">*@
         <div>

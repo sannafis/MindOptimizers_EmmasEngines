@@ -14,9 +14,12 @@ using iText.Html2pdf;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using EmmasEngines.Utilities;
 
 namespace EmmasEngines.Controllers
 {
+    [Authorize(Roles = "Admin, Order/Purchase")]
     public class InvoicesController : Controller
     {
         private readonly EmmasEnginesContext _context;
@@ -27,14 +30,38 @@ namespace EmmasEngines.Controllers
         }
 
         // GET: Invoices
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SearchString, string actionButton, int? page, int? pageSizeID, string sortDirection = "asc", string sortField = "Name")
         {
+            //List of sort options
+            string[] sortOptions = new[] { "ID", "First Name", "Last Name" };
+
             var emmasEnginesContext = _context.Invoices
                 .Include(i => i.Customer)
                 .Include(i => i.Employee)
                 .Include(i => i.InvoiceLines)
                 .Include(i => i.InvoicePayments);
-            return View(await emmasEnginesContext.ToListAsync());
+
+            //Sorting
+            if (!String.IsNullOrEmpty(actionButton)) //Form submitted
+            {
+                page = 1; // Reset to page 1
+                if (sortOptions.Contains(actionButton)) //Change of sort is requested
+                {
+                    if (actionButton == sortField) //Reverse order on same field
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton; //Sort by the button clicked
+                }
+            }
+            //return View(await emmasEnginesContext.ToListAsync());
+
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, "Customer");
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+
+            var pagedData = await PaginatedList<Invoice>.CreateAsync(emmasEnginesContext.AsNoTracking(), page ?? 1, pageSize);
+            //return View(await emmasEnginesContext.ToListAsync());
+            return View(pagedData);
         }
 
         // GET: Invoices/Details/5

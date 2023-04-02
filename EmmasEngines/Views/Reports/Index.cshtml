@@ -1,4 +1,5 @@
-﻿<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+﻿@using EmmasEngines.ViewModels
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 <script src="https://kit.fontawesome.com/f8c88d6b79.js" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
@@ -8,8 +9,8 @@
     ViewBag.Title = "Reports";
 }
 <style>
-    li a{
-        color:black;
+    li a {
+        color: black;
     }
 </style>
 <main>
@@ -29,61 +30,61 @@
             <a class="nav-link" id="hourly-tab" data-toggle="tab" href="#hourlyTab" role="tab" aria-controls="hourlyTab" aria-selected="false">Hourly</a>
         </li>
     </ul>
-    
+
 
     <!-- Tab content -->
     <div class="tab-content" id="reportTabContent">
-            <!-- Sales Reports Tab -->
-            <div class="tab-pane fade show active" id="salesTab" role="tabpanel" aria-labelledby="sales-tab">
-                <form id="createSalesReportForm">
-                    <div class="form-horizontal">
+        <!-- Sales Reports Tab -->
+        <div class="tab-pane fade show active" id="salesTab" role="tabpanel" aria-labelledby="sales-tab">
+            <form id="createSalesReportForm">
+                <div class="form-horizontal">
 
-                        <section id="reportCreationFields">
-                            <h2>Create a New Sales Report</h2>
+                    <section id="reportCreationFields">
+                        <h2>Create a New Sales Report</h2>
 
-                            <div class="form-group">
-                                <label for="reportName">Report Name:</label>
-                                <input type="text" class="form-control" id="reportName" name="reportName" required>
-                            </div>
+                        <div class="form-group">
+                            <label for="reportName">Report Name:</label>
+                            <input type="text" class="form-control" id="reportName" name="reportName" required>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="emplrmoyee">Employee:</label>
-                                <select class="fo-control" id="employee" name="employee">
-                                    <option value="">All Employees</option>
-                                    @foreach (var employee in Model.SalesReportVM.Employees)
-                                    {
-                                        <option value="@employee.ID">@employee.FirstName @employee.LastName</option>
-                                    }
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="employee">Employee:</label>
+                            <select class="form-control" id="employee" name="employee">
+                                <option value="">All Employees</option>
+                                @foreach (var employee in Model.SalesReportVM.Employees)
+                                {
+                                    <option value="@employee.ID">@employee.FirstName @employee.LastName</option>
+                                }
+                            </select>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="startDate">Start Date:</label>
-                                <input type="date" class="form-control" id="startDate" name="startDate" required>
-                            </div>
+                        <div class="form-group">
+                            <label for="startDate">Start Date:</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate" required>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="endDate">End Date:</label>
-                                <input type="date" class="form-control" id="endDate" name="endDate" required>
-                            </div>
-                        </section>
+                        <div class="form-group">
+                            <label for="endDate">End Date:</label>
+                            <input type="date" class="form-control" id="endDate" name="endDate" required>
+                        </div>
+                    </section>
 
-                        <section id="reportSearch">
-                            
-                            <div class="btn">
-                                <button type="submit" class="btn_crud_add">
-                                    <i class="fa-solid fa-print"></i> Save
-                                </button>
-                            </div>
+                    <section id="reportSearch">
 
-                            <h2><label id="searchHeader" class="control-label">Search Reports: </label></h2>
-                        </section>
+                        <div class="btn">
+                            <button type="submit" class="btn_crud_add">
+                                <i class="fa-solid fa-print"></i> Save
+                            </button>
+                        </div>
+
+                        <h2><label id="searchHeader" class="control-label">Search Reports: </label></h2>
+                    </section>
 
 
-                    </div>
-                </form>
+                </div>
+            </form>
 
-        
+
 
             <div id="salesReportsMain">
                 <div class="divider2_desc_btn">
@@ -99,14 +100,16 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody id = "savedReportsTable">
+                            <tbody id="savedReportsTable">
                                 @if (Model.SalesReportVM.SavedSalesReports == null || !Model.SalesReportVM.SavedSalesReports.Any())
-							    {
-								    <tr>
-									    <td colspan="5">No saved reports</td>
-								    </tr>
-							    }else{
-                                        @foreach (var report in Model.SalesReportVM.SavedSalesReports)
+                                {
+                                    <tr>
+                                        <td colspan="5">No saved reports</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    @foreach (var report in Model.SalesReportVM.SavedSalesReports)
                                     {
                                         <tr>
                                             <td>@report.Description</td>
@@ -114,13 +117,16 @@
                                             <td>@report.DateEnd.ToShortDateString()</td>
                                             <td>@report.Criteria</td>
                                             <td>
-                                                <a asp-controller="Reports" asp-action="GenerateSalesReportPDF" asp-route-id="@report.ID" class="btn btn-primary">Save as PDF</a>
-                                                <a asp-controller="Reports" asp-action="Delete" asp-route-id="@report.ID" class="btn btn-danger">Remove</a>
+                                                <a asp-controller="Reports" asp-action="SalesReportDetails" asp-route-id="@report.ID" class="btn btn-primary">View</a>
+                                                <form method="post" action="/Reports/Delete/@report.ID" onsubmit="return confirm('Are you sure you want to delete this report?');">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
                                             </td>
                                         </tr>
                                     }
                                 }
-                            
+
                             </tbody>
                         </table>
 
@@ -140,134 +146,76 @@
                                 </ul>
                             </nav>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
         </div>
-    
-
-    <!-- COGS Reports Tab -->
-    <div class ="tab-pane fade" id="cogsTab" role="tabpanel" aria-labelledby="cogs-tab">
-        <h2>COGS Reports</h2>
-        <form id="createCogsReportForm">
-            <!-- similar form fields as in Sales Reports Tab -->
-                <div class="tab-pane fade show active" id="salesTab" role="tabpanel" aria-labelledby="sales-tab">
-                    <form id="createSalesReportForm">
-                        <div class="form-horizontal">
-
-                            <section id="reportCreationFields">
-                                <h2>Create a New Sales Report</h2>
-
-                                <div class="form-group">
-                                    <label for="reportName">Report Name:</label>
-                                    <input type="text" class="form-control" id="reportName" name="reportName" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="emplrmoyee">Employee:</label>
-                                    <select class="fo-control" id="employee" name="employee">
-                                        <option value="">All Employees</option>
-                                        @foreach (var employee in Model.SalesReportVM.Employees)
-                                        {
-                                            <option value="@employee.ID">@employee.FirstName @employee.LastName</option>
-                                        }
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="startDate">Start Date:</label>
-                                    <input type="date" class="form-control" id="startDate" name="startDate" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="endDate">End Date:</label>
-                                    <input type="date" class="form-control" id="endDate" name="endDate" required>
-                                </div>
-                            </section>
-
-                            <section id="reportSearch">
-
-                                <div class="btn">
-                                    <button type="submit" class="btn_crud_add">
-                                        <i class="fa-solid fa-print"></i> Save
-                                    </button>
-                                </div>
-
-                                <h2><label id="searchHeader" class="control-label">Search Reports: </label></h2>
-                            </section>
 
 
-                        </div>
-                    </form>
-        </form>
-        <div id="cogsReportsTable">
-            <!-- similar table structure as in Sales Reports Tab -->
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Report Name</th>
-                            <th>Date Start</th>
-                            <th>Date End</th>
-                            <th>Employee</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="savedReportsTable">
-                        @if (Model.SalesReportVM.SavedSalesReports == null || !Model.SalesReportVM.SavedSalesReports.Any())
-                        {
-                            <tr>
-                                <td colspan="5">No saved reports</td>
-                            </tr>
-                        }
-                        else
-                        {
-                            @foreach (var report in Model.SalesReportVM.SavedSalesReports)
-                            {
-                                <tr>
-                                    <td>@report.Description</td>
-                                    <td>@report.DateStart.ToShortDateString()</td>
-                                    <td>@report.DateEnd.ToShortDateString()</td>
-                                    <td>@report.Criteria</td>
-                                    <td>
-                                        <a asp-controller="Reports" asp-action="GenerateSalesReportPDF" asp-route-id="@report.ID" class="btn btn-primary">Save as PDF</a>
-                                        <a asp-controller="Reports" asp-action="Delete" asp-route-id="@report.ID" class="btn btn-danger">Remove</a>
-                                    </td>
-                                </tr>
-                            }
-                        }
-
-                    </tbody>
-                </table>
-
-                <div class="d-flex justify-content-center">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination">
-                            <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
-                                <a class="page-link" href="/Reports?page=@(Model.PageIndex - 1)">Previous</a>
-                            </li>
-                            @for (int i = 1; i <= Model.TotalPages; i++)
-                            {
-                                <li class="page-item @(Model.PageIndex == i ? "active" : "")"><a class="page-link" href="/Reports?page=@i">@i</a></li>
-                            }
-                            <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
-                                <a class="page-link" href="/Reports?page=@(Model.PageIndex + 1)">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+        <!-- COGS Reports Tab -->
+        <div class="tab-pane fade" id="cogsTab" role="tabpanel" aria-labelledby="cogs-tab">
+            <h2>COGS Reports</h2>
+            <form id="createCogsReportForm">
+                <!-- similar form fields as in Sales Reports Tab -->
+            </form>
+            <div id="cogsReportsTable">
+                <!-- similar table structure as in Sales Reports Tab -->
+            </div>
         </div>
-    </div>
 
-    <!-- Hourly Reports Tab -->
-    <div class="tab-pane fade" id="hourlyTab" role="tabpanel" aria-labelledby="hourly-tab">
-        <h2>Hourly Reports</h2>
-        <form id="createHourlyReportForm">
-            <!-- similar form fields as in Sales Reports Tab -->
+        <!-- Hourly Reports Tab -->
+        <div class="tab-pane fade" id="hourlyTab" role="tabpanel" aria-labelledby="hourly-tab">
+            <form id="createHourlyReportForm">
+                <!-- similar form fields as in Sales Reports Tab -->
+                <div class="form-horizontal">
 
-        </form>
-        <div id="hourlyReportsTable">
-            <!-- similar table structure as in Sales Reports Tab -->
+                    <section id="reportCreationFields">
+                        <h2>Create a New Hourly Report</h2>
+
+                        <div class="form-group">
+                            <label for="reportName">Report Name:</label>
+                            <input type="text" class="form-control" id="reportName" name="reportName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="employee">Employee:</label>
+                            <select class="form-control" id="employee" name="employee">
+                                <option value="">All Employees</option>
+                                @foreach (var employee in Model.HourlyReportVM.Employees)
+                                {
+                                    <option value="@employee.ID">@employee.FirstName @employee.LastName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="startDate">Start Date:</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="endDate">End Date:</label>
+                            <input type="date" class="form-control" id="endDate" name="endDate" required>
+                        </div>
+                    </section>
+
+                    <section id="reportSearch">
+
+                        <div class="btn">
+                            <button type="submit" class="btn_crud_add">
+                                <i class="fa-solid fa-print"></i> Save
+                            </button>
+                        </div>
+
+                        <h2><label id="searchHeader" class="control-label">Search Reports: </label></h2>
+                    </section>
+
+
+                </div>
+            </form>
+            <div id="hourlyReportsTable">
+                <!-- similar table structure as in Sales Reports Tab -->
                 <div class="divider2_desc_btn">
                     <div class="description" id="view-all">
                         <!-- Display the saved reports table here -->
@@ -281,7 +229,7 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="savedReportsTable">
+                            <tbody id="savedHourlyReportsTable">
                                 @if (Model.HourlyReportVM.SavedHourlyReports == null || !Model.HourlyReportVM.SavedHourlyReports.Any())
                                 {
                                     <tr>
@@ -298,7 +246,7 @@
                                             <td>@report.DateEnd.ToShortDateString()</td>
                                             <td>@report.Criteria</td>
                                             <td>
-                                                <a asp-controller="Reports" asp-action="View" asp-route-id="@report.ID" class="btn btn-primary">View</a>
+                                                <a class="btn btn-primary">Save as PDF</a>
                                                 <a asp-controller="Reports" asp-action="Delete" asp-route-id="@report.ID" class="btn btn-danger">Remove</a>
                                             </td>
                                         </tr>
@@ -324,11 +272,10 @@
                                 </ul>
                             </nav>
                         </div>
-
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
     </div>
 </main>
 
@@ -342,27 +289,73 @@
     });
 
 
-        // Handle the form submission
-        $("#createSalesReportForm").submit(function (event) {
-            event.preventDefault();
+    // Handle the form submission
+    $("#createSalesReportForm").submit(function (event) {
+        event.preventDefault();
 
-            // Serialize the form data
-            let formData = $(this).serialize();
+        // Serialize the form data
+        let formData = $(this).serialize();
 
-            // Make the AJAX request
-            $.post("/Reports/CreateSaleReport", formData, function (data) {
-                // Handle the response (e.g., update the saved reports table)
-                if (data.success) {
-                    alert("report saved");
-                    var report = data.report;
-                    console.log("Report Object: " + JSON.stringify(report));
-                    //Get report name from input field
-                    var reportName = $("#reportName").val();
+        // Make the AJAX request
+        $.post("/Reports/CreateSaleReport", formData, function (data) {
+            // Handle the response (e.g., update the saved reports table)
+            if (data.success) {
+                alert("Report Saved!");
+                var report = data.report;
+                console.log("Report Object: " + JSON.stringify(report));
+                //Get report name from input field
+                var reportName = $("#reportName").val();
 
 
                 // Construct row to add to the table
                 var row = '<tr>' +
                     '<td>' + reportName + '</td>' +
+                    '<td>' + new Date(report.DateStart).toLocaleDateString('en-US') + '</td>' +
+                    '<td>' + new Date(report.DateEnd).toLocaleDateString('en-US') + '</td>' +
+                    '<td>' + report.Criteria + '</td>' +
+                    '<td>' +
+                    '<a href="/Reports/SalesReportDetails/' + report.ID + '" class="btn btn-primary">View</a> ' +
+                    '<form method="post" action="/Reports/Delete/' + report.ID + '" onsubmit="return confirm(\'Are you sure you want to delete this report?\');">' +
+                    '<input type="hidden" name="_method" value="DELETE" />' +
+                    '<input type="hidden" name="__RequestVerificationToken" value="' + $('input[name="__RequestVerificationToken"]').val() + '" />' +
+                    '<button type="submit" class="btn btn-danger">Delete</button>' +
+                    '</form>' +
+                    '</td>' +
+                    '</tr>';
+                // Append row to table
+                $('#savedReportsTable').append(row);
+            } else {
+                // Display an error message
+                alert("Error: " + data.message + "\n\nStack Trace:\n" + data.stackTrace);
+            }
+        });
+    });
+
+    // Handle the form submission - Hourly report
+    $("#createHourlyReportForm").submit(function (event) {
+        event.preventDefault();
+
+        // Serialize the form data
+        let formData = $(this).serialize();
+
+        //alert(formData);
+
+        // Make the AJAX request
+        $.post("/Reports/CreateHourlyReport", formData, function (data) {
+            // Handle the response (e.g., update the saved reports table)
+            if (data.success) {
+                alert("report saved");
+                var report = data.report;
+                console.log("Report Object: " + JSON.stringify(report));
+                //Get report name from input field
+                //var reportName = $("#hourlyReportName").val();
+
+                //alert(JSON.stringify(report));
+
+
+                // Construct row to add to the table
+                var row = '<tr>' +
+                    '<td>' + report.description + '</td>' +
                     '<td>' + report.dateStart + '</td>' +
                     '<td>' + report.dateEnd + '</td>' +
                     '<td>' + report.criteria + '</td>' +
@@ -371,18 +364,18 @@
                     '<a asp-controller="Reports" asp-action="Delete" asp-route-id="' + report.id + '" class="btn btn-danger">Remove</a>' +
                     '</td>' +
                     '</tr>';
-                    // Append row to table
-                    $('#savedReportsTable').append(row);
-                } else {
-                    // Display an error message
-                    alert("Error: " + data.message);
-                }
-            });
+                // Append row to table
+                $('#savedHourlyReportsTable').append(row);
+            } else {
+                // Display an error message
+                alert("Error: " + data.message);
+            }
         });
+    });
 
-        // Handle the Save & Print button
-        $("#saveAndPrint").click(function () {
-            // TODO: Implement the Save & Print functionality
-        });
+    // Handle the Save & Print button
+    $("#saveAndPrint").click(function () {
+        // TODO: Implement the Save & Print functionality
+    });
 </script>
 

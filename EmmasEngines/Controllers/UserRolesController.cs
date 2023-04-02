@@ -1,13 +1,15 @@
 ﻿using EmmasEngines.Data;
+using EmmasEngines.Models;
 using EmmasEngines.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmmasEngines.Controllers
 {
-    [Authorize(Roles = "Security")]
+    [Authorize(Roles = "Admin")]
     public class UserRolesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -37,6 +39,7 @@ namespace EmmasEngines.Controllers
             return View(users);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -56,9 +59,11 @@ namespace EmmasEngines.Controllers
                 UserRoles = (List<string>)await _userManager.GetRolesAsync(_user)
             };
             PopulateAssignedRoleData(user);
+
             return View(user);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]

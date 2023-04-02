@@ -48,7 +48,6 @@ table {
 
     .table td, .table th {
         padding: 0.8rem;
-        vertical-align: top;
         border-top: 1px solid #dee2e6;
     }
 
@@ -62,12 +61,11 @@ th {
     display: table-cell;
     vertical-align: inherit;
     font-weight: bold;
-    text-align: -internal-center;
+    vertical-align: middle;
 }
 
 tr {
     display: table-row;
-    vertical-align: inherit;
     border-color: inherit;
 }
 
@@ -250,7 +248,7 @@ main[role="main"] {
     }
 
     main[role="main"] {
-        padding-left: 140px;
+        padding-left: 160px;
     }
 }
 
@@ -263,10 +261,6 @@ main[role="main"] {
 @media (max-width: 1680px) {
     .floating-search-placeholder {
         left: 11.8%;
-    }
-
-    main[role="main"] {
-        padding-left: 160px;
     }
 
     .login-sect {
@@ -307,6 +301,7 @@ main[role="main"] {
     .floating-search-placeholder {
         left: 19%;
     }
+
 }
 
 @media (max-width: 900px) {
@@ -838,22 +833,14 @@ Gabriel's CSS END ****************/
 
 /*Sakha's edits*/
 
-.tableHeaders {
-    background: none;
-    border: 2px solid var(--color-white);
-    border-radius: 5px;
-    color: var(--color-white);
-    font-weight: var(--weight-bold)
-}
-
 .next-page {
-    border: 1px solid#3d4856;
+    border: 1px solid #3d4856;
     color: #3d4856;
     font-weight: var(--weight-bold)
 }
 
     .next-page:hover {
-        border: 1px solid#3d4856;
+        border: 1px solid #3d4856;
         color: #3d4856;
     }
 
@@ -864,7 +851,7 @@ Gabriel's CSS END ****************/
 
 .btn.page-link.page-number {
     background-color: #3d4856;
-    border: 1px solid#3d4856;
+    border: 1px solid #3d4856;
     font-weight: var(--weight-bold)
 }
 
@@ -887,4 +874,21 @@ Gabriel's CSS END ****************/
 main {
     width: auto;
 }
+
+.tableHeaders {
+    background: none;
+    color: var(--color-white);
+    font-weight: var(--weight-bold);
+    border: 1px solid white;
+    border-radius: var(--size--border--radius);
+    font-size: var(--font-medium);
+    padding: 5px 10px;
+    margin: 0;
+}
+
+th {
+    font-size: var(--font-medium);
+    
+}
+
 

@@ -4,22 +4,28 @@
     ViewBag.Title = "User Roles";
 }
 
-<h2>User Role Assignments</h2>
-
-<table class="table">
-    <tr>
-        <th>
+<section id="pageName">
+    <h1>MANAGE ROLES</h1>
+</section>
+<div id="inventoryMain">
+    <div class=" divider2_desc_btn">
+        <div class="description">
+        <table class="table table-striped" id="inventoryTable">
+            <tr class="bg-info">
+                <th class ="tableHeaders">
             @Html.DisplayNameFor(model => model.UserName)
         </th>
-        <th>
+                <th class="tableHeaders">
             @Html.DisplayNameFor(model => model.UserRoles)
         </th>
-        <th></th>
+        <th class="tableHeaders">
+        <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Register">Add User</a>
+         </th>
     </tr>
 
     @foreach (var item in Model)
     {
-        <tr>
+                    <tr class ="table-hover">
             <td>
                 @Html.DisplayFor(modelItem => item.UserName)
             </td>
@@ -32,9 +38,16 @@
                 }
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                            <button class="btn_crud_add" type="button">@Html.ActionLink("Edit", "Edit", new { id = item.Id })</button>           
             </td>
         </tr>
     }
 
 </table>
+
+            <div>
+                <a id="forgot-password" asp-area="Identity" asp-page="/Account/ForgotPassword">Forgot your password?</a>
+            </div>
+</div>  
+</div>
+</div>

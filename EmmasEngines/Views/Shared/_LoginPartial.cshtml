@@ -6,8 +6,8 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        @{string userEmail = User.Identity?.Name;}
-        <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello, <span>@userEmail.Substring(0, userEmail.LastIndexOf("@"))</span>!</a>
+        @{string userEmail = User.Identity?.Name;}                      @*REMOVE INSIDE <a> to remove access to the user to modify their account*@
+            <a class="nav-link text-light" @*asp-area="Identity" asp-page="/Account/Manage/Index"*@ title="Manage">Hello, <span>@userEmail.Substring(0, userEmail.LastIndexOf("@"))</span>!</a>
     </li>
     <li class="nav-item">
         <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
