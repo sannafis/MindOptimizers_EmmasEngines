@@ -152,8 +152,12 @@ namespace EmmasEngines.Controllers
                     .ThenInclude(s => s.Payment)
                     .Include(s => s.InvoiceLines)
                     .ThenInclude(s => s.Inventory)
-                    .Where(s => newReport.StartDate <= s.Date && s.Date <= newReport.EndDate)
+                    .Where(s => newReport.StartDate <= s.Date && s.Date <= newReport.EndDate.Date.AddHours(23).AddMinutes(59).AddSeconds(59))
                     .AsQueryable();
+
+                DateTime startDate = newReport.StartDate;
+                DateTime endDate = newReport.EndDate;
+                string sqlQuery = salesData.ToQueryString();
 
                 if (newReport.EmployeeId.HasValue)
                 {
