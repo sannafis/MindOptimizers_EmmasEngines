@@ -16,8 +16,11 @@
         </section>
         
         <form id="login-form" method="post">
-            
-            @*<button type="button" class="btn btn-autofill" id="autofill" style="justify-content:center">Admin AutoFill</button>*@
+            <div class="row" style="justify-content:center">
+            <button type="button" class="btn btn-autofill" id="autofillAdmin">Admin</button>
+            <button type="button" class="btn btn-autofill" id="autofillSales">Sales</button>
+            <button type="button" class="btn btn-autofill" id="autofillOrders">Ordering/Purchasing</button>
+            </div>
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" id="username" placeholder="Email" />
@@ -56,8 +59,16 @@
 </div>
 
 <script>
-    $("#autofill").click(function () {
-        $("#username").val("admin@outlook.com");
+    $("#autofillAdmin").click(function () {
+        $("#username").val("EmmaH@outlook.com");
+        $("#password").val("Pa55w@rd");
+    });
+    $("#autofillSales").click(function () {
+        $("#username").val("wendyB@outlook.com");
+        $("#password").val("Pa55w@rd");
+    });
+    $("#autofillOrders").click(function () {
+        $("#username").val("samK@outlook.com");
         $("#password").val("Pa55w@rd");
     });
 </script>

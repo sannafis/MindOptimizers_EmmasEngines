@@ -10,9 +10,13 @@
     h3 {font-size:20px; font-weight:bold;}
 </style>
 
-<main>
-    <h1>Sales Report Details</h1>
+<link rel="stylesheet" href="~/css/pages/invoiceDetails.css" asp-append-version="true" />
 
+
+<div>
+    <img id="logo" src="~/imgs/Logo_ESE.png" alt="Emma's Engines Logo" />
+    <h1>Emma's Small Engines - Sales Report</h1><br/>
+    <hr/>
     <h3>Payment Type Summary</h3>
     <p>Cash: @Model.SalesReport.CashAmount</p>
     <p>Debit: @Model.SalesReport.DebitAmount</p>
@@ -75,4 +79,4 @@
 		<a class="btn btn-primary" href="@Url.Action("GenerateSalesReportPDF", "Reports", new { id = Model.SalesReport.ID })">Print PDF</a>
         <a class="btn btn-primary" href="@Url.Action("Index", "Reports")">Return to Reports</a>
 	</div>
-</main>
+</div>
