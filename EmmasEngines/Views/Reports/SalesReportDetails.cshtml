@@ -13,74 +13,171 @@
 <link rel="stylesheet" href="~/css/pages/invoiceDetails.css" asp-append-version="true" />
 
 
-<div>
-    <img id="logo" src="~/imgs/Logo_ESE.png" alt="Emma's Engines Logo" />
-    <h1>Emma's Small Engines - Sales Report</h1><br/>
-    <hr/>
-    <h3>Payment Type Summary</h3>
-    <p>Cash: @Model.SalesReport.CashAmount</p>
-    <p>Debit: @Model.SalesReport.DebitAmount</p>
-    <p>Credit: @Model.SalesReport.CreditAmount</p>
-    <p>Cheque: @Model.SalesReport.ChequeAmount</p>
-    <p>Total Payments: @Model.SalesReport.Total</p>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-    <h3>Tax Summary</h3>
-    <p>Sales Tax: @Model.SalesReport.SalesTax</p>
-    <p>Other Taxes: @Model.SalesReport.OtherTax</p>
-    <p>Total Taxes: @Model.SalesReport.TotalTax</p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <img id="logo" src="~/imgs/Logo_ESE.png" alt="Emma's Engines Logo" />
+            <h1>Emma's Small Engines - Sales Report</h1><br />
+            <hr />
+        </div>
+    </div>
 
-    <h3>Employee Sales Summary</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Employee</th>
-                <th>Sales</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var employee in Model.SalesReportEmployees)
-            {
-                <tr>
-                    <td>@employee.Employee.FullName</td>
-                    <td>@employee.Sales</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <h3>Product Sales Summary</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var inventory in Model.SalesReportInventories)
-            {
-                <tr>
-                    <td>@inventory.Inventory.Name</td>
-                    <td>@inventory.Inventory.MarkupPrice</td>
-                    <td>@inventory.Quantity</td>
-                    <td>@inventory.Total</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Payment Type Summary</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cash</td>
+                        <td>@Model.SalesReport.CashAmount.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <td>Debit</td>
+                        <td>@Model.SalesReport.DebitAmount.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <td>Credit</td>
+                        <td>@Model.SalesReport.CreditAmount.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <td>Cheque</td>
+                        <td>@Model.SalesReport.ChequeAmount.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total Payments</strong></td>
+                        <td><strong>@Model.SalesReport.Total.ToString("C")</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
+        <div class="col-md-6">
+            <h3>Tax Summary</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sales Tax</td>
+                        <td>@Model.SalesReport.SalesTax.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <td>Other Taxes</td>
+                        <td>@Model.SalesReport.OtherTax.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total Taxes</strong></td>
+                        <td><strong>@Model.SalesReport.TotalTax.ToString("C")</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Employee Sales Summary</h3>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Sales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var employee in Model.SalesReportEmployees)
+                    {
+                        <tr>
+                            <td>@employee.Employee.FullName</td>
+                            <td>@employee.Sales.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Product Sales Summary</h3>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var inventory in Model.SalesReportInventories)
+                    {
+                        <tr>
+                            <td>@inventory.Inventory.Name</td>
+                            <td>@inventory.Inventory.MarkupPrice.ToString("C")</td>
+                            <td>@inventory.Quantity</td>
+                            <td>@inventory.Total.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
     <h3>Appreciation</h3>
-    <p>Appreciation Earned: @Model.AppreciationEarned</p>
-    <p>Appreciation Earned to Date: @Model.AppreciationEarnedToDate</p>
-
-    @*Buttons for: Print PDF, Return to Reports Index, Delete*@
-    <div class="btn-group">
-		<a class="btn btn-primary" href="@Url.Action("GenerateSalesReportPDF", "Reports", new { id = Model.SalesReport.ID })">Print PDF</a>
-        <a class="btn btn-primary" href="@Url.Action("Index", "Reports")">Return to Reports</a>
-        <form method="post" action="/Reports/Delete/@Model.SalesReport.ID" onsubmit="return confirm('Are you sure you want to delete this report?');">
-            @Html.AntiForgeryToken()
-            <button type="submit" class="btn btn-danger">Delete</button>
-        </form>
-	</div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Appreciation Earned</td>
+                <td>@Model.AppreciationEarned.ToString("C")</td>
+            </tr>
+            <tr>
+                <td>Appreciation Earned to Date</td>
+                <td>@Model.AppreciationEarnedToDate.ToString("C")</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            @*Buttons for: Print PDF, Return to Reports Index, Delete*@
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("GenerateSalesReportPDF", "Reports", new { id = Model.SalesReport.ID })'">
+                    <i data-feather="printer"></i> Print PDF
+                </button>
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Index", "Reports")'">
+                    <i class="fa corner-down-left"></i> Return to Reports
+                </button>
+                <form method="post" action="/Reports/Delete/@Model.SalesReport.ID" onsubmit="return confirm('Are you sure you want to delete this report?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
