@@ -696,17 +696,20 @@ namespace EmmasEngines.Controllers
                 {
                     employeeData = employeeData.Where(s => s.ID == newReport.EmployeeId.Value);
                 }
+                else
+                {
+                    newReport.AllEmployees = true;
+                }
 
                 var empDataList = await employeeData.ToListAsync();
 
-                await _context.SaveChangesAsync();
                 //Add the hourly report to the reports database
                 Report reportToAdd = new Report
                 {
                     Description = newReport.ReportName,
                     DateStart = newReport.StartDate,
                     DateEnd = newReport.EndDate,
-                    Criteria = newReport.AllEmployees ? "All Employees" : $"{_context.Employees.FirstOrDefault(e => e.ID == newReport.EmployeeId)?.FirstName} {_context.Employees.FirstOrDefault(e => e.ID == newReport.EmployeeId)?.LastName}",
+                    Criteria = newReport.AllEmployees ? "All Employees" : $"{_context.Employees.FirstOrDefault(e => e.ID == newReport.EmployeeId)?.FullName}",
                     Type = ReportType.Hourly,
                     DateCreated = DateTime.Now,
                     HourlyReport = new HourlyReport()
@@ -718,9 +721,8 @@ namespace EmmasEngines.Controllers
 
                 _context.Reports.Add(reportToAdd);
                 await _context.SaveChangesAsync();
+                                
                 var savedHourlyReports = await PaginatedList<HourlyReport>.CreateAsync(_context.HourlyReports, page ?? 1, pageSize ?? 5);
-
-
 
                 var reportsVM = new ReportsVM
                 {
@@ -731,14 +733,305 @@ namespace EmmasEngines.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true, report = reportToAdd, reportsVM = reportsVM });
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve
+                };
+
+                return new JsonResult(new { success = true, report = reportToAdd }, options);
+            }
+            catch (DbUpdateException ex)
+            {
+                var message = "Database update error: " + ex.InnerException?.Message ?? ex.Message;
+
+                return Json(new { success = false, message = message });
             }
             catch (Exception ex)
             {
-                // Log the exception
-                // _logger.LogError(ex, "Error creating a new sales report");
 
-                return Json(new { success = false, message = "An error occurred while saving the report. Exception Message: " + ex.Message });
+                return Json(new { success = false, message = $"An error occurred while saving the report. Exception Message: {ex.Message}", stackTrace = ex.StackTrace });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteHourlyReport(int id)
+        {
+            try
+            {
+                var report = await _context.Reports.FindAsync(id);
+
+                if (report == null)
+                {
+                    return NotFound();
+                }
+
+                // Find the corresponding SalesReport entity
+                var hourlyReport = await _context.HourlyReports.FirstOrDefaultAsync(hr => hr.ID == id);
+
+                if (hourlyReport != null)
+                {
+                    // Delete the HourlyReport entity
+                    _context.HourlyReports.Remove(hourlyReport);
+                }
+
+                // Delete the Report entity
+                _context.Reports.Remove(report);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex)
+            {
+                var message = "Database update error: " + ex.InnerException?.Message ?? ex.Message;
+                //_logger.LogError(ex, message);
+
+                return Json(new { success = false, message = message });
+            }
+            catch (Exception ex)
+            {
+                // _logger.LogError(ex, "Error deleting the report");
+
+                return Json(new { success = false, message = $"An error occurred while deleting the report. Exception Message: {ex.Message}", stackTrace = ex.StackTrace });
+            }
+        }
+
+        public async Task<IActionResult> GenerateHourlyReportPDF(int id)
+        {
+            // Retrieve the report details from the database using the reportId parameter
+            var report = await _context.Reports
+                        .Include(r => r.HourlyReport)
+                        .ThenInclude(hr => hr.Employees)
+                        .ThenInclude(hre => hre.EmployeeLogins)
+                        .FirstOrDefaultAsync(r => r.ID == id);
+            // Check if the report is null and return a proper response
+            if (report == null)
+            {
+                return NotFound($"Report with ID {id} not found.");
+            }
+
+
+            // Create the PDF document
+            using (var memoryStream = new MemoryStream())
+            {
+                var writer = new PdfWriter(memoryStream);
+                var pdf = new PdfDocument(writer);
+                var document = new Document(pdf);
+
+                // Set up the PDF formatting and styles
+                var titleFontSize = 18f;
+                var subtitleFontSize = 14f;
+                var textFontSize = 12f;
+                var titleFont = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
+                var subtitleFont = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
+                var textFont = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
+
+                // Set margins
+                document.SetMargins(36, 36, 36, 36);
+
+                // Add the content (text, tables, etc.) to the PDF document
+                document.Add(new Paragraph("Emma's Small Engine")
+                    .SetFont(titleFont)
+                    .SetFontSize(titleFontSize)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetMarginBottom(10));
+
+                document.Add(new Paragraph("End of Day Report")
+                    .SetFont(subtitleFont)
+                    .SetFontSize(subtitleFontSize)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetMarginBottom(10));
+
+                document.Add(new Paragraph($"Report Date: {report.DateCreated.ToString("MM/dd/yyyy")}")
+                    .SetFont(textFont)
+                    .SetFontSize(textFontSize)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetMarginBottom(20));
+
+                // Payment Type Summary
+                var paymentTypeSummaryTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                paymentTypeSummaryTable.SetWidth(UnitValue.CreatePercentValue(100));
+
+                // Added header row with no borders
+                var headerRow = new Cell(1, 5)
+                    .SetBorder(Border.NO_BORDER)
+                    .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                    .Add(new Paragraph("Payment Type Summary")
+                        .SetFont(subtitleFont)
+                        .SetFontSize(subtitleFontSize)
+                        .SetTextAlignment(TextAlignment.CENTER));
+
+                paymentTypeSummaryTable.AddHeaderCell(headerRow);
+                paymentTypeSummaryTable.AddCell(CreateTableCell("Payment Type", subtitleFont, subtitleFontSize));
+                paymentTypeSummaryTable.AddCell(CreateTableCell("Amount", subtitleFont, subtitleFontSize));
+                paymentTypeSummaryTable.AddCell(new Cell(1, 3).SetBorder(Border.NO_BORDER)); // Added an empty cell to complete the row
+
+                var paymentTypes = new[] { "Cash", "Debit", "Credit", "Cheque", "Total" };
+                var paymentAmounts = new[]
+                {
+                    report.SalesReport.CashAmount,
+                    report.SalesReport.DebitAmount,
+                    report.SalesReport.CreditAmount,
+                    report.SalesReport.ChequeAmount,
+                    report.SalesReport.Total
+                };
+
+                for (int i = 0; i < paymentTypes.Length; i++)
+                {
+                    paymentTypeSummaryTable.StartNewRow(); // Start a new row for each data set
+                    paymentTypeSummaryTable.AddCell(CreateTableCell(paymentTypes[i], textFont, textFontSize));
+                    paymentTypeSummaryTable.AddCell(CreateTableCell(paymentAmounts[i].ToString("C"), textFont, textFontSize));
+                }
+
+                document.Add(paymentTypeSummaryTable.SetMarginBottom(20));
+
+                // Tax Summary
+                var taxSummaryTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                taxSummaryTable.SetWidth(UnitValue.CreatePercentValue(100));
+
+                // Added header row with no borders
+                var taxHeaderRow = new Cell(1, 5)
+                .SetBorder(Border.NO_BORDER)
+                .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                .Add(new Paragraph("Tax Summary")
+                .SetFont(subtitleFont)
+                .SetFontSize(subtitleFontSize)
+                .SetTextAlignment(TextAlignment.CENTER));
+
+                taxSummaryTable.AddHeaderCell(taxHeaderRow);
+                taxSummaryTable.AddCell(CreateTableCell("Tax Type", subtitleFont, subtitleFontSize));
+                taxSummaryTable.AddCell(CreateTableCell("Amount", subtitleFont, subtitleFontSize));
+                taxSummaryTable.AddCell(new Cell(1, 3).SetBorder(Border.NO_BORDER)); // Added an empty cell to complete the row
+
+                var taxTypes = new[] { "Sales Tax", "Other Tax", "Total Tax" };
+                var taxAmounts = new[]
+                {
+                    report.SalesReport.SalesTax,
+                    report.SalesReport.OtherTax,
+                    report.SalesReport.TotalTax
+                };
+
+                for (int i = 0; i < taxTypes.Length; i++)
+                {
+                    taxSummaryTable.StartNewRow(); // Start a new row for each data set
+                    taxSummaryTable.AddCell(CreateTableCell(taxTypes[i], textFont, textFontSize));
+                    taxSummaryTable.AddCell(CreateTableCell(taxAmounts[i].ToString("C"), textFont, textFontSize));
+                }
+
+                document.Add(taxSummaryTable.SetMarginBottom(20));
+
+                // Employee Summary (employees, total sales)
+                var employeeSummaryTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                employeeSummaryTable.SetWidth(UnitValue.CreatePercentValue(100));
+
+                // Added header row with no borders
+                var employeeHeaderRow = new Cell(1, 5)
+                    .SetBorder(Border.NO_BORDER)
+                    .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                    .Add(new Paragraph("Employee Summary")
+                        .SetFont(subtitleFont)
+                        .SetFontSize(subtitleFontSize)
+                        .SetTextAlignment(TextAlignment.CENTER));
+
+                employeeSummaryTable.AddHeaderCell(employeeHeaderRow);
+                employeeSummaryTable.AddCell(CreateTableCell("Employee", subtitleFont, subtitleFontSize));
+                employeeSummaryTable.AddCell(CreateTableCell("Sales", subtitleFont, subtitleFontSize));
+                taxSummaryTable.AddCell(new Cell(1, 3).SetBorder(Border.NO_BORDER)); // Added an empty cell to complete the row
+
+                double total = 0;
+
+                foreach (var employee in report.SalesReport.SalesReportEmployees)
+                {
+                    total += employee.Sales;
+                    employeeSummaryTable.StartNewRow(); // Start a new row for each data set
+                    employeeSummaryTable.AddCell(CreateTableCell(employee.Employee.FullName, textFont, textFontSize));
+                    employeeSummaryTable.AddCell(CreateTableCell(employee.Sales.ToString("C"), textFont, textFontSize));
+                }
+                employeeSummaryTable.StartNewRow();
+                employeeSummaryTable.AddCell(CreateTableCell("Total", textFont, textFontSize));
+                employeeSummaryTable.AddCell(CreateTableCell(total.ToString("C"), textFont, textFontSize));
+
+                document.Add(employeeSummaryTable.SetMarginBottom(20));
+
+                // Sales Summary (items, total sales, quantity, price)
+                var salesSummaryTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                salesSummaryTable.SetWidth(UnitValue.CreatePercentValue(100));
+
+                // Added header row with no borders
+                var salesHeaderRow = new Cell(1, 5)
+                    .SetBorder(Border.NO_BORDER)
+                    .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                    .Add(new Paragraph("Sales Summary")
+                        .SetFont(subtitleFont)
+                        .SetFontSize(subtitleFontSize)
+                        .SetTextAlignment(TextAlignment.CENTER));
+
+                salesSummaryTable.AddHeaderCell(salesHeaderRow);
+                salesSummaryTable.AddCell(CreateTableCell("Item", subtitleFont, subtitleFontSize));
+                salesSummaryTable.AddCell(CreateTableCell("Quantity", subtitleFont, subtitleFontSize));
+                salesSummaryTable.AddCell(CreateTableCell("Price", subtitleFont, subtitleFontSize));
+                salesSummaryTable.AddCell(CreateTableCell("Total Sales", subtitleFont, subtitleFontSize));
+                salesSummaryTable.AddCell(new Cell(1, 1).SetBorder(Border.NO_BORDER)); // Added an empty cell to complete the row
+
+                foreach (var item in report.SalesReport.SalesReportInventories)
+                {
+                    salesSummaryTable.StartNewRow(); // Start a new row for each data set
+                    salesSummaryTable.AddCell(CreateTableCell(item.Inventory.Name, textFont, textFontSize));
+                    salesSummaryTable.AddCell(CreateTableCell(item.Quantity.ToString(), textFont, textFontSize));
+                    salesSummaryTable.AddCell(CreateTableCell(item.Inventory.MarkupPrice.ToString("C"), textFont, textFontSize));
+                    //sales total = inventory markup price * quantity
+                    salesSummaryTable.AddCell(CreateTableCell((item.Inventory.MarkupPrice * item.Quantity).ToString("C"), textFont, textFontSize));
+                }
+
+                document.Add(salesSummaryTable.SetMarginBottom(20));
+
+                // Appreciation (appreciation earned (2% sales), appreciation earned to date)
+                var appreciationSummaryTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                appreciationSummaryTable.SetWidth(UnitValue.CreatePercentValue(100));
+
+                // Added header row with no borders
+                var appreciationHeaderRow = new Cell(1, 5)
+                    .SetBorder(Border.NO_BORDER)
+                    .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                    .Add(new Paragraph("Appreciation Summary")
+                        .SetFont(subtitleFont)
+                        .SetFontSize(subtitleFontSize)
+                        .SetTextAlignment(TextAlignment.CENTER));
+
+                appreciationSummaryTable.AddHeaderCell(appreciationHeaderRow);
+                appreciationSummaryTable.AddCell(CreateTableCell("Appreciation", subtitleFont, subtitleFontSize));
+                appreciationSummaryTable.AddCell(CreateTableCell("Amount", subtitleFont, subtitleFontSize));
+                taxSummaryTable.AddCell(new Cell(1, 3).SetBorder(Border.NO_BORDER)); // Added an empty cell to complete the row
+
+                // Appreciation Earned
+                appreciationSummaryTable.StartNewRow();
+                appreciationSummaryTable.AddCell(CreateTableCell("Appreciation Earned", textFont, textFontSize));
+                var appreciationEarned = report.SalesReport.Total * 0.02;
+                appreciationSummaryTable.AddCell(CreateTableCell(appreciationEarned.ToString("C"), textFont, textFontSize));
+
+                // Appreciation Earned to Date
+                appreciationSummaryTable.StartNewRow();
+                appreciationSummaryTable.AddCell(CreateTableCell("Appreciation Earned to Date", textFont, textFontSize));
+                // TODO: Get appreciation earned to date from the database
+                var appreciationEarnedToDate = appreciationEarned + 0;
+                appreciationSummaryTable.AddCell(CreateTableCell(appreciationEarnedToDate.ToString("C"), textFont, textFontSize));
+
+                document.Add(appreciationSummaryTable.SetMarginBottom(20));
+
+                // Footer (Report generated by {employee name} on {date})
+                var footerTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                footerTable.SetWidth(UnitValue.CreatePercentValue(100));
+                footerTable.SetBorder(Border.NO_BORDER);
+                footerTable.AddCell(CreateTableCell($"Report generated by Emma Ham on {report.DateCreated}", textFont, textFontSize));
+
+                document.Add(footerTable);
+
+                // Close the document
+                document.Close();
+
+                // Return the PDF as a byte array
+                var pdfByteArray = memoryStream.ToArray();
+                return File(pdfByteArray, "application/pdf", $"Report_{id}.pdf");
             }
         }
 
