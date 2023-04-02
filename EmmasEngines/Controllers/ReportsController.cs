@@ -417,14 +417,21 @@ namespace EmmasEngines.Controllers
 
         private double CalculateAppreciation(SalesReport salesReport)
         {
-            // calculate appreciation earned
-            return 0;
+            // calculate appreciation earned in selected date range
+            double appr = 0;
+            appr = salesReport.SalesReportInventories.Sum(i => i.Inventory.Prices.FirstOrDefault().PurchasedCost * i.Quantity) * 0.02;
+            return appr;
         }
 
         private double CalculateAppreciationToDate(SalesReport salesReport)
         {
-            // calculate appreciation earned to date
-            return 0;
+            // calculate appreciation earned to date for all sales reports
+            double apprToDate = 0;
+            apprToDate = _context.SalesReports.Include(s => s.SalesReportInventories)
+                                              .ThenInclude(i => i.Inventory)
+                                              .ThenInclude(ie => ie.Prices)
+                                              .Sum(s => s.SalesReportInventories.Sum(i => i.Inventory.Prices.FirstOrDefault().PurchasedCost * i.Quantity)) * 0.02;
+            return apprToDate;
         }
 
         public async Task<IActionResult> GenerateSalesReportPDF(int id)
