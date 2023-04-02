@@ -112,7 +112,7 @@
 
                     </nav>
                 }
-                if (User.IsInRole("Sales"))//Check wether the user is in that role
+                else if (User.IsInRole("Sales"))//Check wether the user is in that role
                 {
                     <nav class="sidenav" style="visibility:visible">
                         <div class="">
@@ -141,7 +141,7 @@
 
                     </nav>
                 }
-                if (User.IsInRole("Order/Purchase"))//Check wether the user is in that role
+                else if (User.IsInRole("Order/Purchase"))//Check wether the user is in that role
                 {
                     <nav class="sidenav" style="visibility:visible">
                         <div class="">
@@ -169,13 +169,18 @@
                         </div>
 
                     </nav>
-                }
+                }else{
+                    <nav class="sidenav" style="visibility:visible">
                         <div class="">
                             <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/imgs/eseLogo.png" alt="Emma's small engines golden cog wheel company logo."></a>
                         </div>
                         <div>
                             <partial name="_LoginPartial" />
                         </div>
+
+                    </nav>
+                }
+                        
             }
 
          }

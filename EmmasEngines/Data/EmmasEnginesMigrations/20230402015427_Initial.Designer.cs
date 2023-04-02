@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmmasEngines.Data.EmmasEnginesMigrations
 {
     [DbContext(typeof(EmmasEnginesContext))]
-    [Migration("20230327012255_Initial")]
+    [Migration("20230402015427_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -264,7 +264,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.Property<string>("UPC")
                         .IsRequired()
-                        .HasMaxLength(11)
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");

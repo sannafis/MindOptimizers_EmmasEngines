@@ -262,7 +262,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
 
                     b.Property<string>("UPC")
                         .IsRequired()
-                        .HasMaxLength(11)
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");

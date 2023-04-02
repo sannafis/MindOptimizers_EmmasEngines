@@ -333,7 +333,7 @@ namespace EmmasEngines.Data.EmmasEnginesMigrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UPC = table.Column<string>(type: "TEXT", maxLength: 11, nullable: false),
+                    UPC = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Size = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Quantity = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
