@@ -289,7 +289,7 @@
     });
 
 
-    // Handle the form submission
+    // Handle the form submission (Sales Report)
     $("#createSalesReportForm").submit(function (event) {
         event.preventDefault();
 
@@ -325,8 +325,16 @@
                 // Append row to table
                 $('#savedReportsTable').append(row);
             } else {
+                var message = data.message;
+                if(message.includes("Sequence contains no elements"))
+                {
+                    alert("There was no data found for the current filters. Please change the data range and/or employee filters.");
+                }
+                else
+                {
                 // Display an error message
                 alert("Error: " + data.message + "\n\nStack Trace:\n" + data.stackTrace);
+                }
             }
         });
     });

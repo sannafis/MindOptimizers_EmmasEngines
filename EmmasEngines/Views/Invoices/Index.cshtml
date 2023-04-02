@@ -10,6 +10,7 @@
 @*<p>
     <a asp-action="Create">Create New</a>
 </p>*@
+<form asp-action="Index" method="get">
 <div id="inventoryMain">
     <div class=" divider2_desc_btn">
 <table class="table table-striped" id="inventoryTable">
@@ -70,5 +71,8 @@
 }
     </tbody>
 </table>
+        
 </div>
 </div>
+    <partial name="_PagingNavBar" />
+</form>
