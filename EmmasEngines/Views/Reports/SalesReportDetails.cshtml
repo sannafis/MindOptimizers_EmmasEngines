@@ -74,9 +74,13 @@
     <p>Appreciation Earned: @Model.AppreciationEarned</p>
     <p>Appreciation Earned to Date: @Model.AppreciationEarnedToDate</p>
 
-    @*Buttons for: Print PDF, Return to Reports Index*@
+    @*Buttons for: Print PDF, Return to Reports Index, Delete*@
     <div class="btn-group">
 		<a class="btn btn-primary" href="@Url.Action("GenerateSalesReportPDF", "Reports", new { id = Model.SalesReport.ID })">Print PDF</a>
         <a class="btn btn-primary" href="@Url.Action("Index", "Reports")">Return to Reports</a>
+        <form method="post" action="/Reports/Delete/@Model.SalesReport.ID" onsubmit="return confirm('Are you sure you want to delete this report?');">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
 	</div>
 </div>
