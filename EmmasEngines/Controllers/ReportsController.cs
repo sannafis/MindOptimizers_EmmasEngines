@@ -392,7 +392,9 @@ namespace EmmasEngines.Controllers
         {
             // calculate appreciation earned in selected date range
             double appr = 0;
-            appr = salesReport.SalesReportInventories.Sum(i => i.Inventory.Prices.FirstOrDefault().PurchasedCost * i.Quantity) * 0.02;
+            appr = salesReport.SalesReportInventories
+                    .Select(i => (i.Inventory == null || i.Inventory.Prices.FirstOrDefault() == null) ? 0 : i.Inventory.Prices.FirstOrDefault().PurchasedCost * i.Quantity)
+                    .Sum() * 0.02;
             return appr;
         }
 
@@ -403,7 +405,9 @@ namespace EmmasEngines.Controllers
             apprToDate = _context.SalesReports.Include(s => s.SalesReportInventories)
                                               .ThenInclude(i => i.Inventory)
                                               .ThenInclude(ie => ie.Prices)
-                                              .Sum(s => s.SalesReportInventories.Sum(i => i.Inventory.Prices.FirstOrDefault().PurchasedCost * i.Quantity)) * 0.02;
+                                              .Sum(s => s.SalesReportInventories
+                                                        .Select(i => (i.Inventory == null || i.Inventory.Prices.FirstOrDefault() == null) ? 0 : i.Inventory.Prices.FirstOrDefault().PurchasedCost * i.Quantity)
+                                                        .Sum()) * 0.02;
             return apprToDate;
         }
 

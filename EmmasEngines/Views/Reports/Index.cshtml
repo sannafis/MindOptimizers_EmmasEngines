@@ -404,6 +404,7 @@
 
         // Make the AJAX request
         $.post("/Reports/CreateSaleReport", formData, function (data) {
+            console.log("Posting sale report data with AJAX...");
             // Handle the response (e.g., update the saved reports table)
             if (data.success) {
                 alert("Report Saved!");
