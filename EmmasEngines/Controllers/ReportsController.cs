@@ -71,8 +71,8 @@ namespace EmmasEngines.Controllers
                     SavedHourlyReports = savedHourlyReports,
                     Employees = await _context.Employees.ToListAsync()
                 },
-                SavedCOGSReports = savedCOGSReports,
-                COGSReportsVM = new COGSReportVM
+                SavedCOGSReports = COGSReports,
+                COGSReportVM = new COGSReportVM
                 {
                     SavedCOGSReports = savedCOGSReports,
                     Inventories = await _context.Inventories.ToListAsync(),
@@ -705,7 +705,7 @@ namespace EmmasEngines.Controllers
 
                 _context.Reports.Add(reportToAdd);
                 await _context.SaveChangesAsync();
-                                
+
                 var savedHourlyReports = await PaginatedList<HourlyReport>.CreateAsync(_context.HourlyReports, page ?? 1, pageSize ?? 5);
 
                 var reportsVM = new ReportsVM
@@ -1050,8 +1050,8 @@ namespace EmmasEngines.Controllers
                 //filter data from select with required products
                 if (!newReport.AllInventory && newReport.InventoryId.HasValue)
                 {
-                    inventoryData = inventoryData.Where(invent => invent.UPC == newReport.InventoryId.Value);
-                    invoiceData = invoiceData.Where(invo => invo.InvoiceLines.Where(invo => invo.InventoryUPC == newReport.InventoryId.Value));
+                    inventoryData = inventoryData.Where(invent => invent.UPC == newReport.InventoryId.Value.ToString());
+                    invoiceData = invoiceData.Where(invo => invo.InvoiceLines.Any(involine => involine.InventoryUPC == newReport.InventoryId.Value.ToString()));
                 }
 
                 var inventoryDataList = await inventoryData.ToListAsync();
@@ -1065,7 +1065,7 @@ namespace EmmasEngines.Controllers
                     Description = newReport.ReportName,
                     DateStart = newReport.StartDate,
                     DateEnd = newReport.EndDate,
-                    Criteria = newReport.AllInventory ? "All Inventory" : $"{_context.Inventories.FirstOrDefault(inven => inven.UPC == newReport.InventoryId)?.Name}",
+                    Criteria = newReport.AllInventory ? "All Inventory" : $"{_context.Inventories.FirstOrDefault(inven => inven.UPC == newReport.InventoryId.Value.ToString())?.Name}",
                     Type = ReportType.COGS,
                     DateCreated = DateTime.Now,
                     COGSReport = new COGSReport()
@@ -1084,7 +1084,7 @@ namespace EmmasEngines.Controllers
 
                 var reportsVM = new ReportsVM
                 {
-                    savedCOGSReports = savedCOGSReports,
+                    SavedCOGSReports = savedCOGSReports,
                     PageSize = pageSize.Value,
                     PageIndex = page.Value,
                 };

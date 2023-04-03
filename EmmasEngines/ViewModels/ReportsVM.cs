@@ -18,7 +18,7 @@ namespace EmmasEngines.ViewModels
         public NewSalesReport NewSalesReport { get; internal set; }
 
         // COGS Reports
-        public List<COGSReport> savedCOGSReports { get; set; }
+        public List<COGSReport> SavedCOGSReports { get; set; }
         public NewCOGSReport NewCOGSReport { get; set; }
         public COGSReportVM COGSReportVM { get; set; }
 
