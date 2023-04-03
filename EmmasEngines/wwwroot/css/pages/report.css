@@ -2,10 +2,13 @@
     
     padding: 0;
 }
-#report {
+.report {
     width: 100%;
     background-color: #ECECEC;
-    margin-bottom: 15px;;
+    margin-bottom: 15px;
+    padding-left:10px;
+    padding-top:5px;
+    padding-bottom:0;
 }
 .title-report {
     margin-left: 20px;
@@ -23,18 +26,24 @@
     list-style-type: none;
     margin: 0;
     padding-left: 20px;
+    margin-bottom: 0;
 }
 .tab {
     cursor: pointer;
     padding: 10px 15px;
     font-weight: 800;
+    margin-bottom: 0;
+    color: #3d4856;
 }
+
 .tab.active {
     background-color: #CCC;
     border-bottom: 5px solid #009578;
+    color:black;
 }
 .tab:hover {
     background-color: #AAA;
+    color:black;
 }
 .tab-content {
     width: 100%;
