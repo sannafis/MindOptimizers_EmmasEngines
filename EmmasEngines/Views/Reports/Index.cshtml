@@ -246,8 +246,11 @@
                                             <td>@report.DateEnd.ToShortDateString()</td>
                                             <td>@report.Criteria</td>
                                             <td>
-                                                <a class="btn btn-primary">Save as PDF</a>
-                                                <a asp-controller="Reports" asp-action="Delete" asp-route-id="@report.ID" class="btn btn-danger">Remove</a>
+                                                <a asp-controller="Reports" asp-action="HourlyReportDetails" asp-route-id="@report.ID" class="btn btn-primary">View</a>
+                                                <form method="post" action="/Reports/Delete/@report.ID" onsubmit="return confirm('Are you sure you want to delete this report?');">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
                                             </td>
                                         </tr>
                                     }
@@ -345,8 +348,7 @@
 
         // Serialize the form data
         let formData = $(this).serialize();
-
-        //alert(formData);
+        
 
         // Make the AJAX request
         $.post("/Reports/CreateHourlyReport", formData, function (data) {
@@ -359,24 +361,35 @@
                 //var reportName = $("#hourlyReportName").val();
 
                 //alert(JSON.stringify(report));
+                 var reportName = $("#reportName").val();
 
 
                 // Construct row to add to the table
                 var row = '<tr>' +
-                    '<td>' + report.description + '</td>' +
-                    '<td>' + report.dateStart + '</td>' +
-                    '<td>' + report.dateEnd + '</td>' +
-                    '<td>' + report.criteria + '</td>' +
+                    '<td>' + report.Description + '</td>' +
+                    '<td>' + new Date(report.DateStart).toLocaleDateString('en-US') + '</td>' +
+                    '<td>' + new Date(report.DateEnd).toLocaleDateString('en-US') + '</td>' +
+                    '<td>' + report.Criteria + '</td>' +
                     '<td>' +
-                    '<a asp-controller="Reports" asp-action="View" asp-route-id="' + report.id + '" class="btn btn-primary">View</a> ' +
-                    '<a asp-controller="Reports" asp-action="Delete" asp-route-id="' + report.id + '" class="btn btn-danger">Remove</a>' +
+                    '<a href="/Reports/HourlyReportDetails/' + report.ID + '" class="btn btn-primary">View</a> ' +
+                    '<form method="post" action="/Reports/Delete/' + report.ID + '" onsubmit="return confirm(\'Are you sure you want to delete this report?\');">' +
+                    '<input type="hidden" name="_method" value="DELETE" />' +
+                    '<input type="hidden" name="__RequestVerificationToken" value="' + $('input[name="__RequestVerificationToken"]').val() + '" />' +
+                    '<button type="submit" class="btn btn-danger">Delete</button>' +
+                    '</form>' +
                     '</td>' +
                     '</tr>';
                 // Append row to table
                 $('#savedHourlyReportsTable').append(row);
             } else {
-                // Display an error message
-                alert("Error: " + data.message);
+                var message = data.message;
+                if (message.includes("Sequence contains no elements")) {
+                    alert("There was no data found for the current filters. Please change the data range and/or employee filters.");
+                }
+                else {
+                    // Display an error message
+                    alert("Error: " + data.message + "\n\nStack Trace:\n" + data.stackTrace);
+                }
             }
         });
     });
