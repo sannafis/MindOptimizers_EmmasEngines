@@ -1040,6 +1040,160 @@ namespace EmmasEngines.Controllers
             }
         }
 
+        public async Task<IActionResult> GenerateCOGSReportPDF(int id)
+        {
+            // Retrieve the report details from the database using the reportId parameter
+            var report = await _context.Reports
+                        .Where(l => l.Type == ReportType.COGS)
+                        .Include(m => m.COGSReport)
+                        .ThenInclude(n => n.Inventories)
+                        .ThenInclude(o => o.Prices)
+                        .Include(p => p.COGSReport)
+                        .ThenInclude(q => q.Invoices)
+                        .ThenInclude(r => r.InvoiceLines)
+                        .FirstOrDefaultAsync(s => s.ID == id);
+            // Check if the report is null and return a proper response
+            if (report == null)
+            {
+                return NotFound($"Report with ID {id} not found.");
+            }
+
+
+            // Create the PDF document
+            using (var memoryStream = new MemoryStream())
+            {
+                var writer = new PdfWriter(memoryStream);
+                var pdf = new PdfDocument(writer);
+                var document = new Document(pdf);
+
+                // Set up the PDF formatting and styles
+                var titleFontSize = 18f;
+                var subtitleFontSize = 14f;
+                var textFontSize = 12f;
+                var titleFont = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
+                var subtitleFont = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
+                var textFont = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
+
+                // Set margins
+                document.SetMargins(36, 36, 36, 36);
+
+                // Add the content (text, tables, etc.) to the PDF document
+                document.Add(new Paragraph("Emma's Small Engine")
+                    .SetFont(titleFont)
+                    .SetFontSize(titleFontSize)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetMarginBottom(10));
+
+                document.Add(new Paragraph("COGS Report")
+                    .SetFont(subtitleFont)
+                    .SetFontSize(subtitleFontSize)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetMarginBottom(10));
+
+                document.Add(new Paragraph($"Report Date: {report.DateCreated.ToString("MM/dd/yyyy")}")
+                    .SetFont(textFont)
+                    .SetFontSize(textFontSize)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetMarginBottom(20));
+
+
+                // COGS
+                var COGSSummaryTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1 }));
+                COGSSummaryTable.SetWidth(UnitValue.CreatePercentValue(100));
+
+                // Added header row with no borders
+                var COGSHeaderRow = new Cell(1, 5)
+                    .SetBorder(Border.NO_BORDER)
+                    .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                    .Add(new Paragraph("Costs Report")
+                        .SetFont(subtitleFont)
+                        .SetFontSize(subtitleFontSize)
+                        .SetTextAlignment(TextAlignment.CENTER));
+
+                COGSSummaryTable.AddHeaderCell(COGSHeaderRow);
+                COGSSummaryTable.AddCell(CreateTableCell("Start Cost", subtitleFont, subtitleFontSize));
+                COGSSummaryTable.AddCell(CreateTableCell("Purchased Cost", subtitleFont, subtitleFontSize));
+                COGSSummaryTable.AddCell(CreateTableCell("End Cost", subtitleFont, subtitleFontSize));
+                COGSSummaryTable.AddCell(CreateTableCell("COGS", subtitleFont, subtitleFontSize));
+                COGSSummaryTable.AddCell(CreateTableCell("Sales Revenue", subtitleFont, subtitleFontSize));
+                COGSSummaryTable.AddCell(CreateTableCell("Gross Profit", subtitleFont, subtitleFontSize));
+                COGSSummaryTable.AddCell(CreateTableCell("Profit Margin", subtitleFont, subtitleFontSize));
+
+                foreach (var inventory in report.COGSReport.Inventories.OrderBy(e => e.Name))
+                {
+                    List<string> dates = await _context.Prices.Where(l => l.PurchasedDate >= report.DateStart && l.PurchasedDate <= report.DateEnd && l.InventoryUPC == inventory.UPC).Select(l => l.PurchasedDate.ToShortDateString()).Distinct().ToListAsync();
+                    string datestring = String.Join(",", dates);
+                    List<Price> PriceSummary = _context.Prices.Where(e => e.ID == inventory.ID).ToList();
+                    double price = (PriceSummary.Where(l => l.PurchasedDate >= report.DateStart && l.PurchasedDate <= report.DateEnd).Select(l => l.PurchasedCost)).Sum();
+
+                    COGSSummaryTable.StartNewRow(); // Start a new row for each data set
+                    COGSSummaryTable.AddCell(CreateTableCell(inventory.UPC.ToString(), textFont, textFontSize));
+                    COGSSummaryTable.AddCell(CreateTableCell(inventory.Name, textFont, textFontSize));
+                    COGSSummaryTable.AddCell(CreateTableCell(datestring, textFont, textFontSize));
+                    COGSSummaryTable.AddCell(CreateTableCell(price.ToString("C"), textFont, textFontSize));
+                }
+
+                document.Add(COGSSummaryTable.SetMarginBottom(20));
+
+                // Employee Logins
+                var PricesTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1, 1 }));
+                PricesTable.SetWidth(UnitValue.CreatePercentValue(100));
+
+                // Added header row with no borders
+                var pricesHeaderRow = new Cell(1, 5)
+                    .SetBorder(Border.NO_BORDER)
+                    .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                    .Add(new Paragraph("Items Summary")
+                        .SetFont(subtitleFont)
+                        .SetFontSize(subtitleFontSize)
+                        .SetTextAlignment(TextAlignment.CENTER));
+
+                PricesTable.AddHeaderCell(pricesHeaderRow);
+                PricesTable.AddCell(CreateTableCell("UPC", subtitleFont, subtitleFontSize));
+                PricesTable.AddCell(CreateTableCell("Name", subtitleFont, subtitleFontSize));
+                PricesTable.AddCell(CreateTableCell("Cost", subtitleFont, subtitleFontSize));
+                PricesTable.AddCell(CreateTableCell("COGS", subtitleFont, subtitleFontSize));
+                PricesTable.AddCell(CreateTableCell("Gross Profit", subtitleFont, subtitleFontSize));
+                PricesTable.AddCell(CreateTableCell("Profit Margin", subtitleFont, subtitleFontSize));
+
+                /*
+                foreach (var employee in report.HourlyReport.Employees.OrderBy(e => e.FullName))
+                {
+                    List<EmployeeLogin> logins = await _context.EmployeeLogins.Where(l => l.SignIn >= report.DateStart && l.SignIn <= report.DateEnd && l.EmployeeID == employee.ID).ToListAsync();
+                    foreach (var login in logins)
+                    {
+                        employeeLoginTable.StartNewRow(); // Start a new row for each data set
+                        employeeLoginTable.AddCell(CreateTableCell(employee.ID.ToString(), textFont, textFontSize));
+                        employeeLoginTable.AddCell(CreateTableCell(employee.FullName, textFont, textFontSize));
+                        employeeLoginTable.AddCell(CreateTableCell(login.SignIn.ToShortDateString(), textFont, textFontSize));
+                        employeeLoginTable.AddCell(CreateTableCell((login.SignOut - login.SignIn).TotalHours.ToString(), textFont, textFontSize));
+                        employeeLoginTable.AddCell(CreateTableCell(login.SignIn.ToShortTimeString(), textFont, textFontSize));
+                        employeeLoginTable.AddCell(CreateTableCell(login.SignOut.ToShortTimeString(), textFont, textFontSize));
+                    }
+                }
+                */
+                
+                document.Add(PricesTable.SetMarginBottom(20));
+
+
+
+                // Footer (Report generated by {employee name} on {date})
+                var footerTable = new Table(UnitValue.CreatePercentArray(new float[] { 1, 1, 1, 1, 1 }));
+                footerTable.SetWidth(UnitValue.CreatePercentValue(100));
+                footerTable.SetBorder(Border.NO_BORDER);
+                footerTable.AddCell(CreateTableCell($"Report generated by Emma Ham on {report.DateCreated}", textFont, textFontSize));
+
+                document.Add(footerTable);
+
+                // Close the document
+                document.Close();
+
+                // Return the PDF as a byte array
+                var pdfByteArray = memoryStream.ToArray();
+                return File(pdfByteArray, "application/pdf", $"Report_COGS_{id}.pdf");
+            }
+        }
+
         public async Task<IActionResult> COGSReportDetails(int id)
         {
             var COGSReport = await _context.COGSReports.Include(c => c.Inventories)
@@ -1052,10 +1206,6 @@ namespace EmmasEngines.Controllers
             {
                 return NotFound();
             }
-
-            // Calculate appreciation earned and appreciation earned to date
-            //double appreciationEarned = CalculateAppreciation(salesReport);
-            //double appreciationEarnedToDate = CalculateAppreciationToDate(salesReport);
 
             var viewModel = new COGSReportDetailsVM
             {
