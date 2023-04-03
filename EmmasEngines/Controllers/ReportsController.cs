@@ -1102,6 +1102,31 @@ namespace EmmasEngines.Controllers
             }
         }
 
+        public async Task<IActionResult> COGSReportDetails(int id)
+        {
+            var COGSReport = await _context.COGSReports.Include(c => c.Inventories)
+                                                         .ThenInclude(p => p.Prices)
+                                                         .Include(f => f.Invoices)
+                                                         .ThenInclude(g => g.InvoiceLines)
+                                                         .FirstOrDefaultAsync(s => s.ID == id);
+
+            if (COGSReport == null)
+            {
+                return NotFound();
+            }
+
+            // Calculate appreciation earned and appreciation earned to date
+            //double appreciationEarned = CalculateAppreciation(salesReport);
+            //double appreciationEarnedToDate = CalculateAppreciationToDate(salesReport);
+
+            var viewModel = new COGSReportDetailsVM
+            {
+                COGSReport = COGSReport
+            };
+            
+            return View(viewModel);
+        }
+
         #endregion
 
     }
