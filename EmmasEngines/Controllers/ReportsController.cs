@@ -1,30 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using EmmasEngines.Data;
+﻿using EmmasEngines.Data;
 using EmmasEngines.Models;
 using EmmasEngines.Utilities;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Authorization;
 using EmmasEngines.ViewModels;
-using iText.Kernel.Geom;
-using System.Drawing.Printing;
+using iText.Kernel.Colors;
 using iText.Kernel.Font;
 using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
-using iText.Layout;
-using System.IO;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Table = iText.Layout.Element.Table;
-using Microsoft.Extensions.Hosting;
-using Path = System.IO.Path;
-using iText.Kernel.Colors;
-using iText.Layout.Borders;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Table = iText.Layout.Element.Table;
 
 namespace EmmasEngines.Controllers
 {
@@ -62,12 +52,10 @@ namespace EmmasEngines.Controllers
             var savedHourlyReports = await PaginatedList<Report>.CreateAsync(_context.Reports.Where(i => i.Type == ReportType.Hourly), page ?? 1, pageSize ?? 5);
 
             //Get paginated list of COGS reports
-            /*
             var COGSReports = await PaginatedList<COGSReport>.CreateAsync(_context.COGSReports.AsQueryable(), page ?? 1, pageSize ?? 5);
             var savedCOGSReports = await PaginatedList<Report>.CreateAsync(_context.Reports.Where(i => i.Type == ReportType.COGS), page ?? 1, pageSize ?? 5);
-            */
 
-            
+
             // Create a view model to pass to the view
             var viewModel = new ReportsVM
             {
@@ -83,13 +71,13 @@ namespace EmmasEngines.Controllers
                     SavedHourlyReports = savedHourlyReports,
                     Employees = await _context.Employees.ToListAsync()
                 },
-                /*SavedCOGSReports = savedCOGSReports,
+                SavedCOGSReports = savedCOGSReports,
                 COGSReportsVM = new COGSReportVM
                 {
                     SavedCOGSReports = savedCOGSReports,
                     Inventories = await _context.Inventories.ToListAsync(),
                     Invoices = await _context.Invoices.ToListAsync()
-                },*/
+                },
                 PageIndex = savedReports.PageIndex,
                 PageSize = savedReports.Count,
                 TotalPages = savedReports.TotalPages
@@ -115,21 +103,6 @@ namespace EmmasEngines.Controllers
 
             return View(viewModel);
         }
-        /*
-        //COGS Report
-        public async Task<IActionResult> COGS()
-        {
-            var viewModel = new COGSReportVM
-            {
-                SavedReports = await _context.COGSReports.Include(sr => sr.COGSReportInventories).ThenInclude(sre => sre.Inventory).ToListAsync(),
-                Inventories = await _context.Inventories.ToListAsync(),
-                Invoices = await _context.Invoices.ToListAsync(),
-                NewReport = new NewCOGSReport()
-            };
-
-            return View(viewModel);
-        }
-        */
 
         [HttpPost]
         public async Task<IActionResult> CreateSaleReport([FromForm] NewSalesReport newReport, int? page, int? pageSize)
@@ -192,8 +165,8 @@ namespace EmmasEngines.Controllers
                     }).ToList();
 
                 // Calculate the sales summary and add to SalesReportInventory
-                
-                
+
+
 
                 // Calculate the appreciation
                 var appreciation = salesDataList
@@ -204,7 +177,7 @@ namespace EmmasEngines.Controllers
                     .Aggregate((a, b) => a + b);
 
 
-                
+
 
 
                 // Calculate the sales summary
@@ -245,7 +218,7 @@ namespace EmmasEngines.Controllers
                     OtherTax = taxSummary.OtherTaxes,
                     TotalTax = taxSummary.SalesTax + taxSummary.OtherTaxes
                 };
-                
+
                 // Add the sales summary to SalesReportInventory
                 foreach (var summary in salesSummary)
                 {
@@ -265,7 +238,7 @@ namespace EmmasEngines.Controllers
 
                 // Save the SalesReportInventory objects to the database
                 await _context.SaveChangesAsync();
-                
+
 
                 // If an employee is selected, create a SalesReportEmployee object for the sales report
                 if (newReport.EmployeeId.HasValue)
@@ -389,7 +362,7 @@ namespace EmmasEngines.Controllers
                                                          .ThenInclude(i => i.Inventory)
                                                          .ThenInclude(ie => ie.Prices)
                                                          .FirstOrDefaultAsync(s => s.ID == id);
-    
+
             if (salesReport == null)
             {
                 return NotFound();
@@ -568,7 +541,7 @@ namespace EmmasEngines.Controllers
                 employeeSummaryTable.AddCell(CreateTableCell("Employee", subtitleFont, subtitleFontSize));
                 employeeSummaryTable.AddCell(CreateTableCell("Sales", subtitleFont, subtitleFontSize));
                 taxSummaryTable.AddCell(new Cell(1, 3).SetBorder(Border.NO_BORDER)); // Added an empty cell to complete the row
-                
+
                 double total = 0;
 
                 foreach (var employee in report.SalesReport.SalesReportEmployees)
@@ -668,7 +641,7 @@ namespace EmmasEngines.Controllers
 
         private Cell CreateTableCell(string content, PdfFont font, float fontSize)
         {
-        return new Cell().Add(new Paragraph(content).SetFont(font).SetFontSize(fontSize));
+            return new Cell().Add(new Paragraph(content).SetFont(font).SetFontSize(fontSize));
         }
 
         #endregion
@@ -713,7 +686,7 @@ namespace EmmasEngines.Controllers
                     {
                         Employees = empDataList
                     }
-            };
+                };
 
 
                 _context.Reports.Add(reportToAdd);
@@ -725,6 +698,89 @@ namespace EmmasEngines.Controllers
                 var reportsVM = new ReportsVM
                 {
                     SavedHourlyReports = savedHourlyReports,
+                    PageSize = pageSize.Value,
+                    PageIndex = page.Value,
+                };
+
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, report = reportToAdd, reportsVM = reportsVM });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                // _logger.LogError(ex, "Error creating a new sales report");
+
+                return Json(new { success = false, message = "An error occurred while saving the report. Exception Message: " + ex.Message });
+            }
+        }
+
+        #endregion
+
+        #region COGS Report
+
+        //COGS Report
+        [HttpPost]
+        public async Task<IActionResult> CreateCOGSReport([FromForm] NewCOGSReport newReport, int? page, int? pageSize)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Invalid form data." });
+            }
+
+            try
+            {
+                // Check the input parameters for null values
+                page ??= 1;
+                pageSize ??= 5;
+
+                //Select data from Inventory and Invoices within dates
+                var inventoryData = _context.Inventories
+                    .Include(invent => invent.Prices.Where(invent => newReport.StartDate <= invent.PurchasedDate && invent.PurchasedDate <= newReport.EndDate))
+                    .AsQueryable();
+
+                var invoiceData = _context.Invoices
+                    .Include(invo => invo.InvoiceLines.Where(invo => newReport.StartDate <= invo.Invoice.Date && invo.Invoice.Date <= newReport.EndDate))
+                    .AsQueryable();
+
+                //filter data from select with required products
+                if (!newReport.AllInventory && newReport.InventoryId.HasValue)
+                {
+                    inventoryData = inventoryData.Where(invent => invent.UPC == newReport.InventoryId.Value);
+                    invoiceData = invoiceData.Where(invo => invo.InvoiceLines.Where(invo => invo.InventoryUPC == newReport.InventoryId.Value));
+                }
+
+                var inventoryDataList = await inventoryData.ToListAsync();
+                var invoiceDataList = await invoiceData.ToListAsync();
+
+
+                await _context.SaveChangesAsync();
+                //Add the hourly report to the reports database
+                Report reportToAdd = new Report
+                {
+                    Description = newReport.ReportName,
+                    DateStart = newReport.StartDate,
+                    DateEnd = newReport.EndDate,
+                    Criteria = newReport.AllInventory ? "All Inventory" : $"{_context.Inventories.FirstOrDefault(inven => inven.UPC == newReport.InventoryId)?.Name}",
+                    Type = ReportType.COGS,
+                    DateCreated = DateTime.Now,
+                    COGSReport = new COGSReport()
+                    {
+                        Inventories = inventoryDataList,
+                        Invoices = invoiceDataList
+                    }
+                };
+
+
+                _context.Reports.Add(reportToAdd);
+                await _context.SaveChangesAsync();
+                var savedCOGSReports = await PaginatedList<COGSReport>.CreateAsync(_context.COGSReports, page ?? 1, pageSize ?? 5);
+
+
+
+                var reportsVM = new ReportsVM
+                {
+                    savedCOGSReports = savedCOGSReports,
                     PageSize = pageSize.Value,
                     PageIndex = page.Value,
                 };
