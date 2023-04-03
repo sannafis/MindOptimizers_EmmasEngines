@@ -4,13 +4,11 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Edit Invoice</h1>
 
-<h4>Invoice</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+<div class="form-popup">
+        <form asp-action="Edit" class="form-container">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
@@ -30,22 +28,23 @@
             </div>
             <div class="form-group">
                 <label asp-for="CustomerID" class="control-label"></label>
-                <select asp-for="CustomerID" class="form-control" asp-items="ViewBag.CustomerID"></select>
+            <select id="dropdown"  asp-for="CustomerID" class="form-control" asp-items="ViewBag.CustomerID"></select>
                 <span asp-validation-for="CustomerID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EmployeeID" class="control-label"></label>
-                <select asp-for="EmployeeID" class="form-control" asp-items="ViewBag.EmployeeID"></select>
+            <select id="dropdown"  asp-for="EmployeeID" class="form-control" asp-items="ViewBag.EmployeeID"></select>
                 <span asp-validation-for="EmployeeID" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <button class="btn_submit" type="submit" value="Save">Save</button>
             </div>
+        <div>
+            <button class="btn_cancel"  asp-action="Index">Back to List</button>
+        </div>
         </form>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+
 

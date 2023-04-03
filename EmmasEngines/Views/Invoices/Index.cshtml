@@ -63,9 +63,9 @@
 				@Html.DisplayFor(modelItem => item.InvoicePayments.Count)
             </td>
             <td>
-@*                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |*@
-                            <button class="btn_crud_add" type="button"  asp-action="Details" asp-route-id="@item.ID"><i class="fa-solid fa-info"></i></button>
-                            @*                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
+                                <button class="btn_crud_add" asp-action="Edit" asp-route-id="@item.ID"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn_crud_add" asp-action="Details" asp-route-id="@item.ID"><i class="fa-solid fa-info"></i></button>
+@*                                <button class="btn_crud_add" asp-action="Delete" asp-route-id="@item.ID"><i class="fa-solid fa-eraser"></i></button>*@
             </td>
         </tr>
 }

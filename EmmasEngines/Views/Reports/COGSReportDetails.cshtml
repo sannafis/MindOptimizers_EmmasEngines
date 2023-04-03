@@ -1,0 +1,155 @@
+﻿@using EmmasEngines.Models
+@model EmmasEngines.ViewModels.COGSReportDetailsVM
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = "COGS Report Details";
+}
+
+<style>
+    th {
+        color: black;
+    }
+
+    h3 {
+        font-size: 20px;
+        font-weight: bold;
+    }
+</style>
+
+<link rel="stylesheet" href="~/css/pages/invoiceDetails.css" asp-append-version="true" />
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <img id="logo" src="~/imgs/Logo_ESE.png" alt="Emma's Engines Logo" />
+            <h1>Emma's Small Engines - COGS Report</h1><br />
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Costs</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Start Cost</th>
+                        <th>Purchased Cost</th>
+                        <th>End Cost</th>
+                        <th>Sale Revenue</th>
+                        <th>Gross Profit</th>
+                        <th>Profit Margin</th>
+                        <th>Items Sold</th>
+                        <th>Items on Inventory</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@Model.COGSReport.StartCost.ToString("C")</td>
+                        <td>@Model.COGSReport.PurchasedCost.ToString("C")</td>
+                        <td>@Model.COGSReport.EndCost.ToString("C")</td>
+                        <td>@Model.COGSReport.SaleRevenue.ToString("C")</td>
+                        <td>@Model.COGSReport.GrossProfit.ToString("C")</td>
+                        <td>@Model.COGSReport.ProfitMargin %</td>
+                        <td>@Model.COGSReport.Invoices.Count</td>
+                        <td>@Model.COGSReport.Inventories.Count</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Gross Profit</h3>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>UPC</th>
+                        <th>Name</th>
+                        <th>Sales</th>
+                        <th>COGS</th>
+                        <th>Gross Profit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    @foreach (var invoice in Model.COGSReport.Invoices)
+                    {
+                        
+                        @foreach (var line in invoice.InvoiceLines)
+                        {
+                            <tr>
+                                <td>@line.InventoryUPC</td>
+                                @foreach (var item in Model.COGSReport.Inventories.Where(p => p.UPC == @line.InventoryUPC))
+                                {
+                                    <td>@item.Name</td>
+                                }
+                                <td>@line.SalePrice.ToString("C")</td>
+                                @foreach (var item in Model.COGSReport.Inventories.Where(p => p.UPC == @line.InventoryUPC))
+                                {
+                                    <td>tired</td>
+                                }
+                                <td>gp</td>
+                            </tr>
+                        }
+
+                        
+                    }
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Product Sales Summary</h3>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var inventory in Model.COGSReport.Inventories)
+                    {
+                        <tr>
+                            <td>@inventory.Name</td>
+                            <td>@inventory.Prices</td>
+                            <td>@inventory.UPC</td>
+                            <td>@inventory.MarkupPrice</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            @*Buttons for: Print PDF, Return to Reports Index, Delete*@
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("GenerateCOGSReportPDF", "Reports", new { id = Model.COGSReport.ID })'">
+                    <i data-feather="printer"></i> Print PDF
+                </button>
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Index", "Reports")'">
+                    <i class="fa corner-down-left"></i> Return to Reports
+                </button>
+                <form method="post" action="/Reports/Delete/@Model.COGSReport.ID" onsubmit="return confirm('Are you sure you want to delete this report?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

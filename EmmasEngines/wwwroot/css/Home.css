@@ -173,7 +173,9 @@ ul {
     flex-wrap: wrap;
     justify-content: space-evenly;
     width: 100%;
-    padding-left: 10%
+    padding-left: 10%;
+    justify-content: center;
+    align-items: center;
 }
 
 
