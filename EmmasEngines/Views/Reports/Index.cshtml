@@ -4,6 +4,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="~/css/pages/report.css" asp-append-version="true" />
 @model EmmasEngines.ViewModels.ReportsVM
 @{
     ViewBag.Title = "Reports";
@@ -13,25 +14,26 @@
         color: black;
     }
 </style>
-<main>
+<div>
+    <section class="report">
     <section id="pageName">
         <h1>REPORTS</h1>
     </section>
 
     <!-- Tab-based layout -->
-    <ul class="nav nav-tabs" id="reportTabs" role="tablist">
+    <ul class="nav nav-tabs tabs" id="reportTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="sales-tab" data-toggle="tab" href="#salesTab" role="tab" aria-controls="salesTab" aria-selected="true">Sales</a>
+            <a class="nav-link active tab" id="sales-tab" data-toggle="tab" href="#salesTab" role="tab" aria-controls="salesTab" aria-selected="true">Sales</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="cogs-tab" data-toggle="tab" href="#cogsTab" role="tab" aria-controls="cogsTab" aria-selected="false">COGS</a>
+            <a class="nav-link tab" id="cogs-tab" data-toggle="tab" href="#cogsTab" role="tab" aria-controls="cogsTab" aria-selected="false">COGS</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="hourly-tab" data-toggle="tab" href="#hourlyTab" role="tab" aria-controls="hourlyTab" aria-selected="false">Hourly</a>
+            <a class="nav-link tab" id="hourly-tab" data-toggle="tab" href="#hourlyTab" role="tab" aria-controls="hourlyTab" aria-selected="false">Hourly</a>
         </li>
     </ul>
 
-
+    </section>
     <!-- Tab content -->
     <div class="tab-content" id="reportTabContent">
         <!-- Sales Reports Tab -->
@@ -280,7 +282,7 @@
             </div>
         </div>
     </div>
-</main>
+</div>
 
 <script>
     $(document).ready(function () {
