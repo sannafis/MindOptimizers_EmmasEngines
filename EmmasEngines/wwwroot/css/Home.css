@@ -63,7 +63,7 @@ main {
     align-items: flex-start;
     margin: 5px 6px 50px 50px;
     padding-left: var(--nav-border-width);
-    overflow-y: auto;
+    /*overflow-y: auto;*/
     padding-right: 15px;
 }
 

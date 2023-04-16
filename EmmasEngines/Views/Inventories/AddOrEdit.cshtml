@@ -6,25 +6,26 @@
     Layout = null;
 }
 
+
 <div class="form-popup">
     <form asp-action="AddOrEdit" class="form-container" asp-route-id="@Model.ID" onsubmit="return jQueryAjaxPost(this);" autocomplete="off">
         @{
             if(Model.ID == 0){//new product
-                <h4 id='add_edit'>ADD PRODUCT</h4>
-                <button type="button" id="autofill" class="btn btn-autofill">Auto Fill</button>
+                                <h4 id='add_edit'>ADD PRODUCT</h4>
+                                <button type="button" id="autofill" class="btn btn-autofill">Auto Fill</button>
             }else{
-                <h4 id='add_edit'>EDIT PRODUCT</h4>
+                                <h4 id='add_edit'>EDIT PRODUCT</h4>
             }
         }
         
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="ID" />
 
-        <label asp-for="UPC" class="margin-top-22"></label>
+        <label asp-for="UPC" class="margin-top-22 required"></label>
         <input asp-for="UPC" id="upc" class="no-bottom-margin" />
         <span asp-validation-for="UPC" class="text-danger"></span>
 
-        <label asp-for="Name" class="margin-top-22"></label>
+        <label asp-for="Name" class="margin-top-22 required"></label>
         <input asp-for="Name" id="name" class="no-bottom-margin" />
         <span asp-validation-for="Name" class="text-danger"></span>
 
@@ -36,6 +37,15 @@
         <input asp-for="Quantity" id="quantity" class="no-bottom-margin" />
         <span asp-validation-for="Quantity" class="text-danger"></span>
 
+        <label asp-for="Current" class="margin-top-22"></label>
+        @Html.CheckBoxFor(model => model.Current, htmlAttributes:"no-bottom-margin")
+        <span asp-validation-for="Current" class="text-danger"></span>
+
+@*
+        <label asp-for="Current" class="margin-top-22"></label>
+        <input type="checkbox" name="Current" id="current" class="no-bottom-margin" @(Model.Current ? "checked=\"checked\"" : "") />
+        <span asp-validation-for="Current" class="text-danger"></span>
+*@
         <button type="submit" value="submit" class="btn_submit" style="margin-top: 22px;">Submit</button>
         <button type="button" value="Close" class="btn_cancel" onclick="closeModal()">Close</button>
 

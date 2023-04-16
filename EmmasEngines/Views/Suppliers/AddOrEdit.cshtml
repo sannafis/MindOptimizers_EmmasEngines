@@ -23,24 +23,24 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="ID" />
 
-        <label asp-for="Name" class="margin-top-22"></label>
+        <label asp-for="Name" class="margin-top-22 required"></label>
         <input asp-for="Name" id="name" class="no-bottom-margin" />
         <span asp-validation-for="Name" class="text-danger"></span>
 
-        <label asp-for="Phone" class="margin-top-22"></label>
+        <label asp-for="Phone" class="margin-top-22 required"></label>
         <input asp-for="Phone" id="phone" class="no-bottom-margin" />
         <span asp-validation-for="Phone" class="text-danger"></span>
 
-        <label asp-for="Email" class="margin-top-22"></label>
+        <label asp-for="Email" class="margin-top-22 required"></label>
         <input asp-for="Email" id="email" class="no-bottom-margin" />
         <span asp-validation-for="Email" class="text-danger"></span>
 
-        <label asp-for="Address" class="margin-top-22"></label>
+        <label asp-for="Address" class="margin-top-22 required"></label>
         <input asp-for="Address" id="address" class="no-bottom-margin" />
         <span asp-validation-for="Address" class="text-danger"></span>
         <div class="row">
             <div class="col">
-                <label asp-for="Postal" class="margin-top-22"></label>
+                <label asp-for="Postal" class="margin-top-22 required"></label>
                 <input asp-for="Postal" id="postal" class="no-bottom-margin" />
                 <span asp-validation-for="Postal" class="text-danger"></span>
             </div>

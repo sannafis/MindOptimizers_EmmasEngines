@@ -59,8 +59,7 @@ namespace EmmasEngines.Models
             }
         }
 
-        [Required(ErrorMessage = "Current status is required.")]
-        public bool Current { get; set; }
+        public bool Current { get; set; } = true;
 
         //[Required(ErrorMessage = "Current status is required. Y/N")]
         //[StringLength(1, ErrorMessage = "Current must be one character long.")]
