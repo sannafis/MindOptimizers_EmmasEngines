@@ -392,6 +392,22 @@
             e.preventDefault();
             $(this).tab('show');
         });
+
+        // Store the active tab ID when tab is switched
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+			var target = $(e.target).attr("href") // activated tab
+			console.log("target: " + target);
+			sessionStorage.setItem('activeTab', target);
+		});
+
+        // Retrieve and activate the stored tab after page reload
+		var activeTab = sessionStorage.getItem('activeTab');
+        console.log("activeTab: " + activeTab);
+        if (activeTab) {
+            $('#reportTabs a[href="' + activeTab + '"]').tab('show');
+		}
+        
+
     });
 
 

@@ -4,6 +4,54 @@
 <script src="https://kit.fontawesome.com/f8c88d6b79.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 
+<style>
+	.search_container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 1rem;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		background-color: #f5f5f5;
+		width: 100%;
+		max-width: 900px;
+		margin: 0 auto;
+	}
+
+	.search_form_wrapper {
+		display: flex;
+		align-items: center;
+	}
+
+	.form-inline {
+		display: flex;
+		align-items: center;
+	}
+
+	.btnCustView {
+		margin-left: 10px;
+	}
+
+	.btn_tooltip {
+		display: inline-block;
+		margin-left: 5px;
+		font-size: 14px;
+	}
+
+	#inputCustomer {
+		padding: 6px;
+		font-size: 14px;
+		border-radius: 4px;
+		border: 1px solid #ccc;
+		width: 22rem;
+	}
+
+	p {
+		margin-left: 5px;
+	}
+
+</style>
+
 @if (Model != null)
 {
     
@@ -28,13 +76,6 @@
 				<button id="clearCustomerBtn" class="btn_crud_add"><i class="fa fa-times" aria-hidden="true"></i></button>
 				<span class="btn_tooltip">Clear</span>
 			</div>
-		</div>
-		<div class="btn_crud">
-			@*When pressed, Modal box to add customer. Set cart to this customer.*@
-			<form action="@Url.Action("Create", "Customers")" method="get">
-				<button type="submit" class="btn_crud_add"><i class="fa fa-plus" aria-hidden="true"></i></button>
-			</form>
-			<span class ="btn_tooltip">Create</span>
 		</div>
 		
         @*Hidden field for CustomerID*@
