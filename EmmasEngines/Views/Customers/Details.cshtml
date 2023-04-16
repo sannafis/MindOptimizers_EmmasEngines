@@ -6,6 +6,28 @@
 
 <h1>Details</h1>
 
+<style>
+    a {
+  color: black; /* blue link color */
+  text-decoration: none;
+  font-weight: bold;
+    }
+
+    .row {
+        margin-bottom: 10px;
+    }
+
+    /* Style the labels */
+    dt {
+        font-weight: bold;
+    }
+
+    /* Style the values */
+    dd {
+        margin-left: 0;
+    }
+</style>
+
 <div>
     <h4>Customer</h4>
     <hr />
@@ -50,5 +72,7 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    
+    @*Link for back to POS*@
+    <a href="~/POS/Index">Back to POS</a>
 </div>

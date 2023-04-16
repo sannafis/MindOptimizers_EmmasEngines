@@ -72,13 +72,6 @@
 				<span class="btn_tooltip">Clear</span>
 			</div>
 		</div>
-		<div class="btn_crud">
-			@*When pressed, Modal box to add customer. Set cart to this customer.*@
-			<form action="@Url.Action("Create", "Customers")" method="get">
-				<button type="submit" class="btn_crud_add"><i class="fa fa-plus" aria-hidden="true"></i></button>
-			</form>
-			<span class ="btn_tooltip">Create</span>
-		</div>
 		
         @*Hidden field for CustomerID*@
 		<input type="hidden" name="CustomerID" value="@Model.ID" id="CustomerID" />
