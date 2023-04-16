@@ -39,17 +39,20 @@
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Date</th>
+                        <th>Date(s)</th>
                         <th>Billable Hours</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @{
+                        double totalHours = 0.00;
+                    }
                     @foreach (var emp in Model.Employees.OrderBy(e => e.ID))
                     {
                         List<EmployeeLogin> loginsSummary = Model.Employees.Where(e => e.ID == emp.ID).SelectMany(e => e.EmployeeLogins).ToList();
-                        string dates = loginsSummary.Where(l => l.SignIn >= Model.Start && l.SignIn <= Model.End).Select(l => l.SignIn.ToShortDateString()).Distinct().Aggregate("", (current, s) => current + (s + "\n"));
+                        string dates = loginsSummary.Where(l => l.SignIn >= Model.Start && l.SignIn <= Model.End).OrderBy(l => l.SignIn).Select(l => l.SignIn.ToShortDateString()).Distinct().Aggregate("", (current, s) => current + (s + "\n"));
                         var hours = (loginsSummary.Where(l => l.SignIn >= Model.Start && l.SignIn <= Model.End).Select(l => (l.SignOut - l.SignIn).TotalHours)).Sum();
-
+                        totalHours += hours;
                         <tr>
                             <td>@emp.ID</td>
                             <td>@emp.FullName</td>
@@ -57,6 +60,13 @@
                             <td>@hours.ToString("F")</td>
                         </tr>
                     }
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Total:</td>
+                        <td>@totalHours.ToString("F")</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -77,15 +87,16 @@
                     </tr>
                 </thead>
                 <tbody>
+                   
                     @foreach (var emp in Model.Employees.OrderBy(e => e.ID))
                     {
-
-                        //List<EmployeeLogin> logins = Model.Employees.Where(e => e.ID == emp.ID).SelectMany(e => e.EmployeeLogins).Where(e => e.SignIn >= Model.Start && e.SignOut <= Model.End).ToList();
                         List<EmployeeLogin> emplogins = Model.Employees.Where(e => e.ID == emp.ID).SelectMany(e => e.EmployeeLogins).ToList();
                         List<EmployeeLogin> logins = emplogins.Where(e => e.SignIn >= Model.Start && e.SignIn <= Model.End).OrderBy(l => l.SignIn).ToList();
+                        @*double totalHours = (logins.Where(l => l.SignIn >= Model.Start && l.SignIn <= Model.End).Select(l => (l.SignOut - l.SignIn).TotalHours)).Sum();*@
 
                         foreach(var login in logins){
                             double hours = (login.SignOut - login.SignIn).TotalHours;
+                            
                             <tr>
                                 <td>@emp.ID</td>
                                 <td>@emp.FullName</td>
@@ -95,6 +106,7 @@
                                 <td>@login.SignOut.ToShortTimeString()</td>
                             </tr>
                         }
+                       
                     }
                 </tbody>
             </table>

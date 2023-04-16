@@ -51,11 +51,11 @@
 
                         <div class="form-group">
                             <label for="employee">Employee:</label>
-                            <select class="form-control" id="employee" name="employee">
+                            <select class="form-control" id="employee" name="employeeId">
                                 <option value="">All Employees</option>
                                 @foreach (var employee in Model.SalesReportVM.Employees)
                                 {
-                                    <option value="@employee.ID">@employee.FirstName @employee.LastName</option>
+                                    <option value="@employee.ID">@employee.FullName</option>
                                 }
                             </select>
                         </div>
@@ -282,9 +282,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="employee">Employee:</label>
-                            <select class="form-control" id="employee" name="employee">
-                                <option value="">All Employees</option>
+                            <label for="employeeId">Employee:</label>
+                            <select class="form-control" id="employeeId" name="employeeId">
+                                <option selected value="">All Employees</option>
                                 @foreach (var employee in Model.HourlyReportVM.Employees)
                                 {
                                     <option value="@employee.ID">@employee.FirstName @employee.LastName</option>
@@ -452,7 +452,7 @@
 
         // Serialize the form data
         let formData = $(this).serialize();
-        
+        //alert(formData);
 
         // Make the AJAX request
         $.post("/Reports/CreateHourlyReport", formData, function (data) {
