@@ -891,4 +891,11 @@ th {
     
 }
 
+.required:after {
+    content: " *";
+    color: #c20000;
+}
 
+select{
+    margin-bottom:15px;
+}

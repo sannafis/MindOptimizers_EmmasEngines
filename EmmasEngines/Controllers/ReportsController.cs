@@ -10,8 +10,10 @@ using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Composition;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Table = iText.Layout.Element.Table;
@@ -680,9 +682,13 @@ namespace EmmasEngines.Controllers
                     .Include(s => s.EmployeeLogins.Where(s => newReport.StartDate <= s.SignIn && s.SignIn <= newReport.EndDate))
                     .AsQueryable();
 
+                string selectedEmployee = "";
+
                 if (newReport.EmployeeId != null)
                 {
-                    employeeData = employeeData.Where(s => s.ID == newReport.EmployeeId.Value);
+                    employeeData = employeeData.Where(s => s.ID == newReport.EmployeeId);
+                    selectedEmployee = _context.Employees.Where(e => e.ID == newReport.EmployeeId).Select(e => e.FullName).FirstOrDefault();
+                    newReport.AllEmployees = false;
                 }
                 else
                 {
@@ -691,17 +697,18 @@ namespace EmmasEngines.Controllers
 
                 var empDataList = await employeeData.ToListAsync();
 
+                
+
                 //Add the hourly report to the reports database
                 Report reportToAdd = new Report
                 {
                     Description = newReport.ReportName,
                     DateStart = newReport.StartDate,
                     DateEnd = newReport.EndDate,
-                    Criteria = newReport.AllEmployees ? "All Employees" : $"{_context.Employees.FirstOrDefault(e => e.ID == newReport.EmployeeId)?.FullName}",
+                    Criteria = newReport.AllEmployees ? "All Employees" : selectedEmployee,
                     Type = ReportType.Hourly,
                     DateCreated = DateTime.Now
                 };
-
                 _context.Reports.Add(reportToAdd);
                 await _context.SaveChangesAsync();
 
@@ -859,23 +866,30 @@ namespace EmmasEngines.Controllers
                 employeeSummaryTable.AddHeaderCell(employeeHeaderRow);
                 employeeSummaryTable.AddCell(CreateTableCell("ID", subtitleFont, subtitleFontSize));
                 employeeSummaryTable.AddCell(CreateTableCell("Name", subtitleFont, subtitleFontSize));
-                employeeSummaryTable.AddCell(CreateTableCell("Date", subtitleFont, subtitleFontSize));
+                employeeSummaryTable.AddCell(CreateTableCell("Date(s)", subtitleFont, subtitleFontSize));
                 employeeSummaryTable.AddCell(CreateTableCell("Billable Hours", subtitleFont, subtitleFontSize));
 
-                foreach (var employee in report.HourlyReport.Employees.OrderBy(e => e.FullName))
+                double totalHours = 0.00;
+
+                foreach (var employee in report.HourlyReport.Employees)
                 {
                     List<string> dates = await _context.EmployeeLogins.Where(l => l.SignIn >= report.DateStart && l.SignIn <= report.DateEnd && l.EmployeeID == employee.ID).Select(l => l.SignIn.ToShortDateString()).Distinct().ToListAsync();
-                    string datestring = String.Join(",", dates);
+                    string datestring = String.Join("\n", dates);
                     //double hours = _context.EmployeeLogins.Where(l => l.SignIn >= report.DateStart && l.SignIn <= report.DateEnd && l.EmployeeID == employee.ID).Select(l => (l.SignOut - l.SignIn).TotalDays).Sum();
                     List<EmployeeLogin> loginsSummary = _context.Employees.Where(e => e.ID == employee.ID).SelectMany(e => e.EmployeeLogins).ToList();
                     double hours = (loginsSummary.Where(l => l.SignIn >= report.DateStart && l.SignIn <= report.DateEnd).Select(l => (l.SignOut - l.SignIn).TotalHours)).Sum();
-
+                    totalHours += hours;
                     employeeSummaryTable.StartNewRow(); // Start a new row for each data set
                     employeeSummaryTable.AddCell(CreateTableCell(employee.ID.ToString(), textFont, textFontSize));
                     employeeSummaryTable.AddCell(CreateTableCell(employee.FullName, textFont, textFontSize));
                     employeeSummaryTable.AddCell(CreateTableCell(datestring, textFont, textFontSize));
-                    employeeSummaryTable.AddCell(CreateTableCell(hours.ToString("C"), textFont, textFontSize));
+                    employeeSummaryTable.AddCell(CreateTableCell(hours.ToString("F"), textFont, textFontSize));
                 }
+
+                employeeSummaryTable.StartNewRow();
+                employeeSummaryTable.AddCell(new Cell(1, 2).SetBorder(Border.NO_BORDER));
+                employeeSummaryTable.AddCell(CreateTableCell("Total", textFont, textFontSize));
+                employeeSummaryTable.AddCell(CreateTableCell(totalHours.ToString("F"), textFont, textFontSize));
 
                 document.Add(employeeSummaryTable.SetMarginBottom(20));
 
@@ -884,10 +898,10 @@ namespace EmmasEngines.Controllers
                 employeeLoginTable.SetWidth(UnitValue.CreatePercentValue(100));
 
                 // Added header row with no borders
-                var employeeLoginHeaderRow = new Cell(1, 5)
+                var employeeLoginHeaderRow = new Cell(1, 6)
                     .SetBorder(Border.NO_BORDER)
                     .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
-                    .Add(new Paragraph("Employee Summary")
+                    .Add(new Paragraph("Employee Logins")
                         .SetFont(subtitleFont)
                         .SetFontSize(subtitleFontSize)
                         .SetTextAlignment(TextAlignment.CENTER));
