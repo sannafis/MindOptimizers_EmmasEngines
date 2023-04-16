@@ -14,6 +14,51 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <script src="https://kit.fontawesome.com/f8c88d6b79.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+
+@*Display elements of search container in an organized way *@
+<style>
+	.search_container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 1rem;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		background-color: #f5f5f5;
+		width: 100%;
+		max-width: 600px;
+		margin: 0 auto;
+	}
+
+	.search_form_wrapper {
+		display: flex;
+		align-items: center;
+	}
+
+	.form-inline {
+		display: flex;
+		align-items: center;
+	}
+
+	.btnCustView{
+		margin-left:10px;
+	}
+
+	.btn_tooltip {
+		display: inline-block;
+		margin-left: 5px;
+		font-size: 14px;
+	}
+
+	#inputCustomer {
+		padding: 6px;
+		font-size: 14px;
+		border-radius: 4px;
+		border: 1px solid #ccc;
+	}
+
+</style>
+
 <main>
 	<section id="pageName">
 		<h1>POS</h1>
@@ -22,25 +67,32 @@
 	
 	<section  id="customerSearch">
 		<div class="search_container">
-		<label id="searchHeader" class="control-label">Search Customer: </label>
-		@*Customer Details*@
+			<label id="searchHeader" class="control-label">Search Customer: </label>
+			@*Customer Details*@
 
-		<datalist id="customerNames">
-			@foreach (var name in customerNames)
-			{
-				<option value="@name" />
-			}
-		</datalist>
+			<datalist id="customerNames">
+				@foreach (var name in customerNames)
+				{
+					<option value="@name" />
+				}
+			</datalist>
 
-		<form id="search-form" action="@Url.Action("SearchCustomer")" method="post">
-			<input id="inputCustomer" type="text" class="customer-list " name="SearchString" placeholder="Search by name or phone. Eg. 'John' or '1234'" list="customerNames" />
-			@**@
+			<div class="search_form_wrapper">
+				<form id="search-form" class="form-inline" action="@Url.Action("SearchCustomer")" method="post">
+					<input id="inputCustomer" type="text" class="customer-list" name="SearchString" placeholder="Search by name or phone. Eg. 'John' or '1234'" list="customerNames" />
+					@**@
 
-			<button type="submit" class="btnCustView" name="actionButton" value="FilterCustomer">
-				<i class="fa fa-search" aria-hidden="true"></i> - Search
-			</button>
-		</form>
-	</div>
+					<button type="submit" class="btnCustView" name="actionButton" value="FilterCustomer">
+						<i class="fa fa-search" aria-hidden="true"></i> - Search
+					</button>
+				</form>
+				<p><strong>OR</strong></p>
+				@*When pressed, Modal box to add customer. Set cart to this customer.*@
+				<form class="form-inline" action="@Url.Action("Create", "Customers")" method="get">
+					<button type="submit" class="btnCustView"><i class="fa fa-plus" aria-hidden="true"></i> Add New Customer</button>
+				</form>
+			</div>
+		</div>
 		<div id="customer-details" class="customer-details">
 			@if (TempData.ContainsKey("CustomerDetails"))
 			{
@@ -212,8 +264,8 @@
 								{
 									var invoiceLine = invoiceLines.FirstOrDefault(line => line.InventoryUPC == item.UPC);
 								
-										@*Log invoice lines to console*@
-										@if (invoiceLine != null && invoiceLine.Quantity != 0){
+														@*Log invoice lines to console*@
+														@if (invoiceLine != null && invoiceLine.Quantity != 0){
 									foreach (InvoiceLine line in invoiceLines)
 									{
 										Console.WriteLine("InvoiceLine");
@@ -226,21 +278,21 @@
 									var quantity = invoiceLine != null ? invoiceLine.Quantity : 0;
 									var price = invoiceLine != null ? invoiceLine.SalePrice : 0;
 								
-																																										<tr class="table-hover" id="row_@item.UPC">
-																																											<td>
-																																												@Html.DisplayFor(modelItem => item.Name)
-																																											</td>
-																																											<td>
-																																												@price
-																																											</td>
-																																											<td>
-																																												<input type="number" id="quantity_@item.UPC" class="quantity-input" value="@quantity" min="0" onchange="updateQuantity('@item.UPC', this.value)" autocomplete="off" />
+																																														<tr class="table-hover" id="row_@item.UPC">
+																																															<td>
+																																																@Html.DisplayFor(modelItem => item.Name)
+																																															</td>
+																																															<td>
+																																																@price
+																																															</td>
+																																															<td>
+																																																<input type="number" id="quantity_@item.UPC" class="quantity-input" value="@quantity" min="0" onchange="updateQuantity('@item.UPC', this.value)" autocomplete="off" />
 
-																																											</td>
-																																											<td>
-																																												<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
-																																											</td>
-																																										</tr>
+																																															</td>
+																																															<td>
+																																																<a href="@Url.Action("RemoveFromCart", "POS", new {UPC = item.UPC})"><i class="fa fa-minus-square" aria-hidden="true" style="color:black"></i></a>
+																																															</td>
+																																														</tr>
 								
 								}
 							}
@@ -277,40 +329,40 @@
 
 							}
 						}
-																														<table>
-																															<thead>
-																																<tr>
-																																	<th>Item</th>
-																																	<th>Value</th>
-																																</tr>
-																															</thead>
-																															<tbody>
-																																<tr>
-																																	<td>Subtotal</td>
-																																	<td id="subtotal">@subtotal.ToString("C")</td>
-																																</tr>
-																																<tr>
-																																	<td>Tax</td>
-																																	<td id="tax">@tax.ToString("C")</td>
-																																</tr>
-																																<tr>
-																																	<td>Total</td>
-																																	<td id="total">@total.ToString("C")</td>
-																																</tr>
-																																<tr>
-																																	<td>Paid</td>
-																																	<td id="paid">@paid.ToString("C")</td>
-																																</tr>
-																																<tr>
-																																	<td>Remainder</td>
-																																	<td id="remainder">@change.ToString("C")</td>
-																																</tr>
-																																<tr>
-																																	<td>Change</td>
-																																	<td id="change">@change.ToString("C")</td>
-																																</tr>
-																															</tbody>
-																														</table>
+																																		<table>
+																																			<thead>
+																																				<tr>
+																																					<th>Item</th>
+																																					<th>Value</th>
+																																				</tr>
+																																			</thead>
+																																			<tbody>
+																																				<tr>
+																																					<td>Subtotal</td>
+																																					<td id="subtotal">@subtotal.ToString("C")</td>
+																																				</tr>
+																																				<tr>
+																																					<td>Tax</td>
+																																					<td id="tax">@tax.ToString("C")</td>
+																																				</tr>
+																																				<tr>
+																																					<td>Total</td>
+																																					<td id="total">@total.ToString("C")</td>
+																																				</tr>
+																																				<tr>
+																																					<td>Paid</td>
+																																					<td id="paid">@paid.ToString("C")</td>
+																																				</tr>
+																																				<tr>
+																																					<td>Remainder</td>
+																																					<td id="remainder">@change.ToString("C")</td>
+																																				</tr>
+																																				<tr>
+																																					<td>Change</td>
+																																					<td id="change">@change.ToString("C")</td>
+																																				</tr>
+																																			</tbody>
+																																		</table>
 					}
 				</ul>
 			</div>
