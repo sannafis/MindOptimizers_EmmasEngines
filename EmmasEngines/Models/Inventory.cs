@@ -33,7 +33,7 @@ namespace EmmasEngines.Models
             {
                 if (OrderRequestInventories.Any())
                 {
-                    return Math.Round(Prices.Select(x => x.PurchasedCost).Average(), 2);
+                    return Math.Round(Prices.Where(p=>p.Stock != 0).Select(x => x.PurchasedCost).Average(), 2);
                 }
                 else
                 {
@@ -49,7 +49,7 @@ namespace EmmasEngines.Models
                 if (Prices.Any())
                 {
                     
-                    double average = Math.Round(Prices.Select(x => x.PurchasedCost).Average(), 2);
+                    double average = Math.Round(Prices.Where(p => p.Stock != 0).Select(x => x.PurchasedCost).Average(), 2);
                     return Math.Round(((average * .23) + average),2);
                 }
                 else

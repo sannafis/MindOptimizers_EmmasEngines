@@ -10,81 +10,82 @@
         font-weight: bold;
     }
 
-    /* Set the width of the input fields */
-    input.form-control, select.form-control {
-        width: 250px;
-    }
-
     /* Center the "Back to List" button */
     .btn-secondary, .btn-primary {
         margin: 10px auto;
         display: block;
     }
-    
 </style>
 
 <h1>Create Customer</h1>
 
-<hr />
 <div class="row">
     <div class="col-md-6">
-        <form asp-action="Create" class="form-horizontal">
+        <form asp-action="Create" class="form-horizontal form-popup form-container">
+
+            <button type="button" id="autofill" class="btn btn-autofill">Auto Fill</button>
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="FirstName" class="col-md-3 control-label"></label>
-                <div class="col-md-9">
-                    <input asp-for="FirstName" class="form-control" />
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                </div>
+                <label asp-for="FirstName"></label>
+
+                <input asp-for="FirstName" id="first" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+
             </div>
             <div class="form-group">
-                <label asp-for="LastName" class="col-md-3 control-label"></label>
-                <div class="col-md-9">
-                    <input asp-for="LastName" class="form-control" />
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </div>
+                <label asp-for="LastName"></label>
+
+                <input asp-for="LastName" id="last" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+
             </div>
             <div class="form-group">
-                <label asp-for="Phone" class="col-md-3 control-label"></label>
-                <div class="col-md-9">
-                    <input asp-for="Phone" class="form-control" />
-                    <span asp-validation-for="Phone" class="text-danger"></span>
-                </div>
+                <label asp-for="Phone"></label>
+
+                <input asp-for="Phone" id="phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+
             </div>
             <div class="form-group">
-                <label asp-for="Address" class="col-md-3 control-label"></label>
-                <div class="col-md-9">
-                    <input asp-for="Address" class="form-control" />
-                    <span asp-validation-for="Address" class="text-danger"></span>
-                </div>
+                <label asp-for="Address"></label>
+
+                <input asp-for="Address" id="address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+
             </div>
             <div class="form-group">
-                <label asp-for="Postal" class="col-md-3 control-label"></label>
-                <div class="col-md-9">
-                    <input asp-for="Postal" class="form-control" />
-                    <span asp-validation-for="Postal" class="text-danger"></span>
-                </div>
+                <label asp-for="Postal"></label>
+
+                <input asp-for="Postal" id="postal" class="form-control" />
+                <span asp-validation-for="Postal" class="text-danger"></span>
+
             </div>
             <div class="form-group">
-                <label asp-for="CityID" class="col-md-3 control-label"></label>
-                <div class="col-md-9">
-                    <select asp-for="CityID" class="form-control" asp-items="ViewBag.CityID"></select>
-                </div>
+                <label asp-for="CityID"></label>
+
+                <select asp-for="CityID" class="form-control" asp-items="ViewBag.CityID"></select>
+
             </div>
-            <div class="form-group">
-                <div class="col-md-offset-3 col-md-9">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
-            </div>
+
+            <button type="submit" style="margin-top: 22px;" class="btn_submit">Create</button>
+
+            <button type="button" class="btn_cancel" onclick="window.location.href='/POS/Index'">Back to POS</button>
+
         </form>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-12">
-        <a href="~/POS/Index" class="btn btn-secondary">Back to POS</a>
-    </div>
-</div>
+<script>
+    $("#autofill").click(function () {
+
+        $("#first").val("John");
+        $("#last").val("Doe");
+        $("#phone").val("905-000-0000");
+        $("#address").val("123 Example Street");
+        $("#postal").val(`O2V 0H1`);
+    });
+</script>
 
 @section Scripts {
     @{
