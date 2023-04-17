@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using iText.StyledXmlParser.Jsoup.Nodes;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -146,7 +147,8 @@ namespace EmmasEngines.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        //Keep this commented out so we don't sign in the user automatically after registering
+                        //await _signInManager.SignInAsync(user, isPersistent: false); 
                         return LocalRedirect(returnUrl);
                     }
                 }
